@@ -10,7 +10,7 @@
     
     <style>
         :root {
-            --neon-green: #186940; /* Se actualizará con COLOR_DETALLES de tu Sheets */
+            --neon-green: #39ff14; /* Se actualizará con COLOR_DETALLES de tu Sheets */
             --carbon-black: #0b0c10;
             --panel-bg: #16171e;
         }
@@ -69,27 +69,27 @@
         
         <div class="w-full rounded-xl overflow-hidden mb-6 border border-gray-800 bg-[#16171e] shadow-xl relative">
             
-            <div class="h-24 w-full relative bg-cover bg-center bg-[#0d0e12] border-b border-gray-800">
+            <div id="web-banner" class="h-28 w-full relative bg-cover bg-center bg-[#0d0e12] border-b border-gray-800">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
             </div>
 
             <div class="px-6 pb-6 pt-2 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left w-full">
                     
-                    <div class="w-28 h-20 bg-gray-900 rounded-lg border border-gray-700 shadow-md overflow-hidden shrink-0">
-                        <img id="header-car-img" src="" alt="Coche" class="w-full h-full object-cover hidden">
-                        <div id="car-loading-placeholder" class="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-mono">🏎️ Coche</div>
+                    <div class="w-28 h-20 bg-gray-900 rounded-lg border border-gray-700 shadow-md overflow-hidden shrink-0 flex items-center justify-center">
+                        <img id="header-car-img" src="" alt="Coche Reto" class="w-full h-full object-cover hidden">
+                        <div id="car-loading-placeholder" class="text-[10px] text-gray-500 font-mono p-2 text-center">🏎️ Cargando coche...</div>
                     </div>
 
                     <div class="w-full">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-3 justify-center sm:justify-start">
                             <h1 id="web-title" class="text-xl sm:text-2xl font-black tracking-tight text-white uppercase m-0">RETO 100 DÍAS</h1>
                             
-                            <a id="youtube-channel-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 active:scale-95 transition-all text-white text-xs font-black rounded uppercase tracking-wider shadow-md shadow-red-950/40">
+                            <a id="youtube-channel-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 active:scale-95 transition-all text-white text-xs font-black rounded uppercase tracking-wider shadow-md shadow-red-900/40">
                                 ▶ Ver Canal
                             </a>
                         </div>
-                        <p id="web-description" class="text-xs text-gray-400 font-medium mt-2 max-w-4xl leading-relaxed">Cargando datos de configuración...</p>
+                        <p id="web-description" class="text-xs text-gray-400 font-medium mt-2 max-w-4xl leading-relaxed">Sincronizando el panel principal...</p>
                     </div>
                 </div>
 
@@ -100,13 +100,6 @@
                 </div>
             </div>
         </div>
-
-        <section id="config-text-section" class="grid grid-cols-1 gap-6 mb-8">
-            <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
-                <span id="header-bloque1" class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">MONITORES DE PISTA</span>
-                <p class="text-xs text-gray-400 italic">Sincronizado con el servidor oficial del Infierno Verde.</p>
-            </div>
-        </section>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)]">
@@ -124,7 +117,7 @@
                         <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
                         <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
                     </div>
-                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando...</p>
+                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Buscando récord...</p>
                 </div>
             </div>
 
@@ -293,7 +286,6 @@
     </div>
 
     <script>
-        // Datos de respaldo local seguros por si falla la red
         const MOCK_DATA = [
             { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto." }
         ];
@@ -326,7 +318,6 @@
             return `${min}:${remainingSec.padStart(6, '0')}`;
         }
 
-        // --- CONEXIÓN COMPLETAMENTE CORREGIDA A TU DISEÑO SIN ENCABEZADOS ---
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
@@ -342,7 +333,6 @@
 
                 if (!resDatos.ok || !resConfig.ok) throw new Error("Fallo de conexión con el servidor Google Sheets.");
 
-                // --- PROCESAR PESTAÑA CONFIGURACION_WEB (SIN ENCABEZADOS - HEADER: FALSE) ---
                 const configText = await resConfig.text();
                 const parsedConfig = Papa.parse(configText, { header: false }).data;
                 let configFinal = {};
@@ -351,7 +341,6 @@
                     parsedConfig.forEach(row => {
                         if (row && row.length >= 2) {
                             let rawKey = row[0] ? row[0].toString().trim() : '';
-                            // Quitar acentos, mayúsculas y caracteres raros para mapear seguro
                             let cleanKey = rawKey.toUpperCase()
                                                  .normalize("NFD")
                                                  .replace(/[\u0300-\u036f]/g, "")
@@ -363,7 +352,6 @@
                     applyWebConfiguration(configFinal);
                 }
 
-                // --- PROCESAR PESTAÑA DATOS_RETO ---
                 const csvText = await resDatos.text();
                 const parsed = Papa.parse(csvText, { header: true }).data;
                 
@@ -396,7 +384,6 @@
             }
         }
 
-        // --- APLICADOR SEGURO DE TU ENTORNO DE DISEÑO DESDE LAS CLAVES DE LA FOTO ---
         function applyWebConfiguration(config) {
             if (config.TITULO_WEB) {
                 document.getElementById('web-title').innerText = config.TITULO_WEB;
@@ -404,33 +391,41 @@
             if (config.DESCRIPCION_RETO) {
                 document.getElementById('web-description').innerText = config.DESCRIPCION_RETO;
             }
-            if (config.CANAL_YOUTUBE) {
-                document.getElementById('youtube-channel-btn').href = config.CANAL_YOUTUBE;
+            
+            // Verificación inteligente de enlaces
+            let keyYoutube = Object.keys(config).find(k => k.includes('YOUTUBE') || k.includes('CANAL'));
+            if (keyYoutube && config[keyYoutube]) {
+                document.getElementById('youtube-channel-btn').href = config[keyYoutube];
             }
-            if (config.FOTO_COCHE) {
+
+            let keyCoche = Object.keys(config).find(k => k.includes('COCHE') || k.includes('FOTO'));
+            if (keyCoche && config[keyCoche]) {
                 const img = document.getElementById('header-car-img');
                 const placeholder = document.getElementById('car-loading-placeholder');
-                img.src = config.FOTO_COCHE;
+                img.src = config[keyCoche];
                 img.onload = () => {
                     img.classList.remove('hidden');
                     placeholder.classList.add('hidden');
                 };
             }
 
-            // Textos personalizados de bloques
-            if (config.TXT_BLOQUE1) document.getElementById('header-bloque1').innerText = config.TXT_BLOQUE1;
-            if (config.TXT_BLOQUE2) document.getElementById('header-bloque2').innerText = config.TXT_BLOQUE2;
-            if (config.TXT_BLOQUE3) document.getElementById('header-bloque3').innerText = config.TXT_BLOQUE3;
-            if (config.TXT_BLOQUE4) document.getElementById('header-bloque4').innerText = config.TXT_BLOQUE4;
-            if (config.TXT_BLOQUE5) document.getElementById('header-bloque5').innerText = config.TXT_BLOQUE5;
+            // Lectura dinámica del Banner (Fondo estético superior)
+            let keyBanner = Object.keys(config).find(k => k.includes('BANNER'));
+            if (keyBanner && config[keyBanner]) {
+                const bannerEl = document.getElementById('web-banner');
+                if (bannerEl) bannerEl.style.backgroundImage = `url('${config[keyBanner]}')`;
+            }
 
-            // Inyección de colores de tu paleta
+            const b2 = document.getElementById('header-bloque2'); if (b2 && config.TXT_BLOQUE2) b2.innerText = config.TXT_BLOQUE2;
+            const b3 = document.getElementById('header-bloque3'); if (b3 && config.TXT_BLOQUE3) b3.innerText = config.TXT_BLOQUE3;
+            const b4 = document.getElementById('header-bloque4'); if (b4 && config.TXT_BLOQUE4) b4.innerText = config.TXT_BLOQUE4;
+            const b5 = document.getElementById('header-bloque5'); if (b5 && config.TXT_BLOQUE5) b5.innerText = config.TXT_BLOQUE5;
+
             if (config.COLOR_DETALLES) {
                 document.documentElement.style.setProperty('--neon-green', config.COLOR_DETALLES);
             }
         }
 
-        // --- CÁLCULO GENERAL DE KPIs Y TELEMETRÍA ---
         function processAndRender(data, config) {
             data.sort((a, b) => parseInt(a["Día"]) - parseInt(b["Día"]));
 
@@ -447,7 +442,6 @@
                 const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
                 const estado = row["ESTADO"].toUpperCase().trim();
                 const tiempoS = timeStringToSeconds(row["TIEMPO"]);
-                const notas = row["Notas"] ? row["Notas"].toLowerCase() : '';
 
                 kmTotales += (outlap + crono);
                 kmCrono += crono;
@@ -463,9 +457,7 @@
                 if (estado === 'VÁLIDA') {
                     currentRachaValida++;
                     if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
-                } else if (estado === 'EXHIBICIÓN' || notas.includes('exhibición') || notas.includes('exhibicion')) {
-                    // Sigue la racha de válidas intacta
-                } else {
+                } else if (estado !== 'EXHIBICIÓN') {
                     currentRachaValida = 0;
                 }
 
@@ -499,7 +491,6 @@
                 ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
             }
 
-            // Racha actual sin mejorar
             let rachaActualSinMejorar = 0;
             if (recordData) {
                 const maxDiaRegistrado = Math.max(...data.map(r => parseInt(r["Día"])));
@@ -509,7 +500,6 @@
             document.getElementById('streak-days').innerText = rachaActualSinMejorar;
             document.getElementById('km-totals-top').innerText = kmTotales.toFixed(1);
 
-            // Rellenar las 12 tarjetas avanzadas
             document.getElementById('stat-km-totales').innerText = `${kmTotales.toFixed(1)} km`;
             document.getElementById('stat-km-crono').innerText = `${kmCrono.toFixed(1)} km`;
             document.getElementById('stat-ritmo-limpio').innerText = secondsToTimeString(ritmoPromedioLimpioS);
@@ -529,7 +519,6 @@
             document.getElementById('stat-total-dnf').innerText = `${countDnf} tandas`;
             document.getElementById('stat-media-km').innerText = `${data.length > 0 ? (kmTotales / data.length).toFixed(1) : 0} km`;
 
-            // Cargar vídeos fijos
             if (!recordData && data.length > 0) recordData = data[0];
             if (recordData) {
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
@@ -589,7 +578,7 @@
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { legend: { display: false } }, // Oculta leyendas duplicadas
                     scales: {
                         y: { ticks: { callback: v => v >= dnfY - 1 ? '⚠️ DNF' : secondsToTimeString(v) } }
                     },
@@ -601,19 +590,53 @@
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
-            [...data].reverse().forEach(row => {
+            const reversedData = [...data].reverse();
+
+            reversedData.forEach(row => {
+                const dia = row["Día"];
+                const estado = row["ESTADO"].toUpperCase().trim();
+                const notasTexto = row["Notas"] || '';
+                
+                let borderClass = 'border-l-green-500'; let textBadgeClass = 'text-green-400';
+                if(estado === 'NO VÁLIDA') { borderClass = 'border-l-red-500'; textBadgeClass = 'text-red-400'; }
+                else if(estado === 'DNF') { borderClass = 'border-l-yellow-500'; textBadgeClass = 'text-yellow-500'; }
+                else if(estado === 'EXHIBICIÓN') { borderClass = 'border-l-purple-500'; textBadgeClass = 'text-purple-400'; }
+
                 const card = document.createElement('div');
-                card.className = "panel-carbon rounded-lg p-3 border-l-4 border-l-green-500 cursor-pointer flex justify-between items-center";
-                card.innerHTML = `<div><span class="font-bold">Día ${row["Día"]}</span> - <span class="text-xs text-gray-400">${row["Notas"]}</span></div><div class="font-mono font-bold">${row["TIEMPO"]}</div>`;
-                card.onclick = () => { updateDynamicScreen(row); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+                card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
+                
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg font-black text-white">Día ${dia}</span>
+                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${estado}</span>
+                            <span class="text-xs text-gray-500 font-mono">Pub: ${row["DÍA DE PUBLICACIÓN"] || '--'}</span>
+                        </div>
+                        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                            <span class="text-xl font-mono font-black text-white">${row["TIEMPO"]}</span>
+                            <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Cargar Ficha ➔</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-400 border-t border-gray-800/60 pt-2">
+                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
+                    </div>
+                `;
                 container.appendChild(card);
             });
+        }
+
+        function selectHistoryDay(day) {
+            const row = globalRows.find(r => r["Día"] === day);
+            if(row) {
+                updateDynamicScreen(row);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         function filterLaps() {
             const q = document.getElementById('lap-search').value.toLowerCase();
             document.querySelectorAll('#history-container > div').forEach(c => {
-                c.style.display = c.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+                c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
             });
         }
 
