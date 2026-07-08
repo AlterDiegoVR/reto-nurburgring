@@ -3,21 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control del Reto</title>
+    <title>Reto 100 Días Nürburgring - Panel de Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
-        :root {
-            --bg-color: #0b0c10;
-            --panel-bg: #16171e;
-            --accent-green: #39ff14;
-            --accent-red: #ff3b30;
-            --accent-orange: #ff9500;
-        }
-        body { background-color: var(--bg-color); color: #e2e8f0; font-family: sans-serif; }
-        .panel { background-color: var(--panel-bg); border: 1px solid #222530; }
+        :root { --bg: #0b0c10; --panel: #16171e; --text: #e2e8f0; --accent: #39ff14; }
+        body { background-color: var(--bg); color: var(--text); font-family: sans-serif; }
+        .panel { background-color: var(--panel); border: 1px solid #222530; }
         .video-wrapper { position: relative; width: 100%; padding-top: 177.77%; background: #000; border-radius: 8px; overflow: hidden; }
         .video-wrapper iframe { position: absolute; top:0; left:0; width:100%; height:100%; border:none; }
     </style>
@@ -25,31 +18,30 @@
 <body class="p-4 md:p-8">
 
     <div class="max-w-7xl mx-auto space-y-8">
+        <!-- 1. BLOQUE IMPACTO: VÍDEOS -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- PANTALLA 1: Mejor Tiempo (Dinámica) -->
             <div class="panel p-5 rounded-xl border-l-4 border-green-500">
-                <div class="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-2">🏆 PANTALLA ACTIVA (MEJOR TIEMPO)</div>
-                <div class="video-wrapper mb-3"><iframe id="active-video" src=""></iframe></div>
-                <div class="text-center font-black text-xl" id="active-title">Cargando...</div>
+                <div class="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-2">🏆 PANTALLA ACTIVA</div>
+                <div class="video-wrapper mb-3"><iframe id="active-iframe" src=""></iframe></div>
+                <div class="text-center font-black text-lg" id="active-title">Cargando...</div>
                 <div class="text-center font-mono text-3xl text-green-400 mt-1" id="active-time">--:--.---</div>
             </div>
-            <!-- PANTALLA 2: Último Registro (Fijo) -->
             <div class="panel p-5 rounded-xl border-l-4 border-red-500">
                 <div class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-2">⏱️ ÚLTIMO REGISTRO</div>
-                <div class="video-wrapper mb-3"><iframe id="latest-video" src=""></iframe></div>
-                <div class="text-center font-black text-xl" id="latest-title">Cargando...</div>
+                <div class="video-wrapper mb-3"><iframe id="latest-iframe" src=""></iframe></div>
+                <div class="text-center font-black text-lg" id="latest-title">Cargando...</div>
                 <div class="text-center font-mono text-3xl text-red-500 mt-1" id="latest-time">--:--.---</div>
-                <div class="text-center text-xs text-gray-500" id="latest-delta"></div>
+                <div class="text-center text-xs text-gray-500 mt-2" id="latest-delta"></div>
             </div>
-            <!-- PANTALLA 3: Vuelta Aleatoria (Botón Lanzar) -->
             <div class="panel p-5 rounded-xl border-l-4 border-blue-500">
                 <div class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2">🎲 VUELTA ALEATORIA</div>
-                <div class="video-wrapper mb-3"><iframe id="random-video" src=""></iframe></div>
-                <div class="text-center font-black text-xl" id="random-title">Cargando...</div>
+                <div class="video-wrapper mb-3"><iframe id="random-iframe" src=""></iframe></div>
+                <div class="text-center font-black text-lg" id="random-title">Cargando...</div>
                 <button onclick="updateRandom()" class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded text-xs">LANZAR OTRO DÍA</button>
             </div>
         </section>
 
+        <!-- 2. BLOQUE KPIs -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="panel p-5 rounded-xl">
                 <div class="text-xs text-gray-400 uppercase">📅 Progreso del Reto</div>
@@ -58,7 +50,7 @@
                     <div id="progreso-bar" class="bg-green-500 h-full" style="width:0%"></div>
                 </div>
             </div>
-            <div class="panel p-5 rounded-xl border border-yellow-900/30">
+            <div id="streak-card" class="panel p-5 rounded-xl border border-yellow-900/30">
                 <div class="text-xs text-gray-400 uppercase">⚡ Racha sin mejorar</div>
                 <div class="text-3xl font-black mt-1 text-yellow-500" id="kpi-streak">0 Días</div>
             </div>
@@ -68,11 +60,13 @@
             </div>
         </section>
 
+        <!-- 3. GRÁFICA -->
         <section class="panel p-5 rounded-xl">
             <h3 class="font-bold text-lg mb-4">📈 Evolución en Pista</h3>
             <div class="h-[300px]"><canvas id="mainChart"></canvas></div>
         </section>
 
+        <!-- 4. ESTADÍSTICAS -->
         <section class="panel p-5 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-black/20 p-3 rounded"><div class="text-[10px] text-gray-500">KM CRONO TOTAL</div><div id="stat-km-crono" class="font-bold">0</div></div>
             <div class="bg-black/20 p-3 rounded"><div class="text-[10px] text-gray-500">RITMO MEDIO (Limpio)</div><div id="stat-avg" class="font-bold">--:--</div></div>
@@ -80,6 +74,7 @@
             <div class="bg-black/20 p-3 rounded"><div class="text-[10px] text-gray-500">TOTAL DNFs</div><div id="stat-dnf" class="font-bold">0</div></div>
         </section>
 
+        <!-- 5. HISTORIAL -->
         <section class="panel p-5 rounded-xl">
             <input type="text" id="lap-search" oninput="filterLaps()" placeholder="🔎 Filtrar vueltas (historial)..." class="w-full bg-black/40 border border-gray-800 rounded p-3 mb-4 text-sm focus:border-green-500 outline-none">
             <div id="history-list" class="space-y-2"></div>
@@ -88,12 +83,12 @@
 
     <script>
         const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
-        const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=configuracion_web`;
         const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=datos%20reto`;
         
         let globalRows = [];
         let chartInstance = null;
 
+        // Extractor inteligente
         function getVal(row, keys) {
             for (let k in row) {
                 if (keys.map(x => x.toLowerCase()).includes(k.toLowerCase().trim())) return row[k].trim();
@@ -103,9 +98,9 @@
 
         async function init() {
             try {
-                const [rConfig, rDatos] = await Promise.all([fetch(URL_CONFIG), fetch(URL_DATOS)]);
-                const dDatos = Papa.parse(await rDatos.text(), {header:true}).data.filter(r => getVal(r, ['ONLINE']).toLowerCase() === 'sí');
-                globalRows = dDatos;
+                const resDatos = await fetch(URL_DATOS);
+                const data = Papa.parse(await resDatos.text(), {header:true}).data;
+                globalRows = data.filter(r => getVal(r, ['online', 'on air']).toLowerCase() === 'sí');
                 renderDashboard();
             } catch(e) { console.error(e); }
         }
@@ -120,10 +115,10 @@
             const data = globalRows;
             const latest = data[data.length - 1];
             
-            // Stats
-            const valid = data.filter(r => r["ESTADO"].toUpperCase() === "VÁLIDA");
+            // Validadas
+            const valid = data.filter(r => r["ESTADO"] && r["ESTADO"].toUpperCase() === "VÁLIDA");
             
-            // Record
+            // Récord
             const record = valid.reduce((best, r) => {
                 const s = timeToSec(r["TIEMPO"]);
                 return (best.s === null || s < best.s) ? {s, r} : best;
@@ -137,19 +132,15 @@
             document.getElementById('kpi-progreso').innerText = `Día ${data.length} de 100`;
             document.getElementById('progreso-bar').style.width = (data.length) + "%";
             
-            const totalCrono = data.reduce((a,b) => a + parseFloat(b["KMS CRONO"] || 0), 0);
+            // Stats
+            const totalCrono = data.reduce((a,b) => a + parseFloat(getVal(b, ['kms crono', 'kms cronos']).replace(',','.')) || 0, 0);
             document.getElementById('kpi-km').innerText = totalCrono.toFixed(1) + " km";
-            
-            // Stats Logic
             document.getElementById('stat-km-crono').innerText = totalCrono.toFixed(1) + " km";
-            document.getElementById('stat-dnf').innerText = data.filter(r => r["ESTADO"].toUpperCase() === "DNF").length;
+            document.getElementById('stat-dnf').innerText = data.filter(r => r["ESTADO"] && r["ESTADO"].toUpperCase() === "DNF").length;
             
-            // Avg Pace (ignore min/max valid to be honest)
             const validSecs = valid.map(r => timeToSec(r["TIEMPO"]));
             const avg = validSecs.reduce((a,b) => a+b, 0) / validSecs.length;
-            const m = Math.floor(avg/60);
-            const s = (avg%60).toFixed(3);
-            document.getElementById('stat-avg').innerText = `${m}:${s}`;
+            document.getElementById('stat-avg').innerText = `${Math.floor(avg/60)}:${(avg%60).toFixed(3)}`;
 
             renderChart(data);
             renderHistory(data);
@@ -157,9 +148,13 @@
 
         function updateScreen(id, row) {
             if(!row) return;
-            document.getElementById(id + '-title').innerText = "Día " + row["DÍA"];
-            document.getElementById(id + '-time').innerText = row["TIEMPO"];
-            document.getElementById(id + '-video').src = "https://www.youtube.com/embed/" + row["URL VIDEO"];
+            const titleEl = document.getElementById(id + '-title');
+            const iframeEl = document.getElementById(id + '-iframe');
+            const timeEl = document.getElementById(id + '-time');
+            
+            if(titleEl) titleEl.innerText = "Día " + getVal(row, ['día', 'dia']);
+            if(timeEl) timeEl.innerText = getVal(row, ['tiempo', 'time']);
+            if(iframeEl) iframeEl.src = "https://www.youtube.com/embed/" + getVal(row, ['url video', 'url vídeo', 'video']);
         }
 
         function updateRandom() {
@@ -170,41 +165,36 @@
         function renderChart(data) {
             if(chartInstance) chartInstance.destroy();
             const ctx = document.getElementById('mainChart').getContext('2d');
-            
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.map(r => "Día " + r["DÍA"]),
+                    labels: data.map(r => "Día " + getVal(r, ['día', 'dia'])),
                     datasets: [{
                         label: 'Tiempo',
-                        data: data.map(r => timeToSec(r["TIEMPO"])),
+                        data: data.map(r => timeToSec(getVal(r, ['tiempo', 'time']))),
                         borderColor: '#39ff14',
-                        spanGaps: true // Maneja DNFs ignorando el punto pero uniendo la línea
+                        spanGaps: true
                     }]
                 },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    onClick: (e, el) => { if(el.length) updateScreen('active', data[el[0].index]); }
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
 
         function renderHistory(data) {
             const list = document.getElementById('history-list');
             list.innerHTML = data.map(r => `
-                <div class="panel p-3 rounded flex justify-between items-center cursor-pointer hover:bg-black/40" onclick="updateScreen('active', globalRows.find(x => x['DÍA'] == '${r["DÍA"]}'))">
-                    <span class="font-bold">Día ${r["DÍA"]}</span>
-                    <span class="font-mono">${r["TIEMPO"]}</span>
-                    <span class="text-xs uppercase">${r["ESTADO"]}</span>
+                <div class="panel p-3 rounded flex justify-between items-center cursor-pointer hover:bg-black/40" onclick="updateScreen('active', globalRows.find(x => x['Día'] == '${getVal(r, ['día', 'dia']}')))">
+                    <span class="font-bold">Día ${getVal(r, ['día', 'dia'])}</span>
+                    <span class="font-mono">${getVal(r, ['tiempo', 'time'])}</span>
+                    <span class="text-xs uppercase">${getVal(r, ['estado', 'status'])}</span>
                 </div>
             `).join('');
         }
 
         function filterLaps() {
             const q = document.getElementById('lap-search').value.toLowerCase();
-            const cards = document.querySelectorAll('#history-list > div');
-            cards.forEach(c => c.style.display = c.innerText.toLowerCase().includes(q) ? 'flex' : 'none');
+            document.querySelectorAll('#history-list > div').forEach(c => 
+                c.style.display = c.innerText.toLowerCase().includes(q) ? 'flex' : 'none');
         }
 
         init();
