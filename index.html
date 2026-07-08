@@ -73,12 +73,12 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
             </div>
 
-            <div class="px-6 pb-6 pt-2 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="px-6 pb-6 pt-3 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left w-full">
                     
                     <div class="w-28 h-20 bg-gray-900 rounded-lg border border-gray-700 shadow-md overflow-hidden shrink-0 flex items-center justify-center">
                         <img id="header-car-img" src="" alt="Coche Reto" class="w-full h-full object-cover hidden">
-                        <div id="car-loading-placeholder" class="text-[10px] text-gray-500 font-mono p-2 text-center">🏎️ Cargando coche...</div>
+                        <div id="car-loading-placeholder" class="text-[10px] text-gray-500 font-mono p-2 text-center">Análisis coche...</div>
                     </div>
 
                     <div class="w-full">
@@ -89,7 +89,7 @@
                                 ▶ Ver Canal
                             </a>
                         </div>
-                        <p id="web-description" class="text-xs text-gray-400 font-medium mt-2 max-w-4xl leading-relaxed">Sincronizando el panel principal...</p>
+                        <p id="web-description" class="text-xs text-gray-400 font-medium mt-2 max-w-4xl leading-relaxed">Sincronizando telemetría...</p>
                     </div>
                 </div>
 
@@ -196,7 +196,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
                     <h3 id="header-bloque3" class="text-lg font-black text-white uppercase tracking-tight">EVOLUCIÓN</h3>
-                    <p class="text-xs text-gray-400">Puntos interactivos: pulsa en cualquier día para volcar su vídeo arriba.</p>
+                    <p class="text-xs text-gray-400">Puntos interactivos: pulsa en cualquier día para cargar su vídeo arriba en el panel dinámico.</p>
                 </div>
             </div>
             <div class="relative w-full h-[320px]">
@@ -287,7 +287,7 @@
 
     <script>
         const MOCK_DATA = [
-            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto." }
+            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto de telemetría." }
         ];
 
         let globalRows = [];
@@ -331,27 +331,38 @@
                     fetch(URL_CONFIG)
                 ]);
 
-                if (!resDatos.ok || !resConfig.ok) throw new Error("Fallo de conexión con el servidor Google Sheets.");
+                if (!resDatos.ok || !resConfig.ok) throw new Error("Fallo de conexión con Google Sheets.");
 
+                // --- PROCESAR PESTAÑA CONFIGURACION_WEB (ESTRICTO INDESTRUCTIBLE) ---
                 const configText = await resConfig.text();
                 const parsedConfig = Papa.parse(configText, { header: false }).data;
                 let configFinal = {};
 
                 if (parsedConfig && parsedConfig.length > 0) {
                     parsedConfig.forEach(row => {
-                        if (row && row.length >= 2) {
-                            let rawKey = row[0] ? row[0].toString().trim() : '';
-                            let cleanKey = rawKey.toUpperCase()
-                                                 .normalize("NFD")
-                                                 .replace(/[\u0300-\u036f]/g, "")
-                                                 .replace(/[^A-Z0-9_]/g, "");
-                            let val = row[1] ? row[1].toString().trim() : '';
-                            if (cleanKey) configFinal[cleanKey] = val;
-                        }
+                        let key = "", val = "";
+                        if (Array.isArray(row)) { key = row[0]; val = row[1]; }
+                        else if (row && typeof row === 'object') { let ks = Object.keys(row); key = row[ks[0]]; val = row[ks[1]]; }
+                        
+                        if (!key || !val) return;
+                        let cleanKey = key.toString().trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        let cleanVal = val.toString().trim().replace(/^"|"$/g, '');
+
+                        if (cleanKey.includes('TITULO')) configFinal.TITULO_WEB = cleanVal;
+                        if (cleanKey.includes('DESCRIPCION')) configFinal.DESCRIPCION_RETO = cleanVal;
+                        if (cleanKey.includes('YOUTUBE') || cleanKey.includes('CANAL')) configFinal.CANAL_YOUTUBE = cleanVal;
+                        if (cleanKey.includes('COCHE') || cleanKey.includes('FOTO')) configFinal.FOTO_COCHE = cleanVal;
+                        if (cleanKey.includes('BANNER')) configFinal.BANNER_WEB = cleanVal;
+                        if (cleanKey.includes('COLOR')) configFinal.COLOR_DETALLES = cleanVal;
+                        if (cleanKey.includes('BLOQUE2')) configFinal.TXT_BLOQUE2 = cleanVal;
+                        if (cleanKey.includes('BLOQUE3')) configFinal.TXT_BLOQUE3 = cleanVal;
+                        if (cleanKey.includes('BLOQUE4')) configFinal.TXT_BLOQUE4 = cleanVal;
+                        if (cleanKey.includes('BLOQUE5')) configFinal.TXT_BLOQUE5 = cleanVal;
                     });
                     applyWebConfiguration(configFinal);
                 }
 
+                // --- PROCESAR PESTAÑA DATOS_RETO ---
                 const csvText = await resDatos.text();
                 const parsed = Papa.parse(csvText, { header: true }).data;
                 
@@ -379,41 +390,30 @@
 
             } catch (err) {
                 console.error(err);
-                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR LOCAL MOCK`;
+                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR CONEXIÓN`;
                 processAndRender(MOCK_DATA, {});
             }
         }
 
         function applyWebConfiguration(config) {
-            if (config.TITULO_WEB) {
-                document.getElementById('web-title').innerText = config.TITULO_WEB;
-            }
-            if (config.DESCRIPCION_RETO) {
-                document.getElementById('web-description').innerText = config.DESCRIPCION_RETO;
-            }
+            if (config.TITULO_WEB) document.getElementById('web-title').innerText = config.TITULO_WEB;
+            if (config.DESCRIPCION_RETO) document.getElementById('web-description').innerText = config.DESCRIPCION_RETO;
+            if (config.CANAL_YOUTUBE) document.getElementById('youtube-channel-btn').href = config.CANAL_YOUTUBE;
             
-            // Verificación inteligente de enlaces
-            let keyYoutube = Object.keys(config).find(k => k.includes('YOUTUBE') || k.includes('CANAL'));
-            if (keyYoutube && config[keyYoutube]) {
-                document.getElementById('youtube-channel-btn').href = config[keyYoutube];
-            }
-
-            let keyCoche = Object.keys(config).find(k => k.includes('COCHE') || k.includes('FOTO'));
-            if (keyCoche && config[keyCoche]) {
+            // CORRECCIÓN RADICAL CACHÉ: Primero cargar oyente onload, luego inyectar la URL src
+            if (config.FOTO_COCHE) {
                 const img = document.getElementById('header-car-img');
                 const placeholder = document.getElementById('car-loading-placeholder');
-                img.src = config[keyCoche];
                 img.onload = () => {
                     img.classList.remove('hidden');
                     placeholder.classList.add('hidden');
                 };
+                img.src = config.FOTO_COCHE;
             }
 
-            // Lectura dinámica del Banner (Fondo estético superior)
-            let keyBanner = Object.keys(config).find(k => k.includes('BANNER'));
-            if (keyBanner && config[keyBanner]) {
+            if (config.BANNER_WEB) {
                 const bannerEl = document.getElementById('web-banner');
-                if (bannerEl) bannerEl.style.backgroundImage = `url('${config[keyBanner]}')`;
+                if (bannerEl) bannerEl.style.backgroundImage = `url('${config.BANNER_WEB}')`;
             }
 
             const b2 = document.getElementById('header-bloque2'); if (b2 && config.TXT_BLOQUE2) b2.innerText = config.TXT_BLOQUE2;
@@ -541,7 +541,7 @@
             document.getElementById('progreso-bar-fill').style.width = `${maxDia}%`;
 
             shuffleRandomDay();
-            renderTelemetryChart(data);
+            renderTelemetryChart(data, config);
             renderHistoryList(data);
         }
 
@@ -549,44 +549,87 @@
             document.getElementById('random-day-tag').innerText = `DÍA ${row["Día"]}`;
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
+            
+            const typeText = document.getElementById('dynamic-card-type');
+            typeText.innerText = "📋 VUELTA SELECCIONADA";
+            typeText.className = "text-xs font-bold text-blue-400 uppercase tracking-widest";
         }
 
         function shuffleRandomDay() {
             if (globalRows.length === 0) return;
             const rIdx = Math.floor(Math.random() * globalRows.length);
-            updateDynamicScreen(globalRows[rIdx]);
+            const row = globalRows[rIdx];
+            document.getElementById('random-day-tag').innerText = `DÍA ${row["Día"]}`;
+            document.getElementById('random-time').innerText = row["TIEMPO"];
+            document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
+            
+            const typeText = document.getElementById('dynamic-card-type');
+            typeText.innerText = "🎲 VUELTA ALEATORIA";
+            typeText.className = "text-xs font-bold text-purple-400 uppercase tracking-widest";
         }
 
-        function renderTelemetryChart(data) {
+        // --- CORRECCIÓN DE LA GRÁFICA CONTRA LA DOBLE CUADRÍCULA ---
+        function renderTelemetryChart(data, config) {
             const ctx = document.getElementById('telemetryChart').getContext('2d');
             if (telemetryChartInstance) telemetryChartInstance.destroy();
+
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
             const validSecs = lineTimesData.filter(s => s !== null);
-            const dnfY = (validSecs.length > 0 ? Math.max(...validSecs) : 420) + 6;
+            const maxValidValue = validSecs.length > 0 ? Math.max(...validSecs) : 420;
+            const dnfCeilingY = maxValidValue + 8; // Margen superior para los triángulos
 
-            const pointColors = data.map(r => r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' ? '#39ff14' : '#ff3b30');
-            const dnfPoints = data.map((r, i) => r["ESTADO"].toUpperCase().trim() === 'DNF' ? { x: i, y: dnfY } : null).filter(p => p !== null);
+            // Unificar DNF en un mapeo plano para evitar incompatibilidades de ejes
+            const dnfLineData = data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null);
+            const colorPuntos = data.map(r => r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' ? (config.COLOR_DETALLES || '#39ff14') : '#ff3b30');
 
             telemetryChartInstance = new Chart(ctx, {
-                type: 'line',
+                type: 'line', 
                 data: {
                     labels: data.map(r => `Día ${r["Día"]}`),
                     datasets: [
-                        { data: lineTimesData, borderColor: 'rgba(255,255,255,0.25)', pointBackgroundColor: pointColors, spanGaps: true, fill: false },
-                        { data: dnfPoints, type: 'scatter', backgroundColor: '#ff9500', pointStyle: 'triangle', pointRadius: 8 }
+                        {
+                            label: 'Evolución',
+                            data: lineTimesData,
+                            borderColor: 'rgba(255,255,255,0.25)',
+                            borderWidth: 2,
+                            pointBackgroundColor: colorPuntos,
+                            pointBorderColor: '#0b0c10',
+                            pointRadius: 5,
+                            spanGaps: true,
+                            fill: false
+                        },
+                        {
+                            label: 'DNF',
+                            data: dnfLineData,
+                            borderColor: 'transparent', // Sin línea secundaria, elimina la doble cuadrícula
+                            pointBackgroundColor: '#ff9500',
+                            pointBorderColor: '#0b0c10',
+                            pointStyle: 'triangle',
+                            pointRadius: 8,
+                            showLine: false,
+                            fill: false
+                        }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }, // Oculta leyendas duplicadas
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { ticks: { callback: v => v >= dnfY - 1 ? '⚠️ DNF' : secondsToTimeString(v) } }
+                        y: {
+                            grid: { color: '#222530' },
+                            ticks: {
+                                color: '#a0a0a0',
+                                callback: v => (v >= dnfCeilingY - 2) ? '⚠️ DNF' : secondsToTimeString(v)
+                            }
+                        },
+                        x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
                     onClick: (e, el) => { if(el.length > 0 && data[el[0].index]) updateDynamicScreen(data[el[0].index]); }
                 }
             });
         }
 
+        // --- RESTAURACIÓN DEL BOTÓN DE CARGAR FICHA Y ETIQUETA DE ESTADOS ---
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
@@ -614,11 +657,11 @@
                         </div>
                         <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                             <span class="text-xl font-mono font-black text-white">${row["TIEMPO"]}</span>
-                            <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Cargar Ficha ➔</span>
+                            <span class="text-xs text-gray-300 font-bold uppercase tracking-wider bg-black/40 border border-gray-800 px-3 py-1.5 rounded hover:border-gray-600 transition">Cargar Ficha ➔</span>
                         </div>
                     </div>
                     <div class="mt-2 text-xs text-gray-400 border-t border-gray-800/60 pt-2">
-                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
+                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-500 italic">Sin observaciones guardadas en esta jornada.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
