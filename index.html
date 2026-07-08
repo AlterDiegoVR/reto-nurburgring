@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reto Nürburgring 100 Días - Panel de Telemetría Oficial</title>
-    <!-- Tailwind CSS para diseño y maquetación premium estilo simracing -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PapaParse para procesar las dos pestañas de Google Sheets sin errores -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <!-- Chart.js para la telemetría interactiva de tiempos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -87,10 +83,8 @@
 <body class="text-gray-200 min-h-screen pb-12">
 
     <div class="container mx-auto px-4 max-w-7xl">
-        <!-- CABECERA CONFIGURABLE DESDE GOOGLE SHEETS -->
         <header class="py-6 border-b border-gray-800 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <!-- Foto del coche remota -->
                 <img id="header-car-img" src="" alt="Ferrari 296 GT3" class="w-20 h-12 object-cover rounded border border-gray-700 hidden">
                 <div id="logo-placeholder" class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-red-900/50">N</div>
                 <div>
@@ -99,7 +93,6 @@
                 </div>
             </div>
             <div class="text-right flex items-center gap-3">
-                <!-- Enlace al canal de Youtube remoto -->
                 <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all hidden uppercase tracking-wider">
                     ▶ YouTube Channel
                 </a>
@@ -109,7 +102,6 @@
             </div>
         </header>
 
-        <!-- BLOQUES DE TEXTOS 1 Y 2 DESDE LA PESTAÑA CONFIGURACION_WEB -->
         <section id="config-text-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 hidden">
             <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque de Textos 1</span>
@@ -121,10 +113,8 @@
             </div>
         </section>
 
-        <!-- PRIMER BLOQUE: LAS 3 FICHAS MULTIMEDIA DEL PANEL -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             
-            <!-- FICHA 1: MEJOR VUELTA (ESTÁTICA/FIJA) -->
             <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)]">
                 <div>
                     <div class="flex justify-between items-center mb-3">
@@ -149,7 +139,6 @@
                 </div>
             </div>
 
-            <!-- FICHA 2: ÚLTIMO REGISTRO PUBLICADO (ESTÁTICA/FIJA) -->
             <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600">
                 <div>
                     <div class="flex justify-between items-center mb-3">
@@ -174,7 +163,6 @@
                 </div>
             </div>
 
-            <!-- FICHA 3: VUELTA SELECCIONADA / ALEATORIA (COMPLETAMENTE DINÁMICA) -->
             <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500">
                 <div>
                     <div class="flex justify-between items-center mb-3">
@@ -204,9 +192,7 @@
 
         </section>
 
-        <!-- SEGUNDO BLOQUE: REESTRUCTURADO EN 3 COLUMNAS (PROGRESO, RACHA ACTUAL Y KMS ACUMULADOS) -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- 1. PROGRESS BAR CARD -->
             <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-gray-400 uppercase">📅 Progreso del Desafío</span>
@@ -223,7 +209,6 @@
                 </div>
             </div>
 
-            <!-- 2. RACHA ACTUAL SIN MEJORAR (REUBICADO AQUÍ COMPLETAMENTE CORREGIDO) -->
             <div id="streak-card" class="panel-carbon rounded-xl p-4 flex flex-col justify-between border border-yellow-500/20 bg-yellow-950/5">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-yellow-500 uppercase flex items-center gap-1">⚡ Racha Actual Sin Mejorar</span>
@@ -235,7 +220,6 @@
                 <p id="streak-descriptor" class="text-xs text-gray-400">Días consecutivos en pista sin rebajar la mejor marca histórica actual.</p>
             </div>
 
-            <!-- 3. SUMA DE KILÓMETROS ACUMULADOS EN EL RETO -->
             <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-gray-400 uppercase">🏁 Distancia Global Recorrida</span>
@@ -248,7 +232,6 @@
             </div>
         </section>
 
-        <!-- TERCER BLOQUE: GRÁFICA INTERACTIVA CON INTEGRACIÓN VISUAL DE DNFs -->
         <section class="panel-carbon rounded-xl p-5 mb-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
@@ -268,89 +251,76 @@
             </div>
         </section>
 
-        <!-- CUARTO BLOQUE: PANEL EXPANDIDO CON EXACTAMENTE 12 ESTADÍSTICAS AVANZADAS (DESCRIPCIONES AUMENTADAS A text-[11px]) -->
         <section class="panel-carbon rounded-xl p-5 mb-8">
             <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Telemetría Avanzada y Estadísticas Consolidadas</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
-                <!-- 1. KILÓMETROS TOTALES -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Kilómetros Totales</span>
                     <div id="stat-km-totales" class="text-2xl font-black text-white">0.0 km</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Suma total acumulada (Outlap + Crono)</span>
                 </div>
 
-                <!-- 2. KILÓMETROS CRONOMETRADOS -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
                     <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye strictly vueltas de salida</span>
+                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye estrictamente vueltas de salida</span>
                 </div>
 
-                <!-- 3. RITMO PROMEDIO LIMPIO -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Ritmo Promedio Limpio</span>
                     <div id="stat-ritmo-limpio" class="text-2xl font-black text-white">--:--.---</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
-                <!-- 4. MAYOR RACHA DÍAS VUELTA VÁLIDA -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-yellow-500 uppercase block mb-1">⚡ Racha Con Vuelta Válida</span>
                     <div id="stat-racha-valida" class="text-2xl font-black text-yellow-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                 </div>
 
-                <!-- 5. MAYOR RACHA SIN ROMPER RÉCORD (CORREGIDO TITULAR) -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
                     <div id="stat-racha-sin-record" class="text-2xl font-black text-white">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Días consecutivos estancado sin rebajar marca</span>
                 </div>
 
-                <!-- 6. MAYOR BAJADA DEL MEJOR TIEMPO (HACHAZO) -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">💥 Mayor Bajada de Récord</span>
                     <div id="stat-max-bajada" class="text-2xl font-black text-green-400">0.000s</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Mayor hachazo al récord en una sola sesión</span>
                 </div>
 
-                <!-- 7. EFICIENCIA DE VUELTAS VÁLIDAS -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📊 Porcentaje Vueltas Válidas</span>
                     <div id="stat-porcentaje-validas" class="text-2xl font-black text-white">0%</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Ratio de vueltas limpias registradas</span>
                 </div>
 
-                <!-- 8. EVOLUCIÓN TOTAL DEL RETO -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-blue-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
                     <div id="stat-mejora-global" class="text-2xl font-black text-blue-400">--:--.---</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Diferencia entre 1ª vuelta válida y el Récord</span>
                 </div>
 
-                <!-- 9. TOTAL DE SESIONES LOGGEADAS -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📆 Sesiones en Servidor</span>
                     <div id="stat-total-sesiones" class="text-2xl font-black text-white">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
                 </div>
 
-                <!-- 10. TOTAL DE VUELTAS INVÁLIDAS -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-red-500 uppercase block mb-1">❌ Sesiones con Offtrack</span>
                     <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
                 </div>
 
-                <!-- 11. TOTAL DE ABANDONOS (DNF) -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-orange-500 uppercase block mb-1">⚠️ Accidentes / DNF</span>
                     <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Sesiones no terminadas por colisión o fallo</span>
                 </div>
 
-                <!-- 12. KILÓMETROS MEDIOS POR DÍA -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🚗 Kilómetros Medios / Día</span>
                     <div id="stat-media-km" class="text-2xl font-black text-white">0.0 km</div>
@@ -360,7 +330,6 @@
             </div>
         </section>
 
-        <!-- QUINTO BLOQUE: DIARIO DE BOXES (HISTORIAL COMPLETO CON FILTRADO EN NOTAS) -->
         <section class="panel-carbon rounded-xl p-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
@@ -373,8 +342,7 @@
             </div>
 
             <div id="history-container" class="space-y-3">
-                <!-- Se inyecta automáticamente por JS -->
-            </div>
+                </div>
         </section>
 
     </div>
@@ -392,7 +360,6 @@
         let globalRows = [];
         let telemetryChartInstance = null;
 
-        // Limpiador estricto de cabeceras y celdas
         function getVal(row, posiblesNombres) {
             for (let key in row) {
                 const keyLimpia = key.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
@@ -422,11 +389,10 @@
             return `${min}:${remainingSec.padStart(6, '0')}`;
         }
 
-        // --- 2. CONEXIÓN CORREGIDA A LA HOJA REMOTA DE GOOGLE SHEETS ---
+        // --- 2. CONEXIÓN A GOOGLE SHEETS ---
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
-                // Renderizado preventivo local
                 globalRows = [...MOCK_DATA];
                 processAndRender(globalRows, { descripcion: 'Proyecto de Telemetría Oficial • 100 Días', color: '#39ff14' });
 
@@ -445,7 +411,7 @@
 
                 const configText = await resConfig.text();
                 if (configText.trim().startsWith('<!DOCTYPE') || configText.includes('<html')) {
-                    throw new Error("Acceso privado. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
+                    throw new Error("Acceso privado en Sheets. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
                 }
 
                 let configFinal = {
@@ -584,7 +550,7 @@
                     currentRachaValida++;
                     if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                 } else if (checkExhibicion) {
-                    // Ignorar pase de racha sin romperla
+                    // Ignorar pase de racha
                 } else {
                     currentRachaValida = 0;
                 }
@@ -617,15 +583,15 @@
             let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
                 listadoTiemposLimpiosS.sort((a, b) => a - b);
-                listadoTiemposLimpiosS.pop(); // Peor fuera
-                listadoTiemposLimpiosS.shift(); // Mejor fuera
+                listadoTiemposLimpiosS.pop(); 
+                listadoTiemposLimpiosS.shift(); 
                 const sumaRestante = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0);
                 ritmoPromedioLimpioS = sumaRestante / listadoTiemposLimpiosS.length;
             } else if (listadoTiemposLimpiosS.length > 0) {
                 ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
             }
 
-            // --- INYECCIÓN EN EL SEGUNDO BLOQUE SUPERIOR (PROGRESO, RACHA ACTUAL Y KMS TOTALES) ---
+            // --- REINYECCIÓN EN EL SEGUNDO BLOQUE SUPERIOR ---
             let rachaActualSinMejorar = 0;
             if (recordData) {
                 const diaDelRecord = parseInt(recordData["Día"]);
@@ -645,7 +611,7 @@
                 document.getElementById('streak-descriptor').innerText = "Días consecutivos en pista sin rebajar la mejor marca histórica actual.";
             }
 
-            // --- INYECCIÓN EN LAS 12 IDENTIDADES DE LA REJILLA DE STATS ---
+            // --- INYECCIÓN EN LAS 12 IDENTIDADES DE LA REJILLA (CORREGIDO ID 'stat-total-sesiones') ---
             document.getElementById('stat-km-totales').innerText = `${kmTotales.toFixed(1)} km`;
             document.getElementById('stat-km-crono').innerText = `${kmCrono.toFixed(1)} km`;
             document.getElementById('stat-ritmo-limpio').innerText = secondsToTimeString(ritmoPromedioLimpioS);
@@ -663,14 +629,13 @@
                 document.getElementById('stat-mejora-global').innerText = '--:--.---';
             }
 
-            document.getElementById('stat-total-sessions').innerText = `${data.length} días`;
+            document.getElementById('stat-total-sesiones').innerText = `${data.length} días`; // CORREGIDO AQUÍ
             document.getElementById('stat-total-invalidas').innerText = `${countInvalidas} días`;
             document.getElementById('stat-total-dnf').innerText = `${countDnf} tandas`;
             
             const mediaKmDia = data.length > 0 ? (kmTotales / data.length) : 0;
             document.getElementById('stat-media-km').innerText = `${mediaKmDia.toFixed(1)} km`;
 
-            // Control de tarjetas estáticas de vídeo
             if(!recordData && data.length > 0) recordData = data[0];
             if(recordData) {
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
