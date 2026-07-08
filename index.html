@@ -11,7 +11,7 @@
             --card-bg: #1e1e1e;
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
-            --accent: #e50914; /* Rojo competición */
+            --accent: #e50914;
             --accent-hover: #b8070f;
             --border-color: #2a2a2a;
             --valid-color: #2e7d32;
@@ -33,7 +33,6 @@
             margin: 0 auto;
         }
 
-        /* Cabecera limpia */
         header {
             text-align: center;
             padding: 40px 20px;
@@ -65,14 +64,12 @@
             margin: 0 auto;
         }
 
-        /* Grid de los días */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
 
-        /* Tarjeta de cada vuelta */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -117,7 +114,6 @@
             letter-spacing: -1px;
         }
 
-        /* Estados dinámicos */
         .status-badge {
             display: inline-block;
             align-self: center;
@@ -129,4 +125,182 @@
             margin-bottom: 15px;
         }
 
-        .status-valida { background-color: rgba(46, 125, 50, 0.2); color: #81c784; border
+        .status-valida { background-color: rgba(46, 125, 50, 0.2); color: #81c784; border: 1px solid var(--valid-color); }
+        .status-no-valida { background-color: rgba(198, 40, 40, 0.2); color: #e57373; border: 1px solid var(--invalid-color); }
+        .status-dnf { background-color: rgba(239, 108, 0, 0.2); color: #ffb74d; border: 1px solid var(--dnf-color); }
+
+        .telemetry-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.15);
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .notes-box {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            border-left: 2px solid var(--text-muted);
+            padding-left: 10px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .video-btn {
+            display: block;
+            text-align: center;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 10px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            margin-top: auto;
+        }
+
+        .video-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header id="web-header">
+            <h1 id="web-title">Cargando reto...</h1>
+            <img id="web-car" class="car-image" src="" alt="Coche del reto" style="display:none;">
+            <p id="web-desc"></p>
+        </header>
+
+        <main id="web-grid" class="grid">
+            <div class="loading">Sincronizando con los boxes de Google Sheets...</div>
+        </main>
+    </div>
+
+    <script>
+        const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
+        
+        const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=configuracion_web`;
+        const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=datos%20reto`;
+
+        // Extractor tolerante a mayúsculas, minúsculas y espacios
+        function getVal(row, posiblesNombres) {
+            for (let key in row) {
+                const keyLimpia = key.toLowerCase().trim();
+                for (let nombre of posiblesNombres) {
+                    if (keyLimpia === nombre.toLowerCase().trim()) {
+                        return row[key] ? row[key].toString().trim() : '';
+                    }
+                }
+            }
+            return '';
+        }
+
+        async function init() {
+            try {
+                const resConfig = await fetch(URL_CONFIG);
+                const csvConfig = await resConfig.text();
+                const configData = Papa.parse(csvConfig, { header: true }).data;
+                
+                if(configData && configData[0]) {
+                    const cfg = configData[0];
+                    document.getElementById('web-title').innerText = getVal(cfg, ['titulo_web', 'titulo']) || 'Reto 100 Días Nürburgring';
+                    document.getElementById('web-desc').innerText = getVal(cfg, ['descripcion_reto', 'descripcion']) || '';
+                    const imgUrl = getVal(cfg, ['url_imagen_coche', 'imagen', 'foto']);
+                    if(imgUrl) {
+                        const img = document.getElementById('web-car');
+                        img.src = imgUrl;
+                        img.style.display = 'inline-block';
+                    }
+                }
+
+                const resDatos = await fetch(URL_DATOS);
+                const csvDatos = await resDatos.text();
+                const rows = Papa.parse(csvDatos, { header: true }).data;
+
+                renderGrid(rows);
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('web-grid').innerHTML = '<div class="loading">Error al conectar con los datos. Asegúrate de que el Sheets está compartido como "Cualquier persona con el enlace".</div>';
+            }
+        }
+
+        function renderGrid(rows) {
+            const grid = document.getElementById('web-grid');
+            grid.innerHTML = '';
+
+            const activeRows = rows.filter(row => {
+                const onlineVal = getVal(row, ['online']);
+                return onlineVal.toLowerCase() === 'sí' || onlineVal.toLowerCase() === 'si';
+            });
+
+            if(activeRows.length === 0) {
+                grid.innerHTML = '<div class="loading">⚙️ Conectado al Sheets con éxito, pero no hay ningún día marcado con "Sí" en la columna online.</div>';
+                return;
+            }
+
+            activeRows.forEach(row => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                // Mapeo directo y limpio a tus columnas reales
+                const dia = getVal(row, ['día', 'dia', 'day']);
+                const fecha = getVal(row, ['día de publicación', 'dia de publicacion', 'fecha']);
+                const tiempo = getVal(row, ['tiempo', 'time']) || '--:--.---';
+                const estadoTxt = getVal(row, ['estado', 'status']) || 'válida';
+                const outlap = getVal(row, ['kms outlap', 'kms outlab', 'outlap']) || '0';
+                const crono = getVal(row, ['kms crono', 'kms cronos', 'crono']) || '0';
+                const notas = getVal(row, ['notas', 'nota', 'comentarios']);
+                const rawUrl = getVal(row, ['url vídeo', 'url video', 'video', 'shorts']);
+
+                let statusClass = 'status-valida';
+                if(estadoTxt.toLowerCase().includes('no válida')) statusClass = 'status-no-valida';
+                else if(estadoTxt.toLowerCase().includes('dnf')) statusClass = 'status-dnf';
+
+                const notasHTML = notas !== '' ? `<div class="notes-box">${notas}</div>` : '';
+
+                let finalUrl = '';
+                if(rawUrl !== '') {
+                    finalUrl = !rawUrl.startsWith('http') ? `https://www.youtube.com/shorts/${rawUrl}` : rawUrl;
+                }
+
+                const botonVideoHTML = finalUrl !== '' ? `<a href="${finalUrl}" target="_blank" class="video-btn">▶ Ver vídeo</a>` : '';
+
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="card-header">
+                            <span class="day-badge">Día ${dia !== '' ? dia : '?'}</span>
+                            <span class="pub-date">${fecha}</span>
+                        </div>
+                        <div class="time-display">${tiempo}</div>
+                        <div style="text-align:center;">
+                            <span class="status-badge ${statusClass}">${estadoTxt}</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span>Outlap: <strong>${outlap} km</strong></span>
+                            <span>Crono: <strong>${crono} km</strong></span>
+                        </div>
+                        ${notasHTML}
+                    </div>
+                    ${botonVideoHTML}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
