@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reto Nürburgring 100 Días - Panel de Telemetría</title>
+    <title>Reto Nürburgring 100 Días - Panel de Telemetría Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
-            --neon-green: #39ff14; /* Color por defecto, se sobrescribe dinámicamente */
+            --neon-green: #39ff14; /* Color base modificable automáticamente desde la pestaña configuracion_web */
             --racing-red: #ff3b30;
             --warning-orange: #ff9500;
             --carbon-black: #0b0c10;
@@ -89,26 +89,26 @@
                 <div id="logo-placeholder" class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-red-900/50">N</div>
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white uppercase">Nürburgring Nordschleife</h1>
-                    <p id="web-description" class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Cargando descripción del reto...</p>
+                    <p id="web-description" class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Cargando descripción remota del reto...</p>
                 </div>
             </div>
             <div class="text-right flex items-center gap-3">
                 <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all hidden uppercase tracking-wider">
-                    ▶ YouTube
+                    ▶ YouTube Channel
                 </a>
                 <span id="sync-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> CONECTANDO...
+                    <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> CONECTANDO TELEMETRÍA...
                 </span>
             </div>
         </header>
 
         <section id="config-text-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 hidden">
             <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Información General</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque de Textos 1</span>
                 <p id="text-block-1" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
             </div>
             <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Objetivos y Notas de Configuración</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque de Textos 2</span>
                 <p id="text-block-2" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
             </div>
         </section>
@@ -118,24 +118,24 @@
             <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)]">
                 <div>
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA (RÉCORD)</span>
+                        <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
                         <span id="record-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
                     </div>
-                    <h2 class="text-lg font-bold text-white mb-2 truncate">Récord Absoluto en iRacing</h2>
+                    <h2 class="text-lg font-bold text-white mb-2 truncate">Récord en el Infierno Verde</h2>
                     <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
                         <iframe id="record-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
                 <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
+                        <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
                         <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Publicación:</span>
+                        <span class="text-xs text-gray-400">Publicado el día:</span>
                         <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
                     </div>
-                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando telemetría del récord...</p>
+                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando anotaciones del récord...</p>
                 </div>
             </div>
 
@@ -145,21 +145,21 @@
                         <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
                         <span id="latest-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
                     </div>
-                    <h2 class="text-lg font-bold text-white mb-2 truncate">Última Sesión Subida</h2>
+                    <h2 class="text-lg font-bold text-white mb-2 truncate">Último Short Disponible</h2>
                     <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
                         <iframe id="latest-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
                 <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
+                        <span class="text-xs text-gray-400">Tiempo Registrado:</span>
                         <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Diferencia vs Récord:</span>
+                        <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
                         <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
                     </div>
-                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-2">Analizando datos del último sector...</p>
+                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-2">Sincronizando última tanda...</p>
                 </div>
             </div>
 
@@ -169,21 +169,21 @@
                         <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
                         <span id="random-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
                     </div>
-                    <h2 id="random-title" class="text-lg font-bold text-white mb-2 truncate">Selecciona o lanza una vuelta</h2>
+                    <h2 id="random-title" class="text-lg font-bold text-white mb-2 truncate">Elige una vuelta abajo o lanza el dado</h2>
                     <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
                         <iframe id="random-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
                 <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-400">Tiempo:</span>
+                        <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
                         <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Estado de Pista:</span>
+                        <span class="text-xs text-gray-400">Estado de Verificación:</span>
                         <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
                     </div>
-                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-2 mb-3">Haz clic en el historial o pulsa el dado inferior.</p>
+                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-2 mb-3">Usa los controles para cargar telemetría.</p>
                     <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider">
                         🎲 Lanzar Día Aleatorio
                     </button>
@@ -192,11 +192,10 @@
 
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase">📅 Evolución del Reto</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase">📅 Progreso del Desafío</span>
                     <span id="progreso-percent" class="text-sm font-black text-white">0%</span>
                 </div>
                 <div class="text-xl font-black text-white mb-2">
@@ -210,42 +209,30 @@
                 </div>
             </div>
 
-            <div id="streak-card" class="panel-carbon rounded-xl p-4 flex flex-col justify-between border border-yellow-500/20 bg-yellow-950/5">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-yellow-500 uppercase flex items-center gap-1">⚡ Racha sin rebajar récord</span>
-                    <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-                </div>
-                <div class="text-2xl font-black text-yellow-500 mb-1">
-                    <span id="streak-days">0</span> Días Consecutivos
-                </div>
-                <p id="streak-descriptor" class="text-xs text-gray-400">Días acumulados en pista sin marcar una nueva vuelta rápida absoluta.</p>
-            </div>
-
             <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase">🏁 Distancia Global Recorrida</span>
-                    <span class="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-1.5 rounded">ACUMULADO</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase">🏁 Rendimiento General</span>
+                    <span class="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-1.5 rounded">STATUS ONLINE</span>
                 </div>
                 <div class="text-2xl font-black text-white mb-1">
-                    <span id="km-totals">0.0</span> <span class="text-lg font-normal text-gray-400">km</span>
+                    Panel de Control <span class="text-lg font-normal text-gray-400">Totalmente Activo</span>
                 </div>
-                <p class="text-xs text-gray-400">Suma total acumulada en pista (Vuelta lanzada + Outlap de boxes).</p>
+                <p class="text-xs text-gray-400">Haga clic en los marcadores de la gráfica o en el historial para cargar telemetría interactiva.</p>
             </div>
-
         </section>
 
         <section class="panel-carbon rounded-xl p-5 mb-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
                     <h3 class="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
-                        📉 Historial Crítico y Telemetría en el Nordschleife
+                        📉 Curva de Evolución Temporal en Nordschleife
                     </h3>
-                    <p class="text-xs text-gray-400">Los DNF se integran en la parte superior. Al pulsar un punto se carga en la Ficha Dinámica (Ficha 3).</p>
+                    <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Al pulsar un punto se volcará en la Ficha Dinámica (Ficha 3).</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
                     <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#39ff14]" id="legend-valida-dot"></span> Válida</span>
                     <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> No Válida</span>
-                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500 clip-triangle" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
                 </div>
             </div>
             <div class="relative w-full h-[320px]">
@@ -254,31 +241,79 @@
         </section>
 
         <section class="panel-carbon rounded-xl p-5 mb-8">
-            <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Métricas Avanzadas y Simulación Automática</h3>
+            <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Telemetría Avanzada y Estadísticas Consolidadas</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Kilómetros Cronometrados</span>
-                    <div id="stat-crono" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[9px] text-gray-500">Excluye estrictamente las vueltas de salida (Outlap)</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Kilómetros Totales</span>
+                    <div id="stat-km-totales" class="text-2xl font-black text-white">0.0 km</div>
+                    <span class="text-[9px] text-gray-500">Suma total acumulada (Outlap + Crono)</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Ritmo Promedio Limpio</span>
-                    <div id="stat-avg" class="text-2xl font-black text-white">--:--.---</div>
-                    <span class="text-[9px] text-gray-500">Calculado excluyendo abandonos (DNF)</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
+                    <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
+                    <span class="text-[9px] text-gray-500">Excluye estrictamente vueltas de salida</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🔮 Previsión Lógica Próxima Vuelta</span>
-                    <div id="stat-prediction" class="text-2xl font-black text-blue-400">--:--.---</div>
-                    <span id="prediction-desc" class="text-[9px] text-gray-500">Algoritmo de regresión lineal activo</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Ritmo Promedio Limpio</span>
+                    <div id="stat-ritmo-limpio" class="text-2xl font-black text-white">--:--.---</div>
+                    <span class="text-[9px] text-gray-500">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📊 Eficiencia de Vueltas Válidas</span>
-                    <div id="stat-ratio" class="text-2xl font-black text-white">0%</div>
-                    <span id="stat-ratio-desc" class="text-[9px] text-gray-500">0 de 0 limpias en el servidor</span>
+                    <span class="text-[10px] font-bold text-yellow-500 uppercase block mb-1">⚡ Racha Con Vuelta Válida</span>
+                    <div id="stat-racha-valida" class="text-2xl font-black text-yellow-400">0 días</div>
+                    <span class="text-[9px] text-gray-500">Exhibiciones no rompen; DNF e Inválidas sí</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🔄 Racha Sin Romper Récord</span>
+                    <div id="stat-racha-sin-record" class="text-2xl font-black text-white">0 días</div>
+                    <span class="text-[9px] text-gray-500">Días consecutivos estancado sin rebajar marca</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">💥 Mayor Bajada de Récord</span>
+                    <div id="stat-max-bajada" class="text-2xl font-black text-green-400">0.000s</div>
+                    <span class="text-[9px] text-gray-500">Mayor hachazo al récord en una sola sesión</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📊 Porcentaje Vueltas Válidas</span>
+                    <div id="stat-porcentaje-validas" class="text-2xl font-black text-white">0%</div>
+                    <span class="text-[9px] text-gray-500">Ratio de vueltas limpias registradas</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-blue-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
+                    <div id="stat-mejora-global" class="text-2xl font-black text-blue-400">--:--.---</div>
+                    <span class="text-[9px] text-gray-500">Diferencia entre 1ª vuelta válida y el Récord</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📆 Sesiones en Servidor</span>
+                    <div id="stat-total-sesiones" class="text-2xl font-black text-white">0 días</div>
+                    <span class="text-[9px] text-gray-500">Total de jornadas con datos publicados</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-red-500 uppercase block mb-1">❌ Sesiones con Offtrack</span>
+                    <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
+                    <span class="text-[9px] text-gray-500">Vueltas completadas excediendo límites</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-orange-500 uppercase block mb-1">⚠️ Accidentes / DNF</span>
+                    <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
+                    <span class="text-[9px] text-gray-500">Sesiones no terminadas por colisión o fallo</span>
+                </div>
+
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🚗 Kilómetros Medios / Día</span>
+                    <div id="stat-media-km" class="text-2xl font-black text-white">0.0 km</div>
+                    <span class="text-[9px] text-gray-500">Promedio de desgaste de neumáticos diario</span>
                 </div>
 
             </div>
@@ -302,23 +337,25 @@
     </div>
 
     <script>
-        // --- 1. BASE DE DATOS LOCAL DE SEGURIDAD (MOCK DATA EN ESPERA) ---
+        // --- 1. BASE DE DATOS LOCAL DE RESPALDO (MOCK DATA COMPATIBLE) ---
         const MOCK_DATA = [
             { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia en el Carrousel." },
-            { "Día": "2", "TIEMPO": "07:04.324", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "31-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "NO VÁLIDA", "URL VIDEO": "ooA_iYhJ0mg", "Notas": "Intento de agresividad en piano interno que invalida por límites de pista." },
-            { "Día": "3", "TIEMPO": "06:57.159", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "1-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "JDLi8wprKiI", "Notas": "Pérdida momentánea de foco llegando a Wehrseifen." },
-            { "Día": "4", "TIEMPO": "DNF", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "16.0", "ESTADO": "DNF", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Impacto directo contra las protecciones en la sección media." }
+            { "Día": "2", "TIEMPO": "07:04.324", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "31-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "NO VÁLIDA", "URL VIDEO": "ooA_iYhJ0mg", "Notas": "Exceso de agresividad lateral en Wehrseifen." },
+            { "Día": "3", "TIEMPO": "06:57.159", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "1-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "JDLi8wprKiI", "Notas": "Vuelta limpia sin tráfico." },
+            { "Día": "4", "TIEMPO": "06:58.200", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "0.0", "ESTADO": "EXHIBICIÓN", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Día de exhibición con patrocinadores, no cuenta para tiempos." },
+            { "Día": "5", "TIEMPO": "DNF", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "3-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "12.5", "ESTADO": "DNF", "URL VIDEO": "UlyhSox-Ul8", "Notas": "Colisión fuerte contra guardarraíl en Fuchsröhre." }
         ];
 
         let globalRows = [];
         let telemetryChartInstance = null;
 
-        // Extrae valores de las filas tolerando variaciones y limpiando espacios raros de las celdas
+        // Limpiador estricto de cabeceras y celdas
         function getVal(row, posiblesNombres) {
             for (let key in row) {
-                const keyLimpia = key.toLowerCase().replace(/\s+/g, ' ').trim();
+                const keyLimpia = key.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
                 for (let nombre of posiblesNombres) {
-                    if (keyLimpia === nombre.toLowerCase().trim()) {
+                    const nombreLimpio = nombre.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
+                    if (keyLimpia === nombreLimpio) {
                         return row[key] ? row[key].toString().trim() : '';
                     }
                 }
@@ -327,7 +364,7 @@
         }
 
         function timeStringToSeconds(timeStr) {
-            if (!timeStr || timeStr.trim().toUpperCase() === 'DNF') return null;
+            if (!timeStr || timeStr.trim().toUpperCase() === 'DNF' || timeStr.trim().toUpperCase() === '--:--.---') return null;
             const parts = timeStr.split(':');
             if (parts.length < 2) return null;
             const min = parseFloat(parts[0]);
@@ -336,40 +373,38 @@
         }
 
         function secondsToTimeString(seconds) {
-            if (seconds === null || isNaN(seconds)) return '--:--.---';
+            if (seconds === null || isNaN(seconds) || seconds === Infinity || seconds === -Infinity) return '--:--.---';
             const min = Math.floor(seconds / 60);
             const remainingSec = (seconds % 60).toFixed(3);
             return `${min}:${remainingSec.padStart(6, '0')}`;
         }
 
-        // --- 2. INICIALIZADOR DE DATOS CON MANEJO EXPLÍCITO DE ERRORES ---
+        // --- 2. CONEXIÓN CORREGIDA A LA HOJA REMOTA DE GOOGLE SHEETS (TABLA: configuracion_web) ---
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
-                // Pintamos los datos locales primero para que la interfaz no esté vacía
+                // Renderizado preventivo local
                 globalRows = [...MOCK_DATA];
-                processAndRender(globalRows, { previsionDias: 7, color: '#39ff14', descripcion: 'Proyecto de Telemetría Oficial • 100 Días' });
+                processAndRender(globalRows, { descripcion: 'Proyecto de Telemetría Oficial • 100 Días', color: '#39ff14' });
 
                 const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
                 
-                // Forzamos codificación limpia de URLs para evitar roturas por espacios
+                // Conexión exacta usando codificación limpia para el guion bajo solicitado
                 const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('datos reto')}`;
-                const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('configuracion web')}`;
+                const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('configuracion_web')}`;
 
-                // Descarga paralela con control preventivo ante caídas de servidor
                 const [resDatos, resConfig] = await Promise.all([
-                    fetch(URL_DATOS).catch(() => { throw new Error("Fallo de red al intentar descargar la pestaña 'datos reto'"); }),
-                    fetch(URL_CONFIG).catch(() => { throw new Error("Fallo de red al intentar descargar la pestaña 'configuracion web'"); })
+                    fetch(URL_DATOS).catch(() => { throw new Error("Fallo de red en pestaña 'datos reto'"); }),
+                    fetch(URL_CONFIG).catch(() => { throw new Error("Fallo de red en pestaña 'configuracion_web'"); })
                 ]);
 
-                if (!resDatos.ok) throw new Error(`La pestaña 'datos reto' no existe o devolvió código de error ${resDatos.status}`);
-                if (!resConfig.ok) throw new Error(`La pestaña 'configuracion web' no existe o devolvió código de error ${resConfig.status}`);
+                if (!resDatos.ok) throw new Error("No se encuentra la pestaña 'datos reto'.");
+                if (!resConfig.ok) throw new Error("No se encuentra la pestaña 'configuracion_web'.");
 
-                // --- PROCESAR PESTAÑA DE CONFIGURACIÓN ---
+                // --- PARSEAR PESTAÑA DE CONFIGURACIÓN ---
                 const configText = await resConfig.text();
-                // Si Google nos devuelve HTML en lugar de texto plano, es la pantalla de Login/Error de Google
                 if (configText.trim().startsWith('<!DOCTYPE') || configText.includes('<html')) {
-                    throw new Error("Acceso denegado (HTML). Asegúrate de que el documento de Google Sheets esté configurado como 'Cualquiera con el enlace puede ver'.");
+                    throw new Error("Acceso privado. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
                 }
 
                 let configFinal = {
@@ -378,8 +413,7 @@
                     youtubeLink: '',
                     bloque1: '',
                     bloque2: '',
-                    color: '#39ff14',
-                    previsionDias: 7
+                    color: '#39ff14'
                 };
 
                 const parsedConfig = Papa.parse(configText, { header: true }).data;
@@ -389,42 +423,35 @@
                         let rowKey = values[0] ? values[0].toLowerCase() : '';
                         let rowVal = values[1] || '';
 
-                        if (rowKey.includes('descripción del reto') || rowKey.includes('descripcion')) configFinal.descripcion = rowVal;
-                        if (rowKey.includes('foto del coche') || rowKey.includes('foto coche')) configFinal.fotoCoche = rowVal;
-                        if (rowKey.includes('canal de youtube') || rowKey.includes('youtube')) configFinal.youtubeLink = rowVal;
+                        if (rowKey.includes('descripción') || rowKey.includes('descripcion')) configFinal.descripcion = rowVal;
+                        if (rowKey.includes('foto')) configFinal.fotoCoche = rowVal;
+                        if (rowKey.includes('canal') || rowKey.includes('youtube')) configFinal.youtubeLink = rowVal;
                         if (rowKey.includes('bloque 1')) configFinal.bloque1 = rowVal;
                         if (rowKey.includes('bloque 2')) configFinal.bloque2 = rowVal;
                         if (rowKey.includes('color')) configFinal.color = rowVal;
-                        if (rowKey.includes('previsión') || rowKey.includes('prevision')) configFinal.previsionDias = parseInt(rowVal) || 7;
                     });
                     applyWebConfiguration(configFinal);
                 }
 
-                // --- PROCESAR PESTAÑA PRINCIPAL DE DATOS ---
+                // --- PARSEAR TABLA PRINCIPAL DE TELEMETRÍA ---
                 const csvText = await resDatos.text();
-                if (csvText.trim().startsWith('<!DOCTYPE') || csvText.includes('<html')) {
-                    throw new Error("Error en la pestaña 'datos reto'. Verifica que el nombre esté escrito exactamente igual en tu Excel.");
-                }
-
                 const parsed = Papa.parse(csvText, { header: true }).data;
                 
-                // Filtrar estrictamente columnas online válidas
                 const validOnlineRows = parsed.filter(row => {
                     const online = getVal(row, ['online']);
                     return online.toLowerCase() === 'sí' || online.toLowerCase() === 'si';
                 });
 
                 if (validOnlineRows.length === 0) {
-                    throw new Error("Conexión establecida, pero ninguna fila tiene la columna 'ONLINE' marcada con un 'sí'.");
+                    throw new Error("Ninguna fila tiene la opción ONLINE en 'sí'.");
                 }
 
-                // Volcado restrictivo estricto
                 globalRows = validOnlineRows.map(row => ({
                     "Día": getVal(row, ['día', 'dia']),
                     "TIEMPO": getVal(row, ['tiempo', 'time']),
                     "ONLINE": getVal(row, ['online']),
                     "DÍA DE PUBLICACIÓN": getVal(row, ['día de publicación', 'dia de publicacion']),
-                    "KMS OUTLAP": getVal(row, ['kms outlap']),
+                    "KMS OUTLAP": getVal(row, ['kms outlap', 'kms outlab']),
                     "KMS CRONO": getVal(row, ['kms crono']),
                     "ESTADO": getVal(row, ['estado', 'status']),
                     "URL VIDEO": getVal(row, ['url vídeo', 'url video', 'video']),
@@ -433,21 +460,17 @@
                 
                 processAndRender(globalRows, configFinal);
                 
-                if (badge) {
-                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400"></span> SINCRONIZADO CON SHEETS`;
-                    badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-2";
-                }
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400"></span> TELEMETRÍA EN VIVO SINK`;
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-2";
 
             } catch (err) {
-                console.error("Fallo técnico registrado:", err);
-                if (badge) {
-                    badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR: ${err.message}`;
-                    badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30 flex items-center gap-2";
-                }
+                console.error(err);
+                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR: ${err.message}`;
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30 flex items-center gap-2";
             }
         }
 
-        // --- 3. APLICAR CONFIGURACIÓN REMOTA VISUAL ---
+        // --- 3. INYECCIÓN DINÁMICA DE CONFIGURACIÓN REMOTA ---
         function applyWebConfiguration(config) {
             if (config.color) {
                 document.documentElement.style.setProperty('--neon-green', config.color);
@@ -473,46 +496,144 @@
                 document.getElementById('text-block-1').innerText = config.bloque1 || 'Sin datos.';
                 document.getElementById('text-block-2').innerText = config.bloque2 || 'Sin datos.';
             }
-            if (config.previsionDias) {
-                document.getElementById('prediction-desc').innerText = `Basado en los últimos ${config.previsionDias} días válidos`;
-            }
         }
 
-        // --- 4. PROCESAMIENTO GENERAL ---
+        // --- 4. MOTOR MATEMÁTICO INTEGRAL: CÁLCULO DE LAS 12 ESTADÍSTICAS ---
         function processAndRender(data, config) {
             data.sort((a, b) => parseInt(a["Día"]) - parseInt(b["Día"]));
 
-            const totalKM = data.reduce((acc, row) => {
-                const outlap = parseFloat(row["KMS OUTLAP"].toString().replace(',', '.')) || 0;
-                const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
-                return acc + outlap + crono;
-            }, 0);
+            // 1 y 2. Kilómetros totales y cronometrados
+            let kmTotales = 0;
+            let kmCrono = 0;
+            let countValidas = 0;
+            let countInvalidas = 0;
+            let countDnf = 0;
 
-            const totalCronoKM = data.reduce((acc, row) => {
-                const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
-                return acc + crono;
-            }, 0);
-
+            let listadoTiemposLimpiosS = [];
+            let primerTiempoValidoS = null;
             let recordActualS = Infinity;
             let recordData = null;
 
+            // Variables para el control de rachas pedidas
+            let maxRachaValida = 0;
+            let currentRachaValida = 0;
+
+            let maxRachaSinRecord = 0;
+            let currentRachaSinRecord = 0;
+
+            let maxBajadaRecordS = 0;
+
             data.forEach(row => {
-                const tiempoSegundos = timeStringToSeconds(row["TIEMPO"]);
+                const outlap = parseFloat(row["KMS OUTLAP"].toString().replace(',', '.')) || 0;
+                const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
                 const estado = row["ESTADO"].toUpperCase().trim();
-                if (estado === "VÁLIDA" && tiempoSegundos && tiempoSegundos < recordActualS) {
-                    recordActualS = tiempoSegundos;
-                    recordData = row;
+                const tiempoS = timeStringToSeconds(row["TIEMPO"]);
+
+                kmTotales += (outlap + crono);
+                kmCrono += crono;
+
+                // Contadores globales por estado
+                if (estado === 'VÁLIDA') countValidas++;
+                if (estado === 'NO VÁLIDA') countInvalidas++;
+                if (estado === 'DNF') countDnf++;
+
+                // Almacén para ritmo promedio limpio
+                if (estado !== 'DNF' && estado !== 'EXHIBICIÓN' && tiempoS !== null) {
+                    listadoTiemposLimpiosS.push(tiempoS);
+                }
+
+                // --- ALGORITMO: MAYOR RACHA CON VUELTA VÁLIDA ---
+                if (estado === 'VÁLIDA') {
+                    currentRachaValida++;
+                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
+                } else if (estado === 'EXHIBICIÓN' || row["Notas"].toLowerCase().includes('exhibición') || row["Notas"].toLowerCase().includes('exhibicion')) {
+                    // Los días de exhibición no suman pero NO rompen la racha; simplemente se ignoran/continúan
+                } else {
+                    // Una vuelta no válida (tanto NO VÁLIDA como DNF) rompe la racha
+                    currentRachaValida = 0;
+                }
+
+                // --- ALGORITMO: CONTROL DE RÉCORDS Y MEJORAS ---
+                if (estado === 'VÁLIDA' && tiempoS !== null) {
+                    if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
+
+                    if (tiempoS < recordActualS) {
+                        // Si ya existía un récord previo, calculamos la bajada de ese día
+                        if (recordActualS !== Infinity) {
+                            const bajada = recordActualS - tiempoS;
+                            if (bajada > maxBajadaRecordS) maxBajadaRecordS = bajada;
+                        }
+                        
+                        // Al batir récord, evaluamos la racha sin mejorar que traía y reseteamos
+                        if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
+                        currentRachaSinRecord = 0;
+
+                        recordActualS = tiempoS;
+                        recordData = row;
+                    } else {
+                        // Vuelta válida pero no bate el récord
+                        currentRachaSinRecord++;
+                    }
+                } else {
+                    // Días inválidos o DNF cuentan como días acumulados sin mejorar el récord
+                    if (estado !== 'EXHIBICIÓN') {
+                        currentRachaSinRecord++;
+                    }
                 }
             });
 
-            if(!recordData && data.length > 0) recordData = data[0];
+            // Cierre de comprobación final de racha sin récord al terminar el bucle
+            if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
 
+            // --- CÁLCULO DE RECORTE: RITMO PROMEDIO LIMPIO ---
+            let ritmoPromedioLimpioS = null;
+            if (listadoTiemposLimpiosS.length >= 3) {
+                listadoTiemposLimpiosS.sort((a, b) => a - b);
+                listadoTiemposLimpiosS.pop(); // Elimina el peor tiempo (el número más alto)
+                listadoTiemposLimpiosS.shift(); // Elimina el mejor tiempo (el número más bajo)
+                const sumaRestante = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0);
+                ritmoPromedioLimpioS = sumaRestante / listadoTiemposLimpiosS.length;
+            } else if (listadoTiemposLimpiosS.length > 0) {
+                ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
+            }
+
+            // --- ASIGNACIÓN DE DATOS A LAS 12 CAJAS DE LA INTERFAZ ---
+            document.getElementById('stat-km-totales').innerText = `${kmTotales.toFixed(1)} km`;
+            document.getElementById('stat-km-crono').innerText = `${kmCrono.toFixed(1)} km`;
+            document.getElementById('stat-ritmo-limpio').innerText = secondsToTimeString(ritmoPromedioLimpioS);
+            document.getElementById('stat-racha-valida').innerText = `${maxRachaValida} días`;
+            document.getElementById('stat-racha-sin-record').innerText = `${maxRachaSinRecord} días`;
+            document.getElementById('stat-max-bajada').innerText = `-${maxBajadaRecordS.toFixed(3)}s`;
+
+            // Porcentaje de vueltas válidas
+            const porcentajeValidas = data.length > 0 ? Math.round((countValidas / data.length) * 100) : 0;
+            document.getElementById('stat-porcentaje-validas').innerText = `${porcentajeValidas}%`;
+
+            // Diferencia entre primer tiempo válido y el mejor tiempo absoluto
+            if (primerTiempoValidoS && recordActualS !== Infinity) {
+                const diffMejoraGlobal = primerTiempoValidoS - recordActualS;
+                document.getElementById('stat-mejora-global').innerText = `-${secondsToTimeString(diffMejoraGlobal)}`;
+            } else {
+                document.getElementById('stat-mejora-global').innerText = '--:--.---';
+            }
+
+            // Estadísticas descriptivas de relleno estructural (Hasta completar las 12 deseadas)
+            document.getElementById('stat-total-sesiones').innerText = `${data.length} días`;
+            document.getElementById('stat-total-invalidas').innerText = `${countInvalidas} días`;
+            document.getElementById('stat-total-dnf').innerText = `${countDnf} tandas`;
+            
+            const mediaKmDia = data.length > 0 ? (kmTotales / data.length) : 0;
+            document.getElementById('stat-media-km').innerText = `${mediaKmDia.toFixed(1)} km`;
+
+
+            // --- CONTROL EXCLUSIVO DE LAS TARJETAS SUPERIORES ESTÁTICAS ---
+            if(!recordData && data.length > 0) recordData = data[0];
             if(recordData) {
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin anotaciones en la hoja de ruta.';
+                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas registradas.';
             }
 
             const latestData = data[data.length - 1];
@@ -520,24 +641,18 @@
                 document.getElementById('latest-day-tag').innerText = `DÍA ${latestData["Día"]}`;
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
-                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas añadidas.';
+                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 if(latestSecs && recordActualS !== Infinity) {
                     const diff = latestSecs - recordActualS;
-                    document.getElementById('latest-delta').innerText = diff > 0 ? `+${diff.toFixed(3)}s vs récord` : '¡TIEMPO DE RÉCORD!';
+                    document.getElementById('latest-delta').innerText = diff > 0 ? `+${diff.toFixed(3)}s vs récord` : '¡RÉCORD!';
                 } else {
-                    document.getElementById('latest-delta').innerText = latestData["ESTADO"] === 'DNF' ? 'DNF' : '--';
+                    document.getElementById('latest-delta').innerText = latestData["ESTADO"];
                 }
             }
 
-            let rachaSinMejorar = 0;
-            if(recordData) {
-                const diaDelRecord = parseInt(recordData["Día"]);
-                const maxDiaRegistrado = Math.max(...data.map(r => parseInt(r["Día"])));
-                rachaSinMejorar = maxDiaRegistrado - diaDelRecord;
-            }
-
+            // Barra de progreso superior
             const maxDia = data.length > 0 ? Math.max(...data.map(r => parseInt(r["Día"]))) : 0;
             document.getElementById('progreso-dia').innerText = maxDia;
             document.getElementById('progreso-percent').innerText = `${maxDia}%`;
@@ -549,67 +664,13 @@
             asciiProgress += ']';
             document.getElementById('progreso-ascii').innerText = asciiProgress;
 
-            document.getElementById('streak-days').innerText = rachaSinMejorar;
-            const streakCard = document.getElementById('streak-card');
-            if(rachaSinMejorar > 5) {
-                streakCard.className = "panel-carbon rounded-xl p-4 flex flex-col justify-between border border-red-500/30 bg-red-950/15 text-red-400";
-                document.getElementById('streak-descriptor').innerText = "Racha crítica: El coche se ha estancado temporalmente.";
-            } else {
-                streakCard.className = "panel-carbon rounded-xl p-4 flex flex-col justify-between border border-yellow-500/20 bg-yellow-950/5 text-yellow-500";
-                document.getElementById('streak-descriptor').innerText = "Días acumulados en pista sin marcar una nueva vuelta rápida absoluta.";
-            }
-
-            document.getElementById('km-totals').innerText = totalKM.toFixed(1);
-            document.getElementById('stat-crono').innerText = `${totalCronoKM.toFixed(1)} km`;
-
-            const cleanTimes = data.map(r => timeStringToSeconds(r["TIEMPO"])).filter(t => t !== null);
-            if(cleanTimes.length > 0) {
-                const avgSeconds = cleanTimes.reduce((a,b) => a+b, 0) / cleanTimes.length;
-                document.getElementById('stat-avg').innerText = secondsToTimeString(avgSeconds);
-            }
-
-            const prediccionTiempo = runTelemetryPrediction(data, config.previsionDias || 7);
-            document.getElementById('stat-prediction').innerText = prediccionTiempo;
-
-            const validCount = data.filter(r => r["ESTADO"].toUpperCase().trim() === 'VÁLIDA').length;
-            const ratioPercent = data.length > 0 ? Math.round((validCount / data.length) * 100) : 0;
-            document.getElementById('stat-ratio').innerText = `${ratioPercent}%`;
-            document.getElementById('stat-ratio-desc').innerText = `${validCount} de ${data.length} vueltas limpias en simulación`;
-
+            // Cargar por defecto una racha aleatoria en el panel interactivo dinámico (Ficha 3)
             shuffleRandomDay();
             renderTelemetryChart(data);
             renderHistoryList(data);
         }
 
-        // --- 5. ALGORITMO DE PREDICCIÓN CON FILTRO DINÁMICO N ---
-        function runTelemetryPrediction(data, n) {
-            const validLaps = data.filter(r => r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && timeStringToSeconds(r["TIEMPO"]) !== null);
-            if (validLaps.length < 2) return '--:--.---';
-            
-            const targetLaps = validLaps.slice(-n);
-            let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
-            const count = targetLaps.length;
-            
-            targetLaps.forEach((lap, idx) => {
-                const y = timeStringToSeconds(lap["TIEMPO"]);
-                const x = idx; 
-                sumX += x;
-                sumY += y;
-                sumXY += x * y;
-                sumXX += x * x;
-            });
-            
-            const divisor = (count * sumXX - sumX * sumX);
-            if(divisor === 0) return targetLaps[targetLaps.length - 1]["TIEMPO"];
-
-            const slope = (count * sumXY - sumX * sumY) / divisor;
-            const intercept = (sumY - slope * sumX) / count;
-            
-            const predictedSeconds = slope * count + intercept;
-            return secondsToTimeString(predictedSeconds);
-        }
-
-        // --- 6. MANEJO DE FICHA DINÁMICA 3 ---
+        // --- 5. FICHA DINÁMICA 3 (SELECCIONADA / ALEATORIA) ---
         function updateDynamicScreen(row, isManualSelection = false) {
             const cardTypeTitle = document.getElementById('dynamic-card-type');
             if(isManualSelection) {
@@ -624,7 +685,7 @@
             document.getElementById('random-title').innerText = `Sesión del día ${row["Día"]}`;
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin apuntes de carrera registrados en el campo de Notas.';
+            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
             const estado = row["ESTADO"].toUpperCase().trim();
@@ -644,7 +705,7 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA CON INTEGRACIÓN DE MARCADOR DNF ---
+        // --- 6. GRÁFICA TELEMÉTRICA CON INTEGRACIÓN TRIANGULAR DE DNF ---
         function renderTelemetryChart(data) {
             const ctx = document.getElementById('telemetryChart').getContext('2d');
             if (telemetryChartInstance) telemetryChartInstance.destroy();
@@ -654,7 +715,7 @@
             
             const validSeconds = lineTimesData.filter(s => s !== null);
             const maxValidValue = validSeconds.length > 0 ? Math.max(...validSeconds) : 420;
-            const dnfCeilingY = maxValidValue + 8; // Posicionado simétricamente arriba
+            const dnfCeilingY = maxValidValue + 6;
 
             const customPointColors = data.map(r => {
                 const estado = r["ESTADO"].toUpperCase().trim();
@@ -682,7 +743,7 @@
                             pointRadius: 5,
                             pointHoverRadius: 8,
                             fill: false,
-                            spanGaps: true // Línea continua saltando DNFs de forma limpia
+                            spanGaps: true
                         },
                         {
                             label: 'Abandono (DNF)',
@@ -720,7 +781,7 @@
                                 color: '#a0a0a0',
                                 font: { family: 'monospace' },
                                 callback: function(value) {
-                                    if(value >= dnfCeilingY - 2 && value <= dnfCeilingY + 2) return '⚠️ DNF';
+                                    if(value >= dnfCeilingY - 1 && value <= dnfCeilingY + 1) return '⚠️ DNF';
                                     return secondsToTimeString(value);
                                 }
                             }
@@ -740,7 +801,7 @@
             });
         }
 
-        // --- 8. HISTORIAL COMPLETO INDEXADO ---
+        // --- 7. INDEXACIÓN EXCLUSIVA DEL HISTORIAL SOBRE NOTAS DE BOXES ---
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
@@ -759,6 +820,9 @@
                 } else if(estado === 'DNF') {
                     borderClass = 'border-l-yellow-500';
                     textBadgeClass = 'text-yellow-500';
+                } else if(estado === 'EXHIBICIÓN') {
+                    borderClass = 'border-l-purple-500';
+                    textBadgeClass = 'text-purple-400';
                 }
 
                 const card = document.createElement('div');
@@ -779,12 +843,19 @@
                         </div>
                     </div>
                     <div class="mt-2 text-xs text-gray-400 border-t border-gray-800/60 pt-2">
-                        <strong>Notas de carrera:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada de boxes.</span>'}
+                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
+
+        document.body.addEventListener('click', function(e) {
+            const card = e.target.closest('#history-container > div');
+            if(card) {
+                selectHistoryDay(card.dataset.day);
+            }
+        });
 
         function selectHistoryDay(day) {
             const row = globalRows.find(r => r["Día"] === day);
