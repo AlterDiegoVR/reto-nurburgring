@@ -76,9 +76,14 @@
             <div class="px-6 pb-6 pt-3 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left w-full">
                     
+                    <div class="w-16 h-16 rounded-full border-2 border-red-600 overflow-hidden shrink-0 bg-gray-900 flex items-center justify-center shadow-md">
+                        <img id="header-avatar-img" src="" alt="Avatar Canal" class="w-full h-full object-cover hidden">
+                        <div id="avatar-loading-placeholder" class="text-[10px] text-gray-500 font-bold uppercase">Logo</div>
+                    </div>
+
                     <div class="w-28 h-20 bg-gray-900 rounded-lg border border-gray-700 shadow-md overflow-hidden shrink-0 flex items-center justify-center">
                         <img id="header-car-img" src="" alt="Coche Reto" class="w-full h-full object-cover hidden">
-                        <div id="car-loading-placeholder" class="text-[10px] text-gray-500 font-mono p-2 text-center">Análisis coche...</div>
+                        <div id="car-loading-placeholder" class="text-[10px] text-gray-500 font-mono p-2 text-center">🏎️ Coche</div>
                     </div>
 
                     <div class="w-full">
@@ -196,7 +201,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
                     <h3 id="header-bloque3" class="text-lg font-black text-white uppercase tracking-tight">EVOLUCIÓN</h3>
-                    <p class="text-xs text-gray-400">Puntos interactivos: pulsa en cualquier día para cargar su vídeo arriba en el panel dinámico.</p>
+                    <p class="text-xs text-gray-400">Puntos interactivos: pulsa en cualquier día para cargar su vídeo arriba.</p>
                 </div>
             </div>
             <div class="relative w-full h-[320px]">
@@ -286,8 +291,17 @@
     </div>
 
     <script>
+        // =================================================================================
+        // 💾 PANEL DE CONTROL MANUAL: PEGA TUS ENLACES DIRECTAMENTE ENTRE LAS COMILLAS
+        // =================================================================================
+        const URL_MANUAL_CANAL_YOUTUBE = "https://youtube.com/@alterdiegovr"; 
+        const URL_MANUAL_AVATAR_CANAL   = ""; // <-- Pega aquí el enlace de tu logotipo redondo de YT
+        const URL_MANUAL_BANNER_WEB     = ""; // <-- Pega aquí el enlace de tu banner estirado de YT
+        const URL_MANUAL_FOTO_COCHE     = ""; // <-- Pega aquí el enlace de la foto del Ferrari (.png o .jpg)
+        // =================================================================================
+
         const MOCK_DATA = [
-            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto de telemetría." }
+            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del desafío." }
         ];
 
         let globalRows = [];
@@ -333,7 +347,6 @@
 
                 if (!resDatos.ok || !resConfig.ok) throw new Error("Fallo de conexión con Google Sheets.");
 
-                // --- PROCESAR PESTAÑA CONFIGURACION_WEB (ESTRICTO INDESTRUCTIBLE) ---
                 const configText = await resConfig.text();
                 const parsedConfig = Papa.parse(configText, { header: false }).data;
                 let configFinal = {};
@@ -362,7 +375,6 @@
                     applyWebConfiguration(configFinal);
                 }
 
-                // --- PROCESAR PESTAÑA DATOS_RETO ---
                 const csvText = await resDatos.text();
                 const parsed = Papa.parse(csvText, { header: true }).data;
                 
@@ -390,300 +402,4 @@
 
             } catch (err) {
                 console.error(err);
-                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR CONEXIÓN`;
-                processAndRender(MOCK_DATA, {});
-            }
-        }
-
-        function applyWebConfiguration(config) {
-            if (config.TITULO_WEB) document.getElementById('web-title').innerText = config.TITULO_WEB;
-            if (config.DESCRIPCION_RETO) document.getElementById('web-description').innerText = config.DESCRIPCION_RETO;
-            if (config.CANAL_YOUTUBE) document.getElementById('youtube-channel-btn').href = config.CANAL_YOUTUBE;
-            
-            // CORRECCIÓN RADICAL CACHÉ: Primero cargar oyente onload, luego inyectar la URL src
-            if (config.FOTO_COCHE) {
-                const img = document.getElementById('header-car-img');
-                const placeholder = document.getElementById('car-loading-placeholder');
-                img.onload = () => {
-                    img.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                };
-                img.src = config.FOTO_COCHE;
-            }
-
-            if (config.BANNER_WEB) {
-                const bannerEl = document.getElementById('web-banner');
-                if (bannerEl) bannerEl.style.backgroundImage = `url('${config.BANNER_WEB}')`;
-            }
-
-            const b2 = document.getElementById('header-bloque2'); if (b2 && config.TXT_BLOQUE2) b2.innerText = config.TXT_BLOQUE2;
-            const b3 = document.getElementById('header-bloque3'); if (b3 && config.TXT_BLOQUE3) b3.innerText = config.TXT_BLOQUE3;
-            const b4 = document.getElementById('header-bloque4'); if (b4 && config.TXT_BLOQUE4) b4.innerText = config.TXT_BLOQUE4;
-            const b5 = document.getElementById('header-bloque5'); if (b5 && config.TXT_BLOQUE5) b5.innerText = config.TXT_BLOQUE5;
-
-            if (config.COLOR_DETALLES) {
-                document.documentElement.style.setProperty('--neon-green', config.COLOR_DETALLES);
-            }
-        }
-
-        function processAndRender(data, config) {
-            data.sort((a, b) => parseInt(a["Día"]) - parseInt(b["Día"]));
-
-            let kmTotales = 0; let kmCrono = 0;
-            let countValidas = 0; let countInvalidas = 0; let countDnf = 0;
-            let listadoTiemposLimpiosS = [];
-            let primerTiempoValidoS = null; let recordActualS = Infinity; let recordData = null;
-            let maxRachaValida = 0; let currentRachaValida = 0;
-            let maxRachaSinRecord = 0; let currentRachaSinRecord = 0;
-            let maxBajadaRecordS = 0;
-
-            data.forEach(row => {
-                const outlap = parseFloat(row["KMS OUTLAP"].toString().replace(',', '.')) || 0;
-                const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
-                const estado = row["ESTADO"].toUpperCase().trim();
-                const tiempoS = timeStringToSeconds(row["TIEMPO"]);
-
-                kmTotales += (outlap + crono);
-                kmCrono += crono;
-
-                if (estado === 'VÁLIDA') countValidas++;
-                if (estado === 'NO VÁLIDA') countInvalidas++;
-                if (estado === 'DNF') countDnf++;
-
-                if (estado !== 'DNF' && estado !== 'EXHIBICIÓN' && tiempoS !== null) {
-                    listadoTiemposLimpiosS.push(tiempoS);
-                }
-
-                if (estado === 'VÁLIDA') {
-                    currentRachaValida++;
-                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
-                } else if (estado !== 'EXHIBICIÓN') {
-                    currentRachaValida = 0;
-                }
-
-                if (estado === 'VÁLIDA' && tiempoS !== null) {
-                    if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
-                    if (tiempoS < recordActualS) {
-                        if (recordActualS !== Infinity) {
-                            const bajada = recordActualS - tiempoS;
-                            if (bajada > maxBajadaRecordS) maxBajadaRecordS = bajada;
-                        }
-                        if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
-                        currentRachaSinRecord = 0;
-                        recordActualS = tiempoS;
-                        recordData = row;
-                    } else {
-                        currentRachaSinRecord++;
-                    }
-                } else {
-                    if (estado !== 'EXHIBICIÓN') currentRachaSinRecord++;
-                }
-            });
-
-            if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
-
-            let ritmoPromedioLimpioS = null;
-            if (listadoTiemposLimpiosS.length >= 3) {
-                listadoTiemposLimpiosS.sort((a, b) => a - b);
-                listadoTiemposLimpiosS.pop(); listadoTiemposLimpiosS.shift();
-                ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
-            } else if (listadoTiemposLimpiosS.length > 0) {
-                ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
-            }
-
-            let rachaActualSinMejorar = 0;
-            if (recordData) {
-                const maxDiaRegistrado = Math.max(...data.map(r => parseInt(r["Día"])));
-                rachaActualSinMejorar = maxDiaRegistrado - parseInt(recordData["Día"]);
-            }
-
-            document.getElementById('streak-days').innerText = rachaActualSinMejorar;
-            document.getElementById('km-totals-top').innerText = kmTotales.toFixed(1);
-
-            document.getElementById('stat-km-totales').innerText = `${kmTotales.toFixed(1)} km`;
-            document.getElementById('stat-km-crono').innerText = `${kmCrono.toFixed(1)} km`;
-            document.getElementById('stat-ritmo-limpio').innerText = secondsToTimeString(ritmoPromedioLimpioS);
-            document.getElementById('stat-racha-valida').innerText = `${maxRachaValida} días`;
-            document.getElementById('stat-racha-sin-record').innerText = `${maxRachaSinRecord} días`;
-            document.getElementById('stat-max-bajada').innerText = maxBajadaRecordS > 0 ? `-${maxBajadaRecordS.toFixed(3)}s` : '0.000s';
-            
-            const ratio = data.length > 0 ? Math.round((countValidas / data.length) * 100) : 0;
-            document.getElementById('stat-porcentaje-validas').innerText = `${ratio}%`;
-
-            if (primerTiempoValidoS && recordActualS !== Infinity) {
-                document.getElementById('stat-mejora-global').innerText = `-${secondsToTimeString(primerTiempoValidoS - recordActualS)}`;
-            }
-
-            document.getElementById('stat-total-sesiones').innerText = `${data.length} días`;
-            document.getElementById('stat-total-invalidas').innerText = `${countInvalidas} días`;
-            document.getElementById('stat-total-dnf').innerText = `${countDnf} tandas`;
-            document.getElementById('stat-media-km').innerText = `${data.length > 0 ? (kmTotales / data.length).toFixed(1) : 0} km`;
-
-            if (!recordData && data.length > 0) recordData = data[0];
-            if (recordData) {
-                document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
-                document.getElementById('record-time').innerText = recordData["TIEMPO"];
-                document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
-            }
-
-            const latestData = data[data.length - 1];
-            if (latestData) {
-                document.getElementById('latest-day-tag').innerText = `DÍA ${latestData["Día"]}`;
-                document.getElementById('latest-time').innerText = latestData["TIEMPO"];
-                document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
-                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin observaciones.';
-            }
-
-            const maxDia = data.length > 0 ? Math.max(...data.map(r => parseInt(r["Día"]))) : 0;
-            document.getElementById('progreso-dia').innerText = maxDia;
-            document.getElementById('progreso-percent').innerText = `${maxDia}%`;
-            document.getElementById('progreso-bar-fill').style.width = `${maxDia}%`;
-
-            shuffleRandomDay();
-            renderTelemetryChart(data, config);
-            renderHistoryList(data);
-        }
-
-        function updateDynamicScreen(row) {
-            document.getElementById('random-day-tag').innerText = `DÍA ${row["Día"]}`;
-            document.getElementById('random-time').innerText = row["TIEMPO"];
-            document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            
-            const typeText = document.getElementById('dynamic-card-type');
-            typeText.innerText = "📋 VUELTA SELECCIONADA";
-            typeText.className = "text-xs font-bold text-blue-400 uppercase tracking-widest";
-        }
-
-        function shuffleRandomDay() {
-            if (globalRows.length === 0) return;
-            const rIdx = Math.floor(Math.random() * globalRows.length);
-            const row = globalRows[rIdx];
-            document.getElementById('random-day-tag').innerText = `DÍA ${row["Día"]}`;
-            document.getElementById('random-time').innerText = row["TIEMPO"];
-            document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            
-            const typeText = document.getElementById('dynamic-card-type');
-            typeText.innerText = "🎲 VUELTA ALEATORIA";
-            typeText.className = "text-xs font-bold text-purple-400 uppercase tracking-widest";
-        }
-
-        // --- CORRECCIÓN DE LA GRÁFICA CONTRA LA DOBLE CUADRÍCULA ---
-        function renderTelemetryChart(data, config) {
-            const ctx = document.getElementById('telemetryChart').getContext('2d');
-            if (telemetryChartInstance) telemetryChartInstance.destroy();
-
-            const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
-            const validSecs = lineTimesData.filter(s => s !== null);
-            const maxValidValue = validSecs.length > 0 ? Math.max(...validSecs) : 420;
-            const dnfCeilingY = maxValidValue + 8; // Margen superior para los triángulos
-
-            // Unificar DNF en un mapeo plano para evitar incompatibilidades de ejes
-            const dnfLineData = data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null);
-            const colorPuntos = data.map(r => r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' ? (config.COLOR_DETALLES || '#39ff14') : '#ff3b30');
-
-            telemetryChartInstance = new Chart(ctx, {
-                type: 'line', 
-                data: {
-                    labels: data.map(r => `Día ${r["Día"]}`),
-                    datasets: [
-                        {
-                            label: 'Evolución',
-                            data: lineTimesData,
-                            borderColor: 'rgba(255,255,255,0.25)',
-                            borderWidth: 2,
-                            pointBackgroundColor: colorPuntos,
-                            pointBorderColor: '#0b0c10',
-                            pointRadius: 5,
-                            spanGaps: true,
-                            fill: false
-                        },
-                        {
-                            label: 'DNF',
-                            data: dnfLineData,
-                            borderColor: 'transparent', // Sin línea secundaria, elimina la doble cuadrícula
-                            pointBackgroundColor: '#ff9500',
-                            pointBorderColor: '#0b0c10',
-                            pointStyle: 'triangle',
-                            pointRadius: 8,
-                            showLine: false,
-                            fill: false
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            grid: { color: '#222530' },
-                            ticks: {
-                                color: '#a0a0a0',
-                                callback: v => (v >= dnfCeilingY - 2) ? '⚠️ DNF' : secondsToTimeString(v)
-                            }
-                        },
-                        x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
-                    },
-                    onClick: (e, el) => { if(el.length > 0 && data[el[0].index]) updateDynamicScreen(data[el[0].index]); }
-                }
-            });
-        }
-
-        // --- RESTAURACIÓN DEL BOTÓN DE CARGAR FICHA Y ETIQUETA DE ESTADOS ---
-        function renderHistoryList(data) {
-            const container = document.getElementById('history-container');
-            container.innerHTML = '';
-            const reversedData = [...data].reverse();
-
-            reversedData.forEach(row => {
-                const dia = row["Día"];
-                const estado = row["ESTADO"].toUpperCase().trim();
-                const notasTexto = row["Notas"] || '';
-                
-                let borderClass = 'border-l-green-500'; let textBadgeClass = 'text-green-400';
-                if(estado === 'NO VÁLIDA') { borderClass = 'border-l-red-500'; textBadgeClass = 'text-red-400'; }
-                else if(estado === 'DNF') { borderClass = 'border-l-yellow-500'; textBadgeClass = 'text-yellow-500'; }
-                else if(estado === 'EXHIBICIÓN') { borderClass = 'border-l-purple-500'; textBadgeClass = 'text-purple-400'; }
-
-                const card = document.createElement('div');
-                card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
-                
-                card.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
-                        <div class="flex items-center gap-3">
-                            <span class="text-lg font-black text-white">Día ${dia}</span>
-                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${estado}</span>
-                            <span class="text-xs text-gray-500 font-mono">Pub: ${row["DÍA DE PUBLICACIÓN"] || '--'}</span>
-                        </div>
-                        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                            <span class="text-xl font-mono font-black text-white">${row["TIEMPO"]}</span>
-                            <span class="text-xs text-gray-300 font-bold uppercase tracking-wider bg-black/40 border border-gray-800 px-3 py-1.5 rounded hover:border-gray-600 transition">Cargar Ficha ➔</span>
-                        </div>
-                    </div>
-                    <div class="mt-2 text-xs text-gray-400 border-t border-gray-800/60 pt-2">
-                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-500 italic">Sin observaciones guardadas en esta jornada.</span>'}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function selectHistoryDay(day) {
-            const row = globalRows.find(r => r["Día"] === day);
-            if(row) {
-                updateDynamicScreen(row);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
-        function filterLaps() {
-            const q = document.getElementById('lap-search').value.toLowerCase();
-            document.querySelectorAll('#history-container > div').forEach(c => {
-                c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
-            });
-        }
-
-        init();
-    </script>
-</body>
-</html>
+                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-
