@@ -10,7 +10,7 @@
     
     <style>
         :root {
-            --neon-green: #39ff14; /* Color base modificable automáticamente desde la pestaña configuracion_web */
+            --neon-green: #39ff14; /* Modificable dinámicamente mediante COLOR_DETALLES */
             --racing-red: #ff3b30;
             --warning-orange: #ff9500;
             --carbon-black: #0b0c10;
@@ -20,6 +20,9 @@
         body {
             background-color: var(--carbon-black);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-size: 100% auto;
         }
 
         .panel-carbon {
@@ -85,16 +88,15 @@
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="py-6 border-b border-gray-800 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <img id="header-car-img" src="" alt="Ferrari 296 GT3" class="w-20 h-12 object-cover rounded border border-gray-700 hidden">
-                <div id="logo-placeholder" class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-red-900/50">N</div>
+                <img id="header-car-img" src="" alt="Coche del Reto" class="w-20 h-12 object-cover rounded border border-gray-700">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white uppercase">Nürburgring Nordschleife</h1>
+                    <h1 id="web-title" class="text-2xl md:text-3xl font-extrabold tracking-tight text-white uppercase">Nürburgring Nordschleife</h1>
                     <p id="web-description" class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Cargando descripción remota del reto...</p>
                 </div>
             </div>
             <div class="text-right flex items-center gap-3">
-                <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all hidden uppercase tracking-wider">
-                    ▶ YouTube Channel
+                <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all uppercase tracking-wider">
+                    ▶ Visitar Canal
                 </a>
                 <span id="sync-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> CONECTANDO TELEMETRÍA...
@@ -102,14 +104,26 @@
             </div>
         </header>
 
-        <section id="config-text-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 hidden">
+        <section id="config-text-section" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 hidden">
             <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque de Textos 1</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque 1</span>
                 <p id="text-block-1" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
             </div>
             <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque de Textos 2</span>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque 2</span>
                 <p id="text-block-2" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
+            </div>
+            <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque 3</span>
+                <p id="text-block-3" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
+            </div>
+            <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque 4</span>
+                <p id="text-block-4" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
+            </div>
+            <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque 5</span>
+                <p id="text-block-5" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
             </div>
         </section>
 
@@ -132,7 +146,7 @@
                         <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Publicado el día:</span>
+                        <span class="text-xs text-gray-400">Publicado el dia:</span>
                         <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
                     </div>
                     <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando anotaciones del récord...</p>
@@ -341,8 +355,7 @@
                 </div>
             </div>
 
-            <div id="history-container" class="space-y-3">
-                </div>
+            <div id="history-container" class="space-y-3"></div>
         </section>
 
     </div>
@@ -389,12 +402,130 @@
             return `${min}:${remainingSec.padStart(6, '0')}`;
         }
 
-        // --- 2. CONEXIÓN A GOOGLE SHEETS ---
+        // --- 2. MOTOR DE PARSEO DE CONFIGURACIÓN ROBUSTO POR CLAVE EXACTA ---
+        function parseConfigSheet(parsedCsvData) {
+            console.log("=== CONFIG RAW ===", parsedCsvData);
+
+            // Valores por defecto estrictos exigidos
+            const configObj = {
+                tituloWeb: "Reto Nürburgring 100 Días",
+                descripcionReto: "Proyecto de Telemetría Oficial • 100 Días",
+                coche: "",
+                fotoCoche: "https://via.placeholder.com/400x200",
+                canalYoutube: "https://youtube.com/@AlterDiegoVR",
+                bannerWeb: "https://via.placeholder.com/1200x300",
+                txtBloque1: "",
+                txtBloque2: "",
+                txtBloque3: "",
+                txtBloque4: "",
+                txtBloque5: "",
+                colorInterfaz: "",
+                colorDetalles: "#39ff14",
+                colorDetalles2: "",
+                colorRachaVerde: "",
+                colorRachaNaranja: "",
+                colorRachaRojo: ""
+            };
+
+            if (!parsedCsvData || parsedCsvData.length === 0) {
+                console.log("=== CONFIG PARSED (DEFAULT) ===", configObj);
+                return configObj;
+            }
+
+            // Mapeo uno a uno estricto según la primera y segunda columna de cada fila
+            parsedCsvData.forEach(row => {
+                const columns = Object.values(row).map(v => v ? v.toString().trim() : '');
+                const key = columns[0]; 
+                const value = columns[1] || '';
+
+                if (!key) return;
+
+                switch (key) {
+                    case "TITULO_WEB": configObj.tituloWeb = value || configObj.tituloWeb; break;
+                    case "DESCRIPCIÓN_RETO": configObj.descripcionReto = value || configObj.descripcionReto; break;
+                    case "COCHE": configObj.coche = value || configObj.coche; break;
+                    case "FOTO_COCHE": configObj.fotoCoche = value || configObj.fotoCoche; break;
+                    case "CANAL_YOUTUBE": configObj.canalYoutube = value || configObj.canalYoutube; break;
+                    case "BANNER_WEB": configObj.bannerWeb = value || configObj.bannerWeb; break;
+                    case "TXT_BLOQUE1": configObj.txtBloque1 = value; break;
+                    case "TXT_BLOQUE2": configObj.txtBloque2 = value; break;
+                    case "TXT_BLOQUE3": configObj.txtBloque3 = value; break;
+                    case "TXT_BLOQUE4": configObj.txtBloque4 = value; break;
+                    case "TXT_BLOQUE5": configObj.txtBloque5 = value; break;
+                    case "COLOR_INTERFAZ": configObj.colorInterfaz = value; break;
+                    case "COLOR_DETALLES": configObj.colorDetalles = value || configObj.colorDetalles; break;
+                    case "COLOR_DETALLES2": configObj.colorDetalles2 = value; break;
+                    case "COLOR_RACHA_VERDE": configObj.colorRachaVerde = value; break;
+                    case "COLOR_RACHA_NARANJA": configObj.colorRachaNaranja = value; break;
+                    case "COLOR_RACHA_ROJO": configObj.colorRachaRojo = value; break;
+                }
+            });
+
+            console.log("=== CONFIG PARSED ===", configObj);
+            return configObj;
+        }
+
+        // --- 3. APLICACIÓN DE CONFIGURACIÓN REMOTA DINÁMICA ---
+        function applyWebConfiguration(config) {
+            // Título y subtítulo principal
+            if (config.tituloWeb) document.getElementById('web-title').innerText = config.tituloWeb;
+            if (config.descripcionReto) document.getElementById('web-description').innerText = config.descripcionReto;
+
+            // Inyección de Variable CSS Principal
+            if (config.colorDetalles) {
+                document.documentElement.style.setProperty('--neon-green', config.colorDetalles);
+                const valDot = document.getElementById('legend-valida-dot');
+                if (valDot) valDot.style.backgroundColor = config.colorDetalles;
+            }
+
+            // Gestión de errores de carga en Imagen de Coche
+            const imgCar = document.getElementById('header-car-img');
+            imgCar.onerror = function() {
+                console.error(`[ERROR CARGA]: La URL de FOTO_COCHE ha fallado: "${config.fotoCoche}". Usando fallback.`);
+                this.src = "https://via.placeholder.com/400x200";
+                this.onerror = null;
+            };
+            imgCar.src = config.fotoCoche;
+
+            // Gestión de errores de carga en Banner de Fondo
+            if (config.bannerWeb) {
+                const testImg = new Image();
+                testImg.onerror = function() {
+                    console.error(`[ERROR CARGA]: La URL de BANNER_WEB ha fallado: "${config.bannerWeb}". Usando fallback.`);
+                    document.body.style.backgroundImage = "url('https://via.placeholder.com/1200x300')";
+                };
+                testImg.onload = function() {
+                    document.body.style.backgroundImage = `url('${config.bannerWeb}')`;
+                };
+                testImg.src = config.bannerWeb;
+            }
+
+            // El botón de canal existe siempre y abre en nueva pestaña
+            const ytBtn = document.getElementById('youtube-channel-btn');
+            ytBtn.href = config.canalYoutube;
+
+            // Inyección de Bloques de texto (1 al 5)
+            const hasAnyBlock = config.txtBloque1 || config.txtBloque2 || config.txtBloque3 || config.txtBloque4 || config.txtBloque5;
+            if (hasAnyBlock) {
+                document.getElementById('config-text-section').classList.remove('hidden');
+                document.getElementById('text-block-1').innerText = config.txtBloque1 || 'Sin datos.';
+                document.getElementById('text-block-2').innerText = config.txtBloque2 || 'Sin datos.';
+                document.getElementById('text-block-3').innerText = config.txtBloque3 || 'Sin datos.';
+                document.getElementById('text-block-4').innerText = config.txtBloque4 || 'Sin datos.';
+                document.getElementById('text-block-5').innerText = config.txtBloque5 || 'Sin datos.';
+            }
+
+            console.log("=== CONFIG APPLIED ===");
+        }
+
+        // --- 4. CONEXIÓN GENERAL Y ACCESO A GOOGLE SHEETS ---
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
+                // Iniciar estado por defecto con mocks mientras sincroniza
                 globalRows = [...MOCK_DATA];
-                processAndRender(globalRows, { descripcion: 'Proyecto de Telemetría Oficial • 100 Días', color: '#39ff14' });
+                const defaultConfig = parseConfigSheet([]);
+                processAndRender(globalRows, defaultConfig);
 
                 const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
                 
@@ -414,31 +545,10 @@
                     throw new Error("Acceso privado en Sheets. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
                 }
 
-                let configFinal = {
-                    descripcion: 'Proyecto de Telemetría Oficial • 100 Días',
-                    fotoCoche: '',
-                    youtubeLink: '',
-                    bloque1: '',
-                    bloque2: '',
-                    color: '#39ff14'
-                };
-
-                const parsedConfig = Papa.parse(configText, { header: true }).data;
-                if (parsedConfig && parsedConfig.length > 0) {
-                    parsedConfig.forEach(row => {
-                        let values = Object.values(row).map(v => v ? v.toString().trim() : '');
-                        let rowKey = values[0] ? values[0].toLowerCase() : '';
-                        let rowVal = values[1] || '';
-
-                        if (rowKey.includes('descripción') || rowKey.includes('descripcion')) configFinal.descripcion = rowVal;
-                        if (rowKey.includes('foto')) configFinal.fotoCoche = rowVal;
-                        if (rowKey.includes('canal') || rowKey.includes('youtube')) configFinal.youtubeLink = rowVal;
-                        if (rowKey.includes('bloque 1')) configFinal.bloque1 = rowVal;
-                        if (rowKey.includes('bloque 2')) configFinal.bloque2 = rowVal;
-                        if (rowKey.includes('color')) configFinal.color = rowVal;
-                    });
-                    applyWebConfiguration(configFinal);
-                }
+                // Parseo estricto de la pestaña de configuración web
+                const rawConfigParsed = Papa.parse(configText, { header: false }).data;
+                const finalConfig = parseConfigSheet(rawConfigParsed);
+                applyWebConfiguration(finalConfig);
 
                 const csvText = await resDatos.text();
                 const parsed = Papa.parse(csvText, { header: true }).data;
@@ -464,7 +574,7 @@
                     "Notas": getVal(row, ['notas', 'nota'])
                 }));
                 
-                processAndRender(globalRows, configFinal);
+                processAndRender(globalRows, finalConfig);
                 
                 badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400"></span> TELEMETRÍA EN VIVO SINK`;
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-2";
@@ -476,34 +586,7 @@
             }
         }
 
-        function applyWebConfiguration(config) {
-            if (config.color) {
-                document.documentElement.style.setProperty('--neon-green', config.color);
-                const valDot = document.getElementById('legend-valida-dot');
-                if(valDot) valDot.style.backgroundColor = config.color;
-            }
-            if (config.descripcion) {
-                document.getElementById('web-description').innerText = config.descripcion;
-            }
-            if (config.fotoCoche) {
-                const imgEl = document.getElementById('header-car-img');
-                imgEl.src = config.fotoCoche;
-                imgEl.classList.remove('hidden');
-                document.getElementById('logo-placeholder').classList.add('hidden');
-            }
-            if (config.youtubeLink) {
-                const ytBtn = document.getElementById('youtube-channel-btn');
-                ytBtn.href = config.youtubeLink;
-                ytBtn.classList.remove('hidden');
-            }
-            if (config.bloque1 || config.bloque2) {
-                document.getElementById('config-text-section').classList.remove('hidden');
-                document.getElementById('text-block-1').innerText = config.bloque1 || 'Sin datos.';
-                document.getElementById('text-block-2').innerText = config.bloque2 || 'Sin datos.';
-            }
-        }
-
-        // --- 4. MOTOR MATEMÁTICO INTEGRAL ---
+        // --- 5. MOTOR MATEMÁTICO INTEGRAL ---
         function processAndRender(data, config) {
             data.sort((a, b) => parseInt(a["Día"]) - parseInt(b["Día"]));
 
@@ -549,9 +632,7 @@
                 if (estado === 'VÁLIDA') {
                     currentRachaValida++;
                     if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
-                } else if (checkExhibicion) {
-                    // Ignorar pase de racha
-                } else {
+                } else if (!checkExhibicion) {
                     currentRachaValida = 0;
                 }
 
@@ -571,10 +652,8 @@
                     } else {
                         currentRachaSinRecord++;
                     }
-                } else {
-                    if (estado !== 'EXHIBICIÓN') {
-                        currentRachaSinRecord++;
-                    }
+                } else if (estado !== 'EXHIBICIÓN') {
+                    currentRachaSinRecord++;
                 }
             });
 
@@ -591,7 +670,6 @@
                 ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
             }
 
-            // --- REINYECCIÓN EN EL SEGUNDO BLOQUE SUPERIOR ---
             let rachaActualSinMejorar = 0;
             if (recordData) {
                 const diaDelRecord = parseInt(recordData["Día"]);
@@ -611,7 +689,6 @@
                 document.getElementById('streak-descriptor').innerText = "Días consecutivos en pista sin rebajar la mejor marca histórica actual.";
             }
 
-            // --- INYECCIÓN EN LAS 12 IDENTIDADES DE LA REJILLA (CORREGIDO ID 'stat-total-sesiones') ---
             document.getElementById('stat-km-totales').innerText = `${kmTotales.toFixed(1)} km`;
             document.getElementById('stat-km-crono').innerText = `${kmCrono.toFixed(1)} km`;
             document.getElementById('stat-ritmo-limpio').innerText = secondsToTimeString(ritmoPromedioLimpioS);
@@ -629,7 +706,7 @@
                 document.getElementById('stat-mejora-global').innerText = '--:--.---';
             }
 
-            document.getElementById('stat-total-sesiones').innerText = `${data.length} días`; // CORREGIDO AQUÍ
+            document.getElementById('stat-total-sesiones').innerText = `${data.length} días`;
             document.getElementById('stat-total-invalidas').innerText = `${countInvalidas} días`;
             document.getElementById('stat-total-dnf').innerText = `${countDnf} tandas`;
             
@@ -677,7 +754,7 @@
             renderHistoryList(data);
         }
 
-        // --- 5. FICHA DINÁMICA 3 ---
+        // --- 6. FICHA DINÁMICA DE VUELTA ---
         function updateDynamicScreen(row, isManualSelection = false) {
             const cardTypeTitle = document.getElementById('dynamic-card-type');
             if(isManualSelection) {
@@ -712,7 +789,7 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 6. GRÁFICA TELEMÉTRICA ---
+        // --- 7. GRÁFICA TELEMÉTRICA ---
         function renderTelemetryChart(data) {
             const ctx = document.getElementById('telemetryChart').getContext('2d');
             if (telemetryChartInstance) telemetryChartInstance.destroy();
@@ -808,7 +885,7 @@
             });
         }
 
-        // --- 7. HISTORIAL ---
+        // --- 8. HISTORIAL / DIARIO TÉCNICO ---
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
