@@ -487,16 +487,18 @@
                 if (valDot) valDot.style.backgroundColor = config.colorDetalles;
             }
 
-            // Gestión de errores de carga en Imagen de Coche
+            // Forzar carga de Imagen de Coche desde la hoja
             const imgCar = document.getElementById('header-car-img');
-            imgCar.onerror = function() {
-                console.error(`[ERROR CARGA]: La URL de FOTO_COCHE ha fallado: "${config.fotoCoche}". Usando fallback.`);
-                this.src = "https://via.placeholder.com/400x200";
-                this.onerror = null;
-            };
-            imgCar.src = config.fotoCoche;
+            if (config.fotoCoche) {
+                imgCar.onerror = function() {
+                    console.error(`[ERROR CARGA]: La URL de FOTO_COCHE ha fallado: "${config.fotoCoche}". Usando fallback.`);
+                    this.src = "https://via.placeholder.com/800x400"; // Aquí es donde lee si falla
+                    this.onerror = null;
+                };
+                imgCar.src = config.fotoCoche;
+            }
 
-            // Gestión de errores de carga en Banner de Fondo
+            // Forzar carga de Banner de Fondo desde la hoja
             if (config.bannerWeb) {
                 const testImg = new Image();
                 testImg.onerror = function() {
@@ -509,9 +511,9 @@
                 testImg.src = config.bannerWeb;
             }
 
-            // El botón de canal existe siempre y abre en nueva pestaña
+            // El botón de canal
             const ytBtn = document.getElementById('youtube-channel-btn');
-            ytBtn.href = config.canalYoutube;
+            if (config.canalYoutube) ytBtn.href = config.canalYoutube;
 
             // Inyección de Bloques de texto (1 al 5)
             const hasAnyBlock = config.txtBloque1 || config.txtBloque2 || config.txtBloque3 || config.txtBloque4 || config.txtBloque5;
