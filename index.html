@@ -726,19 +726,27 @@
 
             if(!recordData && data.length > 0) recordData = data[0];
             if(recordData) {
-                document.getElementById('record-day-tag').innerText = `👑 DÍA ${recordData["Día"]}`;
-                document.getElementById('record-day-tag').className = "text-sm font-black text-black bg-amber-400 px-2 py-0.5 rounded animate-pulse";
+                // Volvemos al formato limpio original del badge para que no salte de línea
+                document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
+                document.getElementById('record-day-tag').className = "text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded";
+                
+                // Ponemos el toque visual de la corona en el título de la ficha, donde sí luce perfecto
+                const tituloRecord = document.getElementById('record-day-tag').closest('.panel-carbon').querySelector('h2');
+                if (tituloRecord && !tituloRecord.innerText.startsWith('👑')) {
+                    tituloRecord.innerText = `👑 Récord en el Infierno Verde`;
+                }
+
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
                 document.getElementById('record-time').className = "text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
                 
-                // Le añadimos un borde dorado dinámico a la tarjeta de la izquierda
+                // Restauramos el borde verde original y quitamos la sombra dorada
                 const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
                 if (tarjetaRecord) {
-                    tarjetaRecord.style.borderColor = '#f59e0b';
-                    tarjetaRecord.style.boxShadow = '0 4px 25px rgba(245, 158, 11, 0.15)';
+                    tarjetaRecord.style.borderColor = ''; // Resetea al CSS base
+                    tarjetaRecord.style.boxShadow = '';    // Resetea al CSS base
                 }
             }
 
