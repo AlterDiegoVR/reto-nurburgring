@@ -891,7 +891,15 @@
                     onClick: (e, activeEls) => {
                         if (activeEls.length > 0) {
                             const index = activeEls[0].index;
-                            if (data[index]) updateDynamicScreen(data[index], true);
+                            if (data[index]) {
+                                updateDynamicScreen(data[index], true);
+                                
+                                // Hacemos scroll suave hasta la Ficha 3 al pulsar en la gráfica
+                                const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
+                                if (ficha3) {
+                                    ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                            }
                         }
                     }
                 }
