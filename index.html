@@ -949,9 +949,14 @@
 
         function selectHistoryDay(day) {
             const row = globalRows.find(r => r["Día"] === day);
-            if(row) {
+            if (row) {
                 updateDynamicScreen(row, true);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Buscamos la Ficha 3 (el contenedor de la tarjeta dinámica)
+                const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
+                if (ficha3) {
+                    ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
         }
 
