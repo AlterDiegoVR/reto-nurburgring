@@ -726,11 +726,20 @@
 
             if(!recordData && data.length > 0) recordData = data[0];
             if(recordData) {
-                document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
+                document.getElementById('record-day-tag').innerText = `👑 DÍA ${recordData["Día"]}`;
+                document.getElementById('record-day-tag').className = "text-sm font-black text-black bg-amber-400 px-2 py-0.5 rounded animate-pulse";
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
+                document.getElementById('record-time').className = "text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
+                
+                // Le añadimos un borde dorado dinámico a la tarjeta de la izquierda
+                const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
+                if (tarjetaRecord) {
+                    tarjetaRecord.style.borderColor = '#f59e0b';
+                    tarjetaRecord.style.boxShadow = '0 4px 25px rgba(245, 158, 11, 0.15)';
+                }
             }
 
             const latestData = data[data.length - 1];
