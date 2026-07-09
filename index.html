@@ -800,7 +800,7 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA ---
+        // --- 7. GRÁFICA TELEMÉTRICA CORREGIDA (ALINEACIÓN ESTRICTA DE DNF) ---
         function renderTelemetryChart(data) {
             const ctx = document.getElementById('telemetryChart').getContext('2d');
             if (telemetryChartInstance) telemetryChartInstance.destroy();
@@ -814,14 +814,15 @@
 
             const customPointColors = data.map(r => {
                 const estado = r["ESTADO"].toUpperCase().trim();
-                if(estado === 'VÁLIDA') return getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
-                if(estado === 'NO VÁLIDA') return '#ff3b30';
+                if (estado === 'VÁLIDA') return getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
+                if (estado === 'NO VÁLIDA') return '#ff3b30';
                 return 'transparent';
             });
 
-            const dnfScatterPoints = data.map((r, idx) => {
-                return r["ESTADO"].toUpperCase().trim() === 'DNF' ? { x: idx, y: dnfCeilingY } : null;
-            }).filter(p => p !== null);
+            // Corregimos los DNF para que mantengan la misma estructura de array que la línea sin filtrar índices
+            const dnfLinePoints = data.map(r => {
+                return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
+            });
 
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -842,14 +843,15 @@
                         },
                         {
                             label: 'Abandono (DNF)',
-                            data: dnfScatterPoints,
-                            type: 'scatter',
-                            backgroundColor: '#ff9500',
+                            data: dnfLinePoints, // Usamos la misma estructura mapeada 1:1
                             borderColor: '#ff3b30',
-                            borderWidth: 1,
+                            backgroundColor: '#ff9500',
+                            borderWidth: 0, // Quitamos la línea de unión para que parezcan puntos sueltos
                             pointStyle: 'triangle',
                             pointRadius: 9,
-                            pointHoverRadius: 11
+                            pointHoverRadius: 11,
+                            fill: false,
+                            showLine: false // Forzamos a Chart.js a no tirar líneas entre DNF distantes
                         }
                     ]
                 },
@@ -863,7 +865,7 @@
                                 label: function(context) {
                                     const index = context.dataIndex;
                                     const row = data[index];
-                                    if(!row) return '';
+                                    if (!row) return '';
                                     return ` Tiempo: ${row["TIEMPO"]} [${row["ESTADO"]}]`;
                                 }
                             }
@@ -876,7 +878,7 @@
                                 color: '#a0a0a0',
                                 font: { family: 'monospace' },
                                 callback: function(value) {
-                                    if(value >= dnfCeilingY - 1 && value <= dnfCeilingY + 1) return '⚠️ DNF';
+                                    if (value >= dnfCeilingY - 1 && value <= dnfCeilingY + 1) return '⚠️ DNF';
                                     return secondsToTimeString(value);
                                 }
                             }
@@ -889,7 +891,7 @@
                     onClick: (e, activeEls) => {
                         if (activeEls.length > 0) {
                             const index = activeEls[0].index;
-                            if(data[index]) updateDynamicScreen(data[index], true);
+                            if (data[index]) updateDynamicScreen(data[index], true);
                         }
                     }
                 }
