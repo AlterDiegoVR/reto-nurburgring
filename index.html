@@ -1084,11 +1084,22 @@
                 }
             });
         }
-        // --- 8. HISTORIAL / DIARIO TÉCNICO ---
+        // --- 8. HISTORIAL / DIARIO TÉCNICO CON DESTACADO DE RÉCORD ---
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
             const reversedData = [...data].reverse();
+
+            // Identificamos el día del récord antes de pintar
+            let minTimeS = Infinity;
+            let recordDay = null;
+            data.forEach(r => {
+                const tS = timeStringToSeconds(r["TIEMPO"]);
+                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                    minTimeS = tS;
+                    recordDay = r["Día"];
+                }
+            });
 
             reversedData.forEach(row => {
                 const dia = row["Día"];
@@ -1097,42 +1108,50 @@
                 
                 let borderClass = 'border-l-green-500';
                 let textBadgeClass = 'text-green-400';
-                if(estado === 'NO VÁLIDA') {
+                let specialBgClass = '';
+                let crownIcon = '';
+
+                // Si es el día del récord, cambiamos por completo su look
+                if (dia === recordDay) {
+                    borderClass = 'border-l-amber-400';
+                    textBadgeClass = 'text-amber-400 font-black';
+                    specialBgClass = 'bg-amber-500/5 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
+                    crownIcon = '👑 ';
+                } else if (estado === 'NO VÁLIDA') {
                     borderClass = 'border-l-red-500';
                     textBadgeClass = 'text-red-400';
-                } else if(estado === 'DNF') {
+                } else if (estado === 'DNF') {
                     borderClass = 'border-l-yellow-500';
                     textBadgeClass = 'text-yellow-500';
-                } else if(estado === 'EXHIBICIÓN') {
+                } else if (estado === 'EXHIBICIÓN') {
                     borderClass = 'border-l-purple-500';
                     textBadgeClass = 'text-purple-400';
                 }
 
                 const card = document.createElement('div');
-                card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
+                card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} ${specialBgClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
                 card.dataset.day = dia;
-                card.dataset.searchable = `día dia ${dia} ${estado} ${notasTexto}`.toLowerCase();
+                card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${notasTexto}`.toLowerCase();
                 
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
                         <div class="flex items-center gap-3">
-                            <span class="text-lg font-black text-white">Día ${dia}</span>
-                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${estado}</span>
+                            <span class="text-lg font-black ${dia === recordDay ? 'text-amber-400' : 'text-white'}">${crownIcon}Día ${dia}</span>
+                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${dia === recordDay ? '👑 ACTUAL RÉCORD' : estado}</span>
                             <span class="text-xs text-gray-500 font-mono">Pub: ${row["DÍA DE PUBLICACIÓN"] || '--'}</span>
                         </div>
                         <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                            <span class="text-xl font-mono font-black text-white">${row["TIEMPO"]}</span>
+                            <span class="text-xl font-mono font-black ${dia === recordDay ? 'text-amber-400 text-2xl drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]' : 'text-white'}">${row["TIEMPO"]}</span>
                             <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Cargar Ficha ➔</span>
                         </div>
                     </div>
-                    <div class="mt-2 text-xs text-gray-400 border-t border-gray-800/60 pt-2">
+                    <div class="mt-2 text-xs ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'} pt-2">
                         <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
-
         function selectHistoryDay(day) {
             const row = globalRows.find(r => r["Día"] === day);
             if (row) {
