@@ -740,7 +740,7 @@
                 document.getElementById('record-time').className = "text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
+                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
                 
                 // Restauramos el borde verde original y quitamos la sombra dorada
                 const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
@@ -755,7 +755,7 @@
                 document.getElementById('latest-day-tag').innerText = `DÍA ${latestData["Día"]}`;
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
-                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
+                document.getElementById('latest-notes').innerText = latestData["Notes"] || 'Sin notas.';
                 
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 if(latestSecs && recordActualS !== Infinity) {
@@ -797,7 +797,7 @@
             document.getElementById('random-title').innerText = `Sesión del día ${row["Día"]}`;
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
+            document.getElementById('random-notes').innerText = row["Notes"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
             const estado = row["ESTADO"].toUpperCase().trim();
@@ -817,9 +817,11 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA AVANZADA (CON RELLENO DEGRADADO Y RÉCORD EN ORO) ---
+        // --- 7. GRÁFICA TELEMÉTRICA AVANZADA (CON RELLENO DEGRADADO ADAPTATIVO SEGURO) ---
         function renderTelemetryChart(data) {
             const chartCanvas = document.getElementById('telemetryChart');
+            if (!chartCanvas) return;
+
             const ctx = chartCanvas.getContext('2d');
             if (telemetryChartInstance) telemetryChartInstance.destroy();
 
@@ -830,18 +832,17 @@
             const maxValidValue = validSeconds.length > 0 ? Math.max(...validSeconds) : 420;
             const dnfCeilingY = maxValidValue + 6;
 
-            // Extraer el color de los detalles dinámico para el degradado
+            // Extraer el color dinámico del Sheets o usar el verde de fallback
             const neonGreenColor = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
 
-            // ─── CREACIÓN DEL DEGRADADO PARA EL RELLENO ───
-            // Usamos las dimensiones del canvas (de arriba a abajo)
-            const gradientFill = ctx.createLinearGradient(0, 0, 0, chartCanvas.clientHeight || 320);
+            // Gradiente vertical basado en la altura física (forzando 320px si está en carga oculta inicial)
+            const altoGrafica = chartCanvas.clientHeight > 0 ? chartCanvas.clientHeight : 320;
+            const gradientFill = ctx.createLinearGradient(0, 0, 0, altoGrafica);
             
-            // Si el color viene en formato HEX limpio o texto, Chart.js acepta aplicar opacidad con funciones nativas o pasándole RGBA.
-            // Para asegurarnos de que funcione con cualquier color HEX inyectado (ej: #39ff14):
-            gradientFill.addColorStop(0, neonGreenColor + '40');  // Color con ~25% de opacidad arriba (40 en hex)
-            gradientFill.addColorStop(0.5, neonGreenColor + '10'); // Se desvanece al ~6% a la mitad (10 en hex)
-            gradientFill.addColorStop(1, 'rgba(0, 0, 0, 0)');     // Completamente invisible abajo
+            // Tratamiento del HEX para inyectarle opacidad directa en canal alfa
+            gradientFill.addColorStop(0, neonGreenColor + '40');   // ~25% opacidad arriba justo bajo la línea
+            gradientFill.addColorStop(0.6, neonGreenColor + '0d');  // ~5% opacidad desvaneciéndose en la mitad
+            gradientFill.addColorStop(1, 'rgba(0, 0, 0, 0)');      // Transparente al tocar el eje X
 
             let minTimeS = Infinity;
             let recordDay = null;
@@ -861,8 +862,8 @@
             data.forEach(r => {
                 const estado = r["ESTADO"].toUpperCase().trim();
                 if (r["Día"] === recordDay) {
-                    customPointColors.push('#ffd700'); 
-                    customPointRadius.push(9);         
+                    customPointColors.push('#ffd700'); // Oro
+                    customPointRadius.push(9);         // El doble de grande
                     customPointHoverRadius.push(12);
                     customPointStyles.push('triangle'); 
                 } else if (estado === 'VÁLIDA') {
@@ -895,158 +896,15 @@
                         {
                             label: 'Evolución Cronometrada',
                             data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.35)',
-                            borderWidth: 2,
-                            // Cambios clave aquí:
-                            fill: true, 
-                            backgroundColor: gradientFill, 
-                            pointBackgroundColor: customPointColors,
-                            pointBorderColor: '#000',
-                            pointRadius: customPointRadius,
-                            pointHoverRadius: customPointHoverRadius,
-                            pointStyle: customPointStyles,
-                            spanGaps: true
-                        },
-                        {
-                            label: 'Abandono (DNF)',
-                            data: dnfLinePoints,
-                            borderColor: '#ff3b30',
-                            backgroundColor: '#ff9500',
-                            borderWidth: 0,
-                            pointStyle: 'triangle',
-                            pointRadius: 9,
-                            pointHoverRadius: 11,
-                            fill: false,
-                            showLine: false
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const index = context.dataIndex;
-                                    const row = data[index];
-                                    if (!row) return '';
-                                    if (row["Día"] === recordDay) {
-                                        return ` 👑 ¡RECORD HISTÓRICO!: ${row["TIEMPO"]}`;
-                                    }
-                                    return ` Tiempo: ${row["TIEMPO"]} [${row["ESTADO"]}]`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            grid: { color: '#1f222e' },
-                            ticks: {
-                                color: '#a0a0a0',
-                                font: { family: 'monospace' },
-                                callback: function(value) {
-                                    if (value >= dnfCeilingY - 1 && value <= dnfCeilingY + 1) return '⚠️ DNF';
-                                    return secondsToTimeString(value);
-                                }
-                            }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#a0a0a0' }
-                        }
-                    },
-                    onClick: (e, activeEls) => {
-                        if (activeEls.length > 0) {
-                            const index = activeEls[0].index;
-                            if (data[index]) {
-                                updateDynamicScreen(data[index], true);
-                                const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
-                                if (ficha3) {
-                                    ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        }// --- 7. GRÁFICA TELEMÉTRICA AVANZADA (DESTACAR RÉCORD EN ORO) ---
-        function renderTelemetryChart(data) {
-            const ctx = document.getElementById('telemetryChart').getContext('2d');
-            if (telemetryChartInstance) telemetryChartInstance.destroy();
-
-            const labelsDias = data.map(r => `Día ${r["Día"]}`);
-            const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
-            
-            const validSeconds = lineTimesData.filter(s => s !== null);
-            const maxValidValue = validSeconds.length > 0 ? Math.max(...validSeconds) : 420;
-            const dnfCeilingY = maxValidValue + 6;
-
-            // Buscamos cuál es el tiempo de récord real (el mínimo de las válidas)
-            let minTimeS = Infinity;
-            let recordDay = null;
-            data.forEach(r => {
-                const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
-                    minTimeS = tS;
-                    recordDay = r["Día"];
-                }
-            });
-
-            // Configuramos los colores y tamaños de los puntos uno a uno
-            const customPointColors = [];
-            const customPointRadius = [];
-            const customPointHoverRadius = [];
-            const customPointStyles = [];
-
-            data.forEach(r => {
-                const estado = r["ESTADO"].toUpperCase().trim();
-                if (r["Día"] === recordDay) {
-                    // Estilo exclusivo para el punto del récord absoluto
-                    customPointColors.push('#ffd700'); // Oro
-                    customPointRadius.push(9);         // El doble de grande
-                    customPointHoverRadius.push(12);
-                    customPointStyles.push('triangle'); // Forma de triángulo invertido o estrella
-                } else if (estado === 'VÁLIDA') {
-                    customPointColors.push(getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
-                } else if (estado === 'NO VÁLIDA') {
-                    customPointColors.push('#ff3b30');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
-                } else {
-                    customPointColors.push('transparent');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
-                }
-            });
-
-            const dnfLinePoints = data.map(r => {
-                return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
-            });
-
-            telemetryChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labelsDias,
-                    datasets: [
-                        {
-                            label: 'Evolución Cronometrada',
-                            data: lineTimesData,
                             borderColor: 'rgba(255, 255, 255, 0.25)',
                             borderWidth: 2,
+                            fill: true,                  // ACTIVAR ÁREA DE RELLENO
+                            backgroundColor: gradientFill, // ASIGNAR GRADIENTE ENCONTRADO
                             pointBackgroundColor: customPointColors,
                             pointBorderColor: '#000',
                             pointRadius: customPointRadius,
                             pointHoverRadius: customPointHoverRadius,
                             pointStyle: customPointStyles,
-                            fill: false,
                             spanGaps: true
                         },
                         {
@@ -1114,6 +972,7 @@
                 }
             });
         }
+
         // --- 8. HISTORIAL / DIARIO TÉCNICO CON DESTACADO DE RÉCORD ---
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
@@ -1182,6 +1041,7 @@
                 container.appendChild(card);
             });
         }
+
         function selectHistoryDay(day) {
             const row = globalRows.find(r => r["Día"] === day);
             if (row) {
@@ -1195,6 +1055,7 @@
             }
         }
 
+        // Corregido el bind de filterLaps para mapear la variable exacta
         function filterLaps() {
             const query = document.getElementById('lap-search').value.toLowerCase().trim();
             const cards = document.querySelectorAll('#history-container > div');
