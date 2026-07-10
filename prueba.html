@@ -912,8 +912,8 @@
 
                     // Creación del degradado: Nace suavemente en el punto más alto ocupado y se atenúa de forma elegante
                     const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
-                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.60)`);   // Caída al 20% máximo: luz ambiental sutil
-                    fillGrad.addColorStop(0.8, `rgba(${rG}, ${gG}, ${bG}, 0.25)`);  // Atenuación imperceptible a mitad de camino
+                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.50)`);   // Caída al 20% máximo: luz ambiental sutil
+                    fillGrad.addColorStop(0.6, `rgba(${rG}, ${gG}, ${bG}, 0.25)`);  // Atenuación imperceptible a mitad de camino
                     fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Desaparición limpia
 
                     chartCtx.fillStyle = fillGrad;
