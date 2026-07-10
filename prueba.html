@@ -799,7 +799,7 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA OPTIMIZADA CON ESCALA FIJA A 6:38 Y GRADIENTE MATEMÁTICO DESDE 6:50 ---
+        // --- 7. GRÁFICA TELEMÉTRICA RESTAURADA (ESCALA NATIVA AUTO) CON DEGRADADO SUTIL ELEGANTE ---
         function renderTelemetryChart(data) {
             const chartCanvas = document.getElementById('telemetryChart');
             if (!chartCanvas) return;
@@ -860,7 +860,7 @@
                 return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
             });
 
-            // ─── PLUGIN DE DEGRADADO MATEMÁTICO: SE POSICIONA FIJO POR TIEMPO DESDE 6:50 ───
+            // ─── PLUGIN DE DEGRADADO AMBIENTAL SUTIL / ELEGANTE ───
             const dynamicFillPlugin = {
                 id: 'dynamicFillPlugin',
                 beforeDatasetsDraw(chart) {
@@ -906,15 +906,15 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    // TRUCO MATEMÁTICO: Convertimos los tiempos reales a coordenadas píxel exactas
-                    // Forzamos el inicio del brillo al 100% justo en los 6:50 (410 segundos)
-                    const pixelInicioBrillo = scales.y.getPixelForValue(410);
+                    // Detectamos el punto Y más alto real dibujado en pantalla para iniciar la rampa de luz de forma natural
+                    const validYs = points.filter(pt => !pt.skip && !isNaN(pt.y) && pt.y !== null).map(pt => pt.y);
+                    const puntoMasAltoY = validYs.length > 0 ? Math.min(...validYs) : chartArea.top;
 
-                    // Creamos el degradado vertical anclado a los 6:50
-                    const fillGrad = chartCtx.createLinearGradient(0, pixelInicioBrillo, 0, chartArea.bottom);
-                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.85)`);   // Chute masivo (85%) de luz en la cota de 6:50
-                    fillGrad.addColorStop(0.4, `rgba(${rG}, ${gG}, ${bG}, 0.30)`);  // Presencia sólida a mitad de camino
-                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Desvanecimiento al tocar el fondo
+                    // Creación del degradado: Nace suavemente en el punto más alto ocupado y se atenúa de forma elegante
+                    const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
+                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.20)`);   // Caída al 20% máximo: luz ambiental sutil
+                    fillGrad.addColorStop(0.5, `rgba(${rG}, ${gG}, ${bG}, 0.05)`);  // Atenuación imperceptible a mitad de camino
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Desaparición limpia
 
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
@@ -930,7 +930,7 @@
                         {
                             label: 'Evolución Cronometrada',
                             data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.35)',
+                            borderColor: 'rgba(255, 255, 255, 0.45)', // Línea blanca limpia con buen contraste
                             borderWidth: 2,
                             pointBackgroundColor: customPointColors,
                             pointBorderColor: '#000',
@@ -975,8 +975,7 @@
                     },
                     scales: {
                         y: {
-                            // ─── PETICIÓN 1: LA GRÁFICA CORRE DESDE 6:38 FIJOS ───
-                            min: 398, // 6 minutos * 60s + 38s = 398 segundos exactos
+                            // Eliminamos el min rígido anterior para restaurar el ajuste de escala nativo
                             grid: { color: '#1f222e' },
                             ticks: {
                                 color: '#a0a0a0',
@@ -1027,7 +1026,7 @@
             reversedData.forEach(row => {
                 const dia = row["Día"];
                 const estado = row["ESTADO"].toUpperCase().trim();
-                const notasTexto = row["Notas"] || '';
+                const CastleNotes = row["Notas"] || '';
                 
                 let borderClass = 'border-l-green-500';
                 let textBadgeClass = 'text-green-400';
@@ -1053,7 +1052,7 @@
                 const card = document.createElement('div');
                 card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} ${specialBgClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
                 card.dataset.day = dia;
-                card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${notasTexto}`.toLowerCase();
+                card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${CastleNotes}`.toLowerCase();
                 
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
@@ -1068,7 +1067,7 @@
                         </div>
                     </div>
                     <div class="mt-2 text-xs ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'} pt-2">
-                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
+                        <strong>Notas de boxes:</strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
