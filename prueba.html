@@ -876,21 +876,32 @@
                             data: lineTimesData,
                             borderColor: 'rgba(255, 255, 255, 0.25)',
                             borderWidth: 2,
-                            fill: 'origin', // Forzar origen del renderizado de área
+                            pointBackgroundColor: customPointColors,
+                            pointBorderColor: '#000',
+                            pointRadius: customPointRadius,
+                            pointHoverRadius: customPointHoverRadius,
+                            pointStyle: customPointStyles,
+                            spanGaps: true,
                             
-                            // ─── CALLBACK DE COLOR DINÁMICO INMUNE A FORMATOS ───
+                            // ─── AQUÍ INICIA EL CAMBIO ───
+                            fill: 'origin', 
                             backgroundColor: function(context) {
                                 const chart = context.chart;
                                 const {ctx: chartCtx, chartArea} = chart;
                                 if (!chartArea) return null;
 
-                                // Obtener los límites exactos de pintado interno en píxeles
-                                const gradient = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                                const metaData = chart.getDatasetMeta(context.datasetIndex).data;
+                                if (!metaData || metaData.length === 0) return null;
+
+                                // Encontrar el punto Y más alto de la línea blanca en pantalla
+                                const yPuntos = metaData.map(p => p.y).filter(y => y !== undefined && !isNaN(y));
+                                const puntoMasAltoY = yPuntos.length > 0 ? Math.min(...yPuntos) : chartArea.top;
+
+                                // El degradado nace en la línea blanca (puntoMasAltoY) y muere en el fondo
+                                const gradient = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
                                 
-                                // Extraer el valor real (sea HEX o RGB por el navegador) y convertirlo a RGBA estable
                                 let colorRaw = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
-                                
-                                let r = 57, g = 255, b = 20; // Fallback verde neón base
+                                let r = 57, g = 255, b = 20; 
                                 if (colorRaw.startsWith('#')) {
                                     const hex = colorRaw.replace('#', '');
                                     r = parseInt(hex.substring(0, 2), 16);
@@ -903,17 +914,12 @@
                                     }
                                 }
 
-                                gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.65)`); // Opacidad arriba justo bajo la línea
-                                gradient.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, 0.25)`); // Atenuación progresiva
-                                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Desaparición absoluta abajo
+                                gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.75)`);   // Brillo potente bajo la línea
+                                gradient.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, 0.20)`);  // Difuminado rápido
+                                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Invisible en el suelo
                                 return gradient;
-                            },
-                            pointBackgroundColor: customPointColors,
-                            pointBorderColor: '#000',
-                            pointRadius: customPointRadius,
-                            pointHoverRadius: customPointHoverRadius,
-                            pointStyle: customPointStyles,
-                            spanGaps: true // Enlaza los huecos entre DNF de forma limpia
+                            }
+                            // ─── AQUÍ TERMINA EL CAMBIO ───
                         },
                         {
                             label: 'Abandono (DNF)',
