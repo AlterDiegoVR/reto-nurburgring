@@ -415,7 +415,6 @@
         function parseConfigSheet(parsedCsvData) {
             console.log("=== CONFIG RAW ===", parsedCsvData);
 
-            // Valores por defecto estrictos exigidos
             const configObj = {
                 tituloWeb: "Reto Nürburgring 100 Días",
                 descripcionReto: "Proyecto de Telemetría Oficial • 100 Días",
@@ -441,7 +440,6 @@
                 return configObj;
             }
 
-            // Mapeo uno a uno estricto según la primera y segunda columna de cada fila
             parsedCsvData.forEach(row => {
                 const columns = Object.values(row).map(v => v ? v.toString().trim() : '');
                 const key = columns[0]; 
@@ -476,29 +474,25 @@
 
         // --- 3. APLICACIÓN DE CONFIGURACIÓN REMOTA DINÁMICA ---
         function applyWebConfiguration(config) {
-            // Título y subtítulo principal
             if (config.tituloWeb) document.getElementById('web-title').innerText = config.tituloWeb;
             if (config.descripcionReto) document.getElementById('web-description').innerText = config.descripcionReto;
 
-            // Inyección de Variable CSS Principal
             if (config.colorDetalles) {
                 document.documentElement.style.setProperty('--neon-green', config.colorDetalles);
                 const valDot = document.getElementById('legend-valida-dot');
                 if (valDot) valDot.style.backgroundColor = config.colorDetalles;
             }
 
-            // Forzar carga de Imagen de Coche desde la hoja
             const imgCar = document.getElementById('header-car-img');
             if (config.fotoCoche) {
                 imgCar.onerror = function() {
                     console.error(`[ERROR CARGA]: La URL de FOTO_COCHE ha fallado: "${config.fotoCoche}". Usando fallback.`);
-                    this.src = "https://via.placeholder.com/800x400"; // Aquí es donde lee si falla
+                    this.src = "https://via.placeholder.com/800x400";
                     this.onerror = null;
                 };
                 imgCar.src = config.fotoCoche;
             }
 
-            // Forzar carga de Banner de Fondo desde la hoja
             if (config.bannerWeb) {
                 const testImg = new Image();
                 testImg.onerror = function() {
@@ -511,11 +505,9 @@
                 testImg.src = config.bannerWeb;
             }
 
-            // El botón de canal
             const ytBtn = document.getElementById('youtube-channel-btn');
             if (config.canalYoutube) ytBtn.href = config.canalYoutube;
 
-            // Inyección de Bloques de texto (1 al 5)
             const hasAnyBlock = config.txtBloque1 || config.txtBloque2 || config.txtBloque3 || config.txtBloque4 || config.txtBloque5;
             if (hasAnyBlock) {
                 document.getElementById('config-text-section').classList.remove('hidden');
@@ -533,7 +525,6 @@
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
-                // Iniciar estado por defecto con mocks mientras sincroniza
                 globalRows = [...MOCK_DATA];
                 const defaultConfig = parseConfigSheet([]);
                 processAndRender(globalRows, defaultConfig);
@@ -556,7 +547,6 @@
                     throw new Error("Acceso privado en Sheets. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
                 }
 
-                // Parseo estricto de la pestaña de configuración web
                 const rawConfigParsed = Papa.parse(configText, { header: false }).data;
                 const finalConfig = parseConfigSheet(rawConfigParsed);
                 applyWebConfiguration(finalConfig);
@@ -726,11 +716,9 @@
 
             if(!recordData && data.length > 0) recordData = data[0];
             if(recordData) {
-                // Volvemos al formato limpio original del badge para que no salte de línea
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
                 document.getElementById('record-day-tag').className = "text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded";
                 
-                // Ponemos el toque visual de la corona en el título de la ficha, donde sí luce perfecto
                 const tituloRecord = document.getElementById('record-day-tag').closest('.panel-carbon').querySelector('h2');
                 if (tituloRecord && !tituloRecord.innerText.startsWith('👑')) {
                     tituloRecord.innerText = `👑 Récord en el Infierno Verde`;
@@ -742,11 +730,10 @@
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
                 
-                // Restauramos el borde verde original y quitamos la sombra dorada
                 const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
                 if (tarjetaRecord) {
-                    tarjetaRecord.style.borderColor = ''; // Resetea al CSS base
-                    tarjetaRecord.style.boxShadow = '';    // Resetea al CSS base
+                    tarjetaRecord.style.borderColor = ''; 
+                    tarjetaRecord.style.boxShadow = '';    
                 }
             }
 
@@ -817,7 +804,7 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA AVANZADA (CON RELLENO DEGRADADO ADAPTATIVO SEGURO) ---
+        // --- 7. GRÁFICA TELEMÉTRICA AVANZADA UNIFICADA CON LLAMADA DINÁMICA FIABLE DE COLOR ---
         function renderTelemetryChart(data) {
             const chartCanvas = document.getElementById('telemetryChart');
             if (!chartCanvas) return;
@@ -831,18 +818,6 @@
             const validSeconds = lineTimesData.filter(s => s !== null);
             const maxValidValue = validSeconds.length > 0 ? Math.max(...validSeconds) : 420;
             const dnfCeilingY = maxValidValue + 6;
-
-            // Extraer el color dinámico del Sheets o usar el verde de fallback
-            const neonGreenColor = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
-
-            // Gradiente vertical basado en la altura física (forzando 320px si está en carga oculta inicial)
-            const altoGrafica = chartCanvas.clientHeight > 0 ? chartCanvas.clientHeight : 320;
-            const gradientFill = ctx.createLinearGradient(0, 0, 0, altoGrafica);
-            
-            // Tratamiento del HEX para inyectarle opacidad directa en canal alfa
-            gradientFill.addColorStop(0, neonGreenColor + '40');   // ~25% opacidad arriba justo bajo la línea
-            gradientFill.addColorStop(0.6, neonGreenColor + '0d');  // ~5% opacidad desvaneciéndose en la mitad
-            gradientFill.addColorStop(1, 'rgba(0, 0, 0, 0)');      // Transparente al tocar el eje X
 
             let minTimeS = Infinity;
             let recordDay = null;
@@ -859,11 +834,14 @@
             const customPointHoverRadius = [];
             const customPointStyles = [];
 
+            // Obtener el color del elemento raíz de forma segura para los puntos
+            const neonGreenColor = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
+
             data.forEach(r => {
                 const estado = r["ESTADO"].toUpperCase().trim();
                 if (r["Día"] === recordDay) {
-                    customPointColors.push('#ffd700'); // Oro
-                    customPointRadius.push(9);         // El doble de grande
+                    customPointColors.push('#ffd700'); 
+                    customPointRadius.push(9);         
                     customPointHoverRadius.push(12);
                     customPointStyles.push('triangle'); 
                 } else if (estado === 'VÁLIDA') {
@@ -898,14 +876,44 @@
                             data: lineTimesData,
                             borderColor: 'rgba(255, 255, 255, 0.25)',
                             borderWidth: 2,
-                            fill: true,                  // ACTIVAR ÁREA DE RELLENO
-                            backgroundColor: gradientFill, // ASIGNAR GRADIENTE ENCONTRADO
+                            fill: 'origin', // Forzar origen del renderizado de área
+                            
+                            // ─── CALLBACK DE COLOR DINÁMICO INMUNE A FORMATOS ───
+                            backgroundColor: function(context) {
+                                const chart = context.chart;
+                                const {ctx: chartCtx, chartArea} = chart;
+                                if (!chartArea) return null;
+
+                                // Obtener los límites exactos de pintado interno en píxeles
+                                const gradient = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                                
+                                // Extraer el valor real (sea HEX o RGB por el navegador) y convertirlo a RGBA estable
+                                let colorRaw = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
+                                
+                                let r = 57, g = 255, b = 20; // Fallback verde neón base
+                                if (colorRaw.startsWith('#')) {
+                                    const hex = colorRaw.replace('#', '');
+                                    r = parseInt(hex.substring(0, 2), 16);
+                                    g = parseInt(hex.substring(2, 4), 16);
+                                    b = parseInt(hex.substring(4, 6), 16);
+                                } else if (colorRaw.includes('rgb')) {
+                                    const match = colorRaw.match(/\d+/g);
+                                    if (match && match.length >= 3) {
+                                        r = match[0]; g = match[1]; b = match[2];
+                                    }
+                                }
+
+                                gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.22)`); // Opacidad arriba justo bajo la línea
+                                gradient.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, 0.04)`); // Atenuación progresiva
+                                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Desaparición absoluta abajo
+                                return gradient;
+                            },
                             pointBackgroundColor: customPointColors,
                             pointBorderColor: '#000',
                             pointRadius: customPointRadius,
                             pointHoverRadius: customPointHoverRadius,
                             pointStyle: customPointStyles,
-                            spanGaps: true
+                            spanGaps: true // Enlaza los huecos entre DNF de forma limpia
                         },
                         {
                             label: 'Abandono (DNF)',
@@ -979,7 +987,6 @@
             container.innerHTML = '';
             const reversedData = [...data].reverse();
 
-            // Identificamos el día del récord antes de pintar
             let minTimeS = Infinity;
             let recordDay = null;
             data.forEach(r => {
@@ -1000,7 +1007,6 @@
                 let specialBgClass = '';
                 let crownIcon = '';
 
-                // Si es el día del récord, cambiamos por completo su look
                 if (dia === recordDay) {
                     borderClass = 'border-l-amber-400';
                     textBadgeClass = 'text-amber-400 font-black';
@@ -1046,8 +1052,6 @@
             const row = globalRows.find(r => r["Día"] === day);
             if (row) {
                 updateDynamicScreen(row, true);
-                
-                // Buscamos la Ficha 3 (el contenedor de la tarjeta dinámica)
                 const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
                 if (ficha3) {
                     ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1055,7 +1059,6 @@
             }
         }
 
-        // Corregido el bind de filterLaps para mapear la variable exacta
         function filterLaps() {
             const query = document.getElementById('lap-search').value.toLowerCase().trim();
             const cards = document.querySelectorAll('#history-container > div');
