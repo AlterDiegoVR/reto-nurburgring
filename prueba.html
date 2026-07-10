@@ -799,7 +799,7 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA CON PLUGIN DE DEGRADADO FIJO QUE PERSIGUE LA LÍNEA BLANCA ---
+        // --- 7. GRÁFICA TELEMÉTRICA OPTIMIZADA CON ESCALA FIJA A 6:38 Y GRADIENTE MATEMÁTICO DESDE 6:50 ---
         function renderTelemetryChart(data) {
             const chartCanvas = document.getElementById('telemetryChart');
             if (!chartCanvas) return;
@@ -860,7 +860,7 @@
                 return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
             });
 
-            // ─── CUSTOM PLUGIN COMPATIBLE: PINTA EL ÁREA DESDE LA LÍNEA HACIA ABAJO ───
+            // ─── PLUGIN DE DEGRADADO MATEMÁTICO: SE POSICIONA FIJO POR TIEMPO DESDE 6:50 ───
             const dynamicFillPlugin = {
                 id: 'dynamicFillPlugin',
                 beforeDatasetsDraw(chart) {
@@ -871,7 +871,6 @@
                     const points = meta.data;
                     if (!points || points.length < 2) return;
 
-                    // Parseo seguro del color para el plugin
                     let colorRaw = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
                     let rG = 57, gG = 255, bG = 20;
                     if (colorRaw.startsWith('#')) {
@@ -887,17 +886,13 @@
                     }
 
                     chartCtx.save();
-
-                    // Dibujar el polígono de relleno que copia los puntos de la línea blanca
                     chartCtx.beginPath();
                     
                     let firstPoint = true;
                     let lastX = chartArea.left;
 
                     points.forEach((pt) => {
-                        // Saltar puntos DNF (transparentes/sin valor Y real de trazada)
                         if (pt.skip || isNaN(pt.y) || pt.y === null) return;
-
                         if (firstPoint) {
                             chartCtx.moveTo(pt.x, chartArea.bottom);
                             chartCtx.lineTo(pt.x, pt.y);
@@ -911,15 +906,15 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    // Encontrar el punto más alto de la línea en este renderizado exacto
-                    const validYs = points.filter(pt => !pt.skip && !isNaN(pt.y) && pt.y !== null).map(pt => pt.y);
-                    const puntoMasAltoY = validYs.length > 0 ? Math.min(...validYs) : chartArea.top;
+                    // TRUCO MATEMÁTICO: Convertimos los tiempos reales a coordenadas píxel exactas
+                    // Forzamos el inicio del brillo al 100% justo en los 6:50 (410 segundos)
+                    const pixelInicioBrillo = scales.y.getPixelForValue(410);
 
-                    // Crear el gradiente vertical: Máxima fuerza en la trazada, invisible en el fondo
-                    const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
-                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.65)`);   // Chute potente de luz bajo los puntos
-                    fillGrad.addColorStop(0.3, `rgba(${rG}, ${gG}, ${bG}, 0.15)`);  // Difuminado intermedio
-                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Cero opacidad abajo
+                    // Creamos el degradado vertical anclado a los 6:50
+                    const fillGrad = chartCtx.createLinearGradient(0, pixelInicioBrillo, 0, chartArea.bottom);
+                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.85)`);   // Chute masivo (85%) de luz en la cota de 6:50
+                    fillGrad.addColorStop(0.4, `rgba(${rG}, ${gG}, ${bG}, 0.30)`);  // Presencia sólida a mitad de camino
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Desvanecimiento al tocar el fondo
 
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
@@ -935,14 +930,14 @@
                         {
                             label: 'Evolución Cronometrada',
                             data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.35)', // Línea blanca limpia
+                            borderColor: 'rgba(255, 255, 255, 0.35)',
                             borderWidth: 2,
                             pointBackgroundColor: customPointColors,
                             pointBorderColor: '#000',
                             pointRadius: customPointRadius,
                             pointHoverRadius: customPointHoverRadius,
                             pointStyle: customPointStyles,
-                            fill: false, // Desactivamos el fill base para que no interfiera con el plugin custom
+                            fill: false, 
                             spanGaps: true
                         },
                         {
@@ -980,6 +975,8 @@
                     },
                     scales: {
                         y: {
+                            // ─── PETICIÓN 1: LA GRÁFICA CORRE DESDE 6:38 FIJOS ───
+                            min: 398, // 6 minutos * 60s + 38s = 398 segundos exactos
                             grid: { color: '#1f222e' },
                             ticks: {
                                 color: '#a0a0a0',
@@ -1008,7 +1005,7 @@
                         }
                     }
                 },
-                plugins: [dynamicFillPlugin] // Inyectamos el plugin custom aquí
+                plugins: [dynamicFillPlugin] 
             });
         }
 
