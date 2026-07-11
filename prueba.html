@@ -67,6 +67,7 @@
             letter-spacing: 2px;
         }
 
+        /* Scrollbars globales */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -81,18 +82,38 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--neon-green);
         }
+
+        /* Estilo específico para la barra de desplazamiento de la gráfica */
+        .scrollbar-trazada::-webkit-scrollbar {
+            height: 6px;
+        }
+        .scrollbar-trazada::-webkit-scrollbar-track {
+            background: #0d0e12;
+            border-radius: 3px;
+        }
+        .scrollbar-trazada::-webkit-scrollbar-thumb {
+            background: #2c2f3f;
+            border-radius: 3px;
+        }
+        .scrollbar-trazada::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-green);
+        }
     </style>
 </head>
 <body class="text-gray-200 min-h-screen pb-12">
 
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="mb-6 flex flex-col gap-4">
+            <!-- Bloque superior transparente ajustado para dar aire al logo del banner -->
             <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
 
+            <!-- Panel Central Translúcido con los botones integrados abajo -->
             <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
                 
+                <!-- Coche del Reto -->
                 <img id="header-car-img" src="" alt="Coche del Reto" class="w-90 h-auto max-h-52 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]">
                 
+                <!-- Textos Principales -->
                 <div>
                     <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         Nürburgring Nordschleife
@@ -102,6 +123,7 @@
                     </p>
                 </div>
 
+                <!-- Botones de canal y estado de conexión -->
                 <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
                     <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded text-xs font-bold transition-all uppercase tracking-wider flex items-center gap-1.5">
                         <span class="text-xs">▶</span> Visitar Canal
@@ -270,8 +292,12 @@
                     <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
                 </div>
             </div>
-            <div class="relative w-full h-[320px]">
-                <canvas id="telemetryChart"></canvas>
+            
+            <!-- ─── CONTENEDOR NUEVO CON SCROLL HORIZONTAL INCORPORADO ─── -->
+            <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
+                <div id="chartWrapper" class="h-[320px] min-w-full">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
             </div>
         </section>
 
@@ -800,8 +826,19 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA RESTAURADA (ESCALA NATIVA AUTO) CON DEGRADADO SUTIL ELEGANTE ---
+        // --- 7. GRÁFICA TELEMÉTRICA CON SCROLL HORIZONTAL DINÁMICO E INICIO AUTOMÁTICO A LA DERECHA ---
         function renderTelemetryChart(data) {
+            // ─── ANCHO DINÁMICO: Evita el apelotonamiento fijando píxeles por jornada ───
+            const chartWrapper = document.getElementById('chartWrapper');
+            if (chartWrapper) {
+                const pixelPorDia = 28; 
+                const anchoCalculado = data.length * pixelPorDia;
+                // Si la gráfica supera el ancho de la pantalla, se expande; si no, ocupa el 100% estable
+                chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
+                    ? `${anchoCalculado}px` 
+                    : '100%';
+            }
+
             const chartCanvas = document.getElementById('telemetryChart');
             if (!chartCanvas) return;
 
@@ -861,7 +898,6 @@
                 return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
             });
 
-            // ─── PLUGIN DE DEGRADADO AMBIENTAL SUTIL / ELEGANTE ───
             const dynamicFillPlugin = {
                 id: 'dynamicFillPlugin',
                 beforeDatasetsDraw(chart) {
@@ -907,15 +943,13 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    // Detectamos el punto Y más alto real dibujado en pantalla para iniciar la rampa de luz de forma natural
                     const validYs = points.filter(pt => !pt.skip && !isNaN(pt.y) && pt.y !== null).map(pt => pt.y);
                     const puntoMasAltoY = validYs.length > 0 ? Math.min(...validYs) : chartArea.top;
 
-                    // Creación del degradado: Nace suavemente en el punto más alto ocupado y se atenúa de forma elegante
                     const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
-                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.50)`);   // Caída al 20% máximo: luz ambiental sutil
-                    fillGrad.addColorStop(0.6, `rgba(${rG}, ${gG}, ${bG}, 0.25)`);  // Atenuación imperceptible a mitad de camino
-                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                // Desaparición limpia
+                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.20)`);   
+                    fillGrad.addColorStop(0.5, `rgba(${rG}, ${gG}, ${bG}, 0.05)`);  
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                
 
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
@@ -931,7 +965,7 @@
                         {
                             label: 'Evolución Cronometrada',
                             data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.45)', // Línea blanca limpia con buen contraste
+                            borderColor: 'rgba(255, 255, 255, 0.45)', 
                             borderWidth: 2,
                             pointBackgroundColor: customPointColors,
                             pointBorderColor: '#000',
@@ -976,7 +1010,6 @@
                     },
                     scales: {
                         y: {
-                            // Eliminamos el min rígido anterior para restaurar el ajuste de escala nativo
                             grid: { color: '#1f222e' },
                             ticks: {
                                 color: '#a0a0a0',
@@ -1007,6 +1040,15 @@
                 },
                 plugins: [dynamicFillPlugin] 
             });
+
+            // ─── DESPLAZAMIENTO AUTOMÁTICO A LA DERECHA (Último Registro Visible) ───
+            // Esperamos un brevísimo instante a que el motor termine de renderizar la anchura
+            setTimeout(() => {
+                if (chartWrapper) {
+                    const contenedorScroll = chartWrapper.parentElement;
+                    contenedorScroll.scrollLeft = contenedorScroll.scrollWidth;
+                }
+            }, 50);
         }
 
         function renderHistoryList(data) {
