@@ -290,7 +290,7 @@
                 </div>
             </div>
             
-            <!-- ─── CONTENEDOR NUEVO CON SCROLL HORIZONTAL INCORPORADO ─── -->
+            <!-- CONTENEDOR CON SCROLL HORIZONTAL INCORPORADO -->
             <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
                 <div id="chartWrapper" class="h-[320px] min-w-full">
                     <canvas id="telemetryChart"></canvas>
@@ -738,7 +738,9 @@
                 document.getElementById('record-time').className = "text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
+                
+                // Mapeo correcto de Notas
+                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
                 
                 const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
                 if (tarjetaRecord) {
@@ -752,7 +754,9 @@
                 document.getElementById('latest-day-tag').innerText = `DÍA ${latestData["Día"]}`;
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
-                document.getElementById('latest-notes').innerText = latestData["Notes"] || 'Sin notas.';
+                
+                // Mapeo correcto de Notas
+                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 if(latestSecs && recordActualS !== Infinity) {
@@ -793,7 +797,9 @@
             document.getElementById('random-title').innerText = `Sesión del día ${row["Día"]}`;
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            document.getElementById('random-notes').innerText = row["Notes"] || 'Sin anotaciones técnicas.';
+            
+            // Mapeo correcto de Notas
+            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
             const estado = row["ESTADO"].toUpperCase().trim();
@@ -813,7 +819,6 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA CON SCROLL HORIZONTAL DINÁMICO E INICIO AUTOMÁTICO A LA DERECHA ---
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
