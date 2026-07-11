@@ -156,7 +156,7 @@
             </div>
         </section>
 
-        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ASIGNADA AL MILÍMETRO ─── -->
+        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ALINEADA MILIMÉTRICAMENTE ─── -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
             
             <!-- TARJETA 1: MEJOR VUELTA -->
@@ -324,7 +324,7 @@
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
                     <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye strictly vueltas de salida</span>
+                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye estrictamente vueltas de salida</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
@@ -424,7 +424,7 @@
                 const keyLimpia = key.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
                 for (let nombre of posiblesNombres) {
                     const nombreLimpio = nombre.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
-                    if (keyLimpia === nombreLiopio) {
+                    if (keyLimpia === nombreLimpio) {
                         return row[key] ? row[key].toString().trim() : '';
                     }
                 }
@@ -738,7 +738,7 @@
                 }
 
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
-                document.getElementById('record-time').className = "text-xl font-mono font-black text-[#39ff14] drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
+                document.getElementById('record-time').className = "text-xl font-mono font-black text-green-400 drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
