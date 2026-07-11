@@ -156,9 +156,11 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- ─── REESTRUCTURACIÓN DE CONTENEDOR DE TARJETAS SUPERIORES ─── -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
             
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)]">
+            <!-- TARJETA 1: MEJOR VUELTA -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)] pb-6">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
@@ -169,20 +171,24 @@
                         <iframe id="record-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
-                        <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
+                <!-- Añadida altura fija h-36 flex-col para forzar simetría -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-36 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
+                            <span id="record-time" class="text-2xl font-mono font-black text-green-400">--:--.---</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-gray-400">Publicado el dia:</span>
+                            <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Publicado el dia:</span>
-                        <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
-                    </div>
-                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando anotaciones del récord...</p>
+                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2 mt-auto">Cargando anotaciones del récord...</p>
                 </div>
             </div>
 
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600">
+            <!-- TARJETA 2: ÚLTIMO REGISTRO -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-6">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
@@ -193,20 +199,24 @@
                         <iframe id="latest-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-400">Tiempo Registrado:</span>
-                        <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
+                <!-- Añadida altura fija h-36 flex-col para forzar simetría -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-36 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">Tiempo Registrado:</span>
+                            <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
+                            <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
-                        <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
-                    </div>
-                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-2">Sincronizando última tanda...</p>
+                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-2 mt-auto">Sincronizando última tanda...</p>
                 </div>
             </div>
 
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500">
+            <!-- TARJETA 3: VUELTA ALEATORIA (Con espacio inferior para el botón sin romper alineación) -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-16 relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
@@ -217,16 +227,22 @@
                         <iframe id="random-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
-                        <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
+                <!-- Manteniendo los textos calcados con h-36 flex-col -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-36 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
+                            <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-gray-400">Estado de Verificación:</span>
+                            <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-gray-400">Estado de Verificación:</span>
-                        <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
-                    </div>
-                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-2 mb-3">Usa los controles para cargar telemetría.</p>
+                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-2 mt-auto">Usa los controles para cargar telemetría.</p>
+                </div>
+                <!-- Botón innegociable fijado de forma absoluta abajo sin estorbar los textos superiores -->
+                <div class="absolute bottom-4 left-5 right-5">
                     <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider">
                         🎲 Lanzar Día Aleatorio
                     </button>
@@ -290,7 +306,6 @@
                 </div>
             </div>
             
-            <!-- CONTENEDOR CON SCROLL HORIZONTAL INCORPORADO -->
             <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
                 <div id="chartWrapper" class="h-[320px] min-w-full">
                     <canvas id="telemetryChart"></canvas>
@@ -735,11 +750,11 @@
                 }
 
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
-                document.getElementById('record-time').className = "text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]";
+                // CAMBIADO A COLOR VERDE PURE: text-green-400
+                document.getElementById('record-time').className = "text-2xl font-mono font-black text-green-400 drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 
-                // Mapeo correcto de Notas
                 document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
                 
                 const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
@@ -755,7 +770,6 @@
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
                 
-                // Mapeo correcto de Notas
                 document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
@@ -798,7 +812,6 @@
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
             
-            // Mapeo correcto de Notas
             document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
