@@ -156,11 +156,11 @@
             </div>
         </section>
 
-        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS SUPERIORES ALINEADAS MILIMÉTRICAMENTE ─── -->
+        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ASIGNADA AL MILÍMETRO ─── -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
             
             <!-- TARJETA 1: MEJOR VUELTA -->
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[#39ff14] pb-6">
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[#39ff14] pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
@@ -172,11 +172,11 @@
                     </div>
                 </div>
                 
-                <!-- Contenedor inferior con rejilla fija de 3 filas para forzar alineación exacta -->
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
                 <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
                     <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
-                        <span id="record-time" class="text-xl font-mono font-black text-[#39ff14] drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]">--:--.---</span>
+                        <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Publicado el dia:</span>
@@ -187,7 +187,7 @@
             </div>
 
             <!-- TARJETA 2: ÚLTIMO REGISTRO -->
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-6">
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
@@ -199,7 +199,7 @@
                     </div>
                 </div>
                 
-                <!-- Contenedor inferior con rejilla fija de 3 filas para forzar alineación exacta -->
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
                 <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
                     <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Tiempo Registrado:</span>
@@ -214,7 +214,7 @@
             </div>
 
             <!-- TARJETA 3: VUELTA ALEATORIA / SELECCIONADA -->
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-16 relative">
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
@@ -226,7 +226,7 @@
                     </div>
                 </div>
                 
-                <!-- Contenedor inferior calcado con rejilla fija de 3 filas para forzar alineación exacta -->
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
                 <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
                     <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
@@ -239,8 +239,8 @@
                     <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controles para cargar telemetría.</p>
                 </div>
 
-                <!-- Botón fijo absoluto abajo, sin alterar las filas internas del bloque superior -->
-                <div class="absolute bottom-3 left-5 right-5">
+                <!-- Botón absoluto flotante colocado abajo del todo en la base externa -->
+                <div class="absolute bottom-4 left-5 right-5">
                     <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider shadow-md">
                         🎲 Lanzar Día Aleatorio
                     </button>
@@ -295,7 +295,7 @@
                     <h3 class="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
                         📉 Evolución
                     </h3>
-                    <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Pulsa en cualquier point para cargar el short del día arriba.</p>
+                    <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Pulsa en cualquier punto para cargar el short del día arriba.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
                     <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#39ff14]" id="legend-valida-dot"></span> Válida</span>
@@ -324,7 +324,7 @@
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
                     <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye estrictamente vueltas de salida</span>
+                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye strictly vueltas de salida</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
@@ -424,7 +424,7 @@
                 const keyLimpia = key.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
                 for (let nombre of posiblesNombres) {
                     const nombreLimpio = nombre.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
-                    if (keyLimpia === nombreLimpio) {
+                    if (keyLimpia === nombreLiopio) {
                         return row[key] ? row[key].toString().trim() : '';
                     }
                 }
@@ -697,7 +697,7 @@
             const streakCard = document.getElementById('streak-card');
             if(rachaActualSinMejorar > 5) {
                 streakCard.className = "panel-carbon rounded-xl p-4 flex flex-col justify-between border border-red-500/30 bg-red-950/15 text-red-400";
-                document.getElementById('streak-descriptor').innerText = "Racha actual crítica: El tiempo estructural se encuentra estancado.";
+                document.getElementById('streak-descriptor').innerText = "Racha actual crítica: El tiempo estructural se encuentra temporalmente estancado.";
             } else {
                 streakCard.className = "panel-carbon rounded-xl p-4 flex flex-col justify-between border border-yellow-500/20 bg-yellow-950/5 text-yellow-500";
                 document.getElementById('streak-descriptor').innerText = "Días consecutivos en pista sin rebajar la mejor marca histórica actual.";
@@ -738,7 +738,7 @@
                 }
 
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
-                document.getElementById('record-time').className = "text-xl font-mono font-black text-[#39ff14] drop-shadow-[0_0_8px_rgba(57,255,20,0.5)]";
+                document.getElementById('record-time').className = "text-xl font-mono font-black text-[#39ff14] drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
