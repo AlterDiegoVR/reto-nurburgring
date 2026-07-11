@@ -107,11 +107,8 @@
             <!-- Bloque superior transparente ajustado para dar aire al logo del banner -->
             <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
 
-            <!-- Panel Central Translúcido con los botones integrados abajo -->
+            <!-- Panel Central Translúcido con los botones integrados abajo (Sin la imagen del Ferrari) -->
             <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
-                
-                <!-- Coche del Reto -->
-                <img id="header-car-img" src="" alt="Coche del Reto" class="w-90 h-auto max-h-52 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]">
                 
                 <!-- Textos Principales -->
                 <div>
@@ -508,16 +505,6 @@
                 if (valDot) valDot.style.backgroundColor = config.colorDetalles;
             }
 
-            const imgCar = document.getElementById('header-car-img');
-            if (config.fotoCoche) {
-                imgCar.onerror = function() {
-                    console.error(`[ERROR CARGA]: La URL de FOTO_COCHE ha fallado: "${config.fotoCoche}". Usando fallback.`);
-                    this.src = "https://via.placeholder.com/800x400";
-                    this.onerror = null;
-                };
-                imgCar.src = config.fotoCoche;
-            }
-
             if (config.bannerWeb) {
                 const testImg = new Image();
                 testImg.onerror = function() {
@@ -828,12 +815,10 @@
 
         // --- 7. GRÁFICA TELEMÉTRICA CON SCROLL HORIZONTAL DINÁMICO E INICIO AUTOMÁTICO A LA DERECHA ---
         function renderTelemetryChart(data) {
-            // ─── ANCHO DINÁMICO: Evita el apelotonamiento fijando píxeles por jornada ───
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
                 const pixelPorDia = 28; 
                 const anchoCalculado = data.length * pixelPorDia;
-                // Si la gráfica supera el ancho de la pantalla, se expande; si no, ocupa el 100% estable
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
                     ? `${anchoCalculado}px` 
                     : '100%';
@@ -1041,8 +1026,6 @@
                 plugins: [dynamicFillPlugin] 
             });
 
-            // ─── DESPLAZAMIENTO AUTOMÁTICO A LA DERECHA (Último Registro Visible) ───
-            // Esperamos un brevísimo instante a que el motor termine de renderizar la anchura
             setTimeout(() => {
                 if (chartWrapper) {
                     const contenedorScroll = chartWrapper.parentElement;
