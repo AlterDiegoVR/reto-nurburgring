@@ -311,6 +311,7 @@
             </div>
         </section>
 
+        <!-- ─── SECCIÓN ESTADÍSTICAS OPTIMIZADA ESTÉTICAMENTE ─── -->
         <section class="panel-carbon rounded-xl p-5 mb-8">
             <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Estadísticas</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -333,15 +334,17 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
+                <!-- ETIQUETA Y NÚMERO VERDE NEÓN -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-yellow-500 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
-                    <div id="stat-racha-valida" class="text-2xl font-black text-yellow-400">0 días</div>
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
+                    <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                 </div>
 
+                <!-- ETIQUETA Y NÚMERO ROJO COMPETICIÓN -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
-                    <div id="stat-racha-sin-record" class="text-2xl font-black text-white">0 días</div>
+                    <span class="text-[10px] font-bold text-red-500 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
+                    <div id="stat-racha-sin-record" class="text-2xl font-black text-red-500">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Días consecutivos estancado sin rebajar marca</span>
                 </div>
 
@@ -357,9 +360,10 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Ratio de vueltas limpias registradas</span>
                 </div>
 
+                <!-- ETIQUETA Y NÚMERO VERDE NEÓN -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-blue-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
-                    <div id="stat-mejora-global" class="text-2xl font-black text-blue-400">--:--.---</div>
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
+                    <div id="stat-mejora-global" class="text-2xl font-black text-green-400">--:--.---</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Diferencia entre 1ª vuelta válida y el Récord</span>
                 </div>
 
@@ -671,7 +675,6 @@
                 }
             });
 
-            // BugFix: Validar remanentes al final del dataset
             if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
             if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
 
@@ -884,8 +887,8 @@
             const dynamicFillPlugin = {
                 id: 'dynamicFillPlugin',
                 beforeDatasetsDraw(chart) {
-                    const {ctx: chartCtx, chartArea, scales} = chart;
-                    if (!chartArea || !scales.x || !scales.y) return;
+                    const {ctx: chartCtx, chartArea} = chart;
+                    if (!chartArea) return;
 
                     const meta = chart.getDatasetMeta(0);
                     const points = meta.data;
@@ -912,9 +915,8 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    // BugFix: Corregido cálculo del punto visual más alto usando los píxeles reales del eje Y
-                    const puntoMasAltoY = scales.y.getPixelForValue(scales.y.min);
-                    const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
+                    // BugFix Gradiente: Anclaje del degradado de forma absoluta dentro de las dimensiones del canvas
+                    const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
                     fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.25)');   
                     fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.05)');  
                     fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                
@@ -1063,7 +1065,6 @@
                 card.dataset.day = dia;
                 card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${CastleNotes}`.toLowerCase();
                 
-                // BugFix: Eliminado onclick duplicado interno para prevenir doble renderizado del iframe
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
                         <div class="flex items-center gap-3">
