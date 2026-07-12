@@ -864,7 +864,7 @@
                 const estado = r["ESTADO"].toUpperCase().trim();
                 if (r["Día"] === recordDay) {
                     customPointColors.push('#ffd700'); 
-                    customPointRadius.push(9);         
+                    customPointRadius.push(12);         
                     customPointHoverRadius.push(12);
                     customPointStyles.push('triangle'); 
                 } else if (estado === 'VÁLIDA') {
@@ -876,6 +876,11 @@
                     customPointColors.push('#ff3b30');
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
+                    customPointStyles.push('circle');
+                } else if (estado === 'EXHIBICIÓN') {
+                    customPointColors.push('#a855f7'); // Púrpura para los días de exhibición
+                    customPointRadius.push(5);          // Tamaño para que sea visible
+                    customPointHoverRadius.push(9);
                     customPointStyles.push('circle');
                 } else {
                     customPointColors.push('transparent');
@@ -1083,7 +1088,7 @@
                         </div>
                     </div>
                     <div class="mt-2 text-xs ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'} pt-2">
-                        <strong>Notas de boxes:</strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas.</span>'}
+                        <strong></strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
