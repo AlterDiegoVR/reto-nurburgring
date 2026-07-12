@@ -107,7 +107,7 @@
             <!-- Bloque superior transparente ajustado para dar aire al logo del banner -->
             <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
 
-            <!-- Panel Central Translúcido con los botones integrados abajo (Sin la imagen del Ferrari) -->
+            <!-- Panel Central Translúcido con los botones integrados abajo -->
             <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
                 
                 <!-- Textos Principales -->
@@ -156,9 +156,11 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ALINEADA MILIMÉTRICAMENTE ─── -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
             
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)]">
+            <!-- TARJETA 1: MEJOR VUELTA -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[#39ff14] pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
@@ -169,20 +171,23 @@
                         <iframe id="record-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
+                
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
                         <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Publicado el dia:</span>
                         <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
                     </div>
-                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando anotaciones del récord...</p>
+                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Cargando anotaciones del récord...</p>
                 </div>
             </div>
 
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600">
+            <!-- TARJETA 2: ÚLTIMO REGISTRO -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
@@ -193,20 +198,23 @@
                         <iframe id="latest-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
+                
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Tiempo Registrado:</span>
                         <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
                         <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
                     </div>
-                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-2">Sincronizando última tanda...</p>
+                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Sincronizando última tanda...</p>
                 </div>
             </div>
 
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500">
+            <!-- TARJETA 3: VUELTA ALEATORIA / SELECCIONADA -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
@@ -217,17 +225,23 @@
                         <iframe id="random-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
+                
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
                         <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Estado de Verificación:</span>
                         <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
                     </div>
-                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-2 mb-3">Usa los controles para cargar telemetría.</p>
-                    <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider">
+                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controles para cargar telemetría.</p>
+                </div>
+
+                <!-- Botón absoluto flotante colocado abajo del todo en la base externa -->
+                <div class="absolute bottom-4 left-5 right-5">
+                    <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider shadow-md">
                         🎲 Lanzar Día Aleatorio
                     </button>
                 </div>
@@ -290,7 +304,6 @@
                 </div>
             </div>
             
-            <!-- ─── CONTENEDOR NUEVO CON SCROLL HORIZONTAL INCORPORADO ─── -->
             <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
                 <div id="chartWrapper" class="h-[320px] min-w-full">
                     <canvas id="telemetryChart"></canvas>
@@ -298,6 +311,7 @@
             </div>
         </section>
 
+        <!-- ─── SECCIÓN ESTADÍSTICAS CORREGIDA Y UNIFICADA ─── -->
         <section class="panel-carbon rounded-xl p-5 mb-8">
             <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Estadísticas</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -320,15 +334,17 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
+                <!-- Verde unificado a text-green-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-yellow-500 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
-                    <div id="stat-racha-valida" class="text-2xl font-black text-yellow-400">0 días</div>
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
+                    <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                 </div>
 
+                <!-- Rojo unificado a text-red-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
-                    <div id="stat-racha-sin-record" class="text-2xl font-black text-white">0 días</div>
+                    <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
+                    <div id="stat-racha-sin-record" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Días consecutivos estancado sin rebajar marca</span>
                 </div>
 
@@ -345,8 +361,8 @@
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-blue-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
-                    <div id="stat-mejora-global" class="text-2xl font-black text-blue-400">--:--.---</div>
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
+                    <div id="stat-mejora-global" class="text-2xl font-black text-green-400">--:--.---</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Diferencia entre 1ª vuelta válida y el Récord</span>
                 </div>
 
@@ -356,14 +372,16 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
                 </div>
 
+                <!-- Rojo unificado a text-red-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-red-500 uppercase block mb-1">❌ Sesiones con Offtrack</span>
+                    <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">❌ Sesiones con Offtrack</span>
                     <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
                 </div>
 
+                <!-- Naranja unificado a text-orange-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-orange-500 uppercase block mb-1">⚠️ Accidentes / DNF</span>
+                    <span class="text-[10px] font-bold text-orange-400 uppercase block mb-1">⚠️ Accidentes / DNF</span>
                     <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Sesiones no terminadas por colisión o fallo</span>
                 </div>
@@ -376,12 +394,12 @@
 
             </div>
         </section>
-
+        
         <section class="panel-carbon rounded-xl p-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 class="text-lg font-black text-white uppercase tracking-tight">🔍 Registro de Vueltas</h3>
-                    <p class="text-xs text-gray-400">Buscador indexado directamente sobre tus notas guardadas de carrera</p>
+                    <p class="text-xs text-gray-400">Todas las vueltas hasta el momento</p>
                 </div>
                 <div class="relative w-full md:w-80">
                     <input type="text" id="lap-search" oninput="filterLaps()" placeholder="Buscar en notas del diario (ej: tráfico, subviraje...)" class="w-full bg-black/40 border border-gray-800 text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:border-green-500 transition">
@@ -394,12 +412,12 @@
     </div>
 
     <script>
-        // --- 1. BASE DE DATOS LOCAL DE RESPALDO (MOCK DATA COMPATIBLE) ---
+        // --- BASE DE DATOS LOCAL DE RESPALDO ---
         const MOCK_DATA = [
-            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia en el Carrousel." },
+            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia." },
             { "Día": "2", "TIEMPO": "07:04.324", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "31-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "NO VÁLIDA", "URL VIDEO": "ooA_iYhJ0mg", "Notas": "Exceso de agresividad lateral en Wehrseifen." },
             { "Día": "3", "TIEMPO": "06:57.159", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "1-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "JDLi8wprKiI", "Notas": "Vuelta limpia sin tráfico." },
-            { "Día": "4", "TIEMPO": "06:58.200", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "0.0", "ESTADO": "EXHIBICIÓN", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Día de exhibición con patrocinadores, no cuenta para tiempos." },
+            { "Día": "4", "TIEMPO": "06:58.200", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "0.0", "ESTADO": "EXHIBICIÓN", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Día de exhibición con patrocinadores." },
             { "Día": "5", "TIEMPO": "DNF", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "3-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "12.5", "ESTADO": "DNF", "URL VIDEO": "UlyhSox-Ul8", "Notas": "Colisión fuerte contra guardarraíl en Fuchsröhre." }
         ];
 
@@ -436,8 +454,6 @@
         }
 
         function parseConfigSheet(parsedCsvData) {
-            console.log("=== CONFIG RAW ===", parsedCsvData);
-
             const configObj = {
                 tituloWeb: "Reto Nürburgring 100 Días",
                 descripcionReto: "Proyecto de Telemetría Oficial • 100 Días",
@@ -458,10 +474,7 @@
                 colorRachaRojo: ""
             };
 
-            if (!parsedCsvData || parsedCsvData.length === 0) {
-                console.log("=== CONFIG PARSED (DEFAULT) ===", configObj);
-                return configObj;
-            }
+            if (!parsedCsvData || parsedCsvData.length === 0) return configObj;
 
             parsedCsvData.forEach(row => {
                 const columns = Object.values(row).map(v => v ? v.toString().trim() : '');
@@ -490,8 +503,6 @@
                     case "COLOR_RACHA_ROJO": configObj.colorRachaRojo = value; break;
                 }
             });
-
-            console.log("=== CONFIG PARSED ===", configObj);
             return configObj;
         }
 
@@ -508,7 +519,6 @@
             if (config.bannerWeb) {
                 const testImg = new Image();
                 testImg.onerror = function() {
-                    console.error(`[ERROR CARGA]: La URL de BANNER_WEB ha fallado: "${config.bannerWeb}". Usando fallback.`);
                     document.body.style.backgroundImage = "url('https://via.placeholder.com/1200x300')";
                 };
                 testImg.onload = function() {
@@ -529,8 +539,6 @@
                 document.getElementById('text-block-4').innerText = config.txtBloque4 || 'Sin datos.';
                 document.getElementById('text-block-5').innerText = config.txtBloque5 || 'Sin datos.';
             }
-
-            console.log("=== CONFIG APPLIED ===");
         }
 
         async function init() {
@@ -555,7 +563,7 @@
 
                 const configText = await resConfig.text();
                 if (configText.trim().startsWith('<!DOCTYPE') || configText.includes('<html')) {
-                    throw new Error("Acceso privado en Sheets. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
+                    throw new Error("Acceso privado en Sheets. Permisos incorrectos.");
                 }
 
                 const rawConfigParsed = Papa.parse(configText, { header: false }).data;
@@ -642,8 +650,8 @@
 
                 if (estado === 'VÁLIDA') {
                     currentRachaValida++;
-                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                 } else if (!checkExhibicion) {
+                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                     currentRachaValida = 0;
                 }
 
@@ -663,12 +671,13 @@
                     } else {
                         currentRachaSinRecord++;
                     }
-                } else if (estado !== 'EXHIBICIÓN') {
+                } else if (!checkExhibicion) {
                     currentRachaSinRecord++;
                 }
             });
 
             if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
+            if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
 
             let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
@@ -735,16 +744,10 @@
                 }
 
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
-                document.getElementById('record-time').className = "text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]";
+                document.getElementById('record-time').className = "text-xl font-mono font-black text-green-400 drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
-                
-                const tarjetaRecord = document.getElementById('record-day-tag').closest('.panel-carbon');
-                if (tarjetaRecord) {
-                    tarjetaRecord.style.borderColor = ''; 
-                    tarjetaRecord.style.boxShadow = '';    
-                }
+                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
             }
 
             const latestData = data[data.length - 1];
@@ -752,7 +755,7 @@
                 document.getElementById('latest-day-tag').innerText = `DÍA ${latestData["Día"]}`;
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
-                document.getElementById('latest-notes').innerText = latestData["Notes"] || 'Sin notas.';
+                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 if(latestSecs && recordActualS !== Infinity) {
@@ -793,7 +796,7 @@
             document.getElementById('random-title').innerText = `Sesión del día ${row["Día"]}`;
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            document.getElementById('random-notes').innerText = row["Notes"] || 'Sin anotaciones técnicas.';
+            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
             const estado = row["ESTADO"].toUpperCase().trim();
@@ -813,7 +816,6 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA CON SCROLL HORIZONTAL DINÁMICO E INICIO AUTOMÁTICO A LA DERECHA ---
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
@@ -852,7 +854,7 @@
             const customPointHoverRadius = [];
             const customPointStyles = [];
 
-            const neonGreenColor = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
+            const neonGreenColor = '#39ff14';
 
             data.forEach(r => {
                 const estado = r["ESTADO"].toUpperCase().trim();
@@ -886,26 +888,12 @@
             const dynamicFillPlugin = {
                 id: 'dynamicFillPlugin',
                 beforeDatasetsDraw(chart) {
-                    const {ctx: chartCtx, chartArea, scales} = chart;
-                    if (!chartArea || !scales.x || !scales.y) return;
+                    const {ctx: chartCtx, chartArea} = chart;
+                    if (!chartArea) return;
 
                     const meta = chart.getDatasetMeta(0);
                     const points = meta.data;
                     if (!points || points.length < 2) return;
-
-                    let colorRaw = getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14';
-                    let rG = 57, gG = 255, bG = 20;
-                    if (colorRaw.startsWith('#')) {
-                        const hex = colorRaw.replace('#', '');
-                        rG = parseInt(hex.substring(0, 2), 16);
-                        gG = parseInt(hex.substring(2, 4), 16);
-                        bG = parseInt(hex.substring(4, 6), 16);
-                    } else if (colorRaw.includes('rgb')) {
-                        const match = colorRaw.match(/\d+/g);
-                        if (match && match.length >= 3) {
-                            rG = match[0]; gG = match[1]; bG = match[2];
-                        }
-                    }
 
                     chartCtx.save();
                     chartCtx.beginPath();
@@ -928,12 +916,10 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    const validYs = points.filter(pt => !pt.skip && !isNaN(pt.y) && pt.y !== null).map(pt => pt.y);
-                    const puntoMasAltoY = validYs.length > 0 ? Math.min(...validYs) : chartArea.top;
-
-                    const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
-                    fillGrad.addColorStop(0, `rgba(${rG}, ${gG}, ${bG}, 0.60)`);   
-                    fillGrad.addColorStop(0.4, `rgba(${rG}, ${gG}, ${bG}, 0.25)`);  
+                    // BugFix Gradiente: Anclaje del degradado de forma absoluta dentro de las dimensiones del canvas
+                    const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.65)');   
+                    fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.25)');  
                     fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                
 
                     chartCtx.fillStyle = fillGrad;
@@ -1093,7 +1079,7 @@
                         </div>
                     </div>
                     <div class="mt-2 text-xs ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'} pt-2">
-                        <strong>Notas de boxes:</strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
+                        <strong>Notas de boxes:</strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
