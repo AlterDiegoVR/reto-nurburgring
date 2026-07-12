@@ -819,7 +819,11 @@
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
-                const pixelPorDia = 28; 
+                // Si es móvil, reducimos el espacio entre días a 16px para compactar la gráfica 
+                // y permitir que quepan más jornadas (unos 20-25 días) en la pantalla vertical.
+                const esMovil = window.innerWidth < 768;
+                const pixelPorDia = esMovil ? 16 : 28; 
+    
                 const anchoCalculado = data.length * pixelPorDia;
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
                     ? `${anchoCalculado}px` 
