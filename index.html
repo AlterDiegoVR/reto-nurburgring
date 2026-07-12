@@ -334,12 +334,14 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
+                <!-- Verde unificado a text-green-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
                     <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                 </div>
 
+                <!-- Rojo unificado a text-red-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
                     <div id="stat-racha-sin-record" class="text-2xl font-black text-red-400">0 días</div>
@@ -370,12 +372,14 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
                 </div>
 
+                <!-- Rojo unificado a text-red-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">❌ Sesiones con Offtrack</span>
                     <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
                 </div>
 
+                <!-- Naranja unificado a text-orange-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-orange-400 uppercase block mb-1">⚠️ Accidentes / DNF</span>
                     <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
@@ -651,20 +655,25 @@
                     currentRachaValida = 0;
                 }
 
-                if (estado === 'VÁLIDA' && tiempoS !== null) {
-                    if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
+                // Corrección: Evaluamos el cálculo de récords y la asignación si hay tiempo asignado, independientemente del renderizado del punto
+                if (tiempoS !== null) {
+                    if (estado === 'VÁLIDA') {
+                        if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
 
-                    if (tiempoS < recordActualS) {
-                        if (recordActualS !== Infinity) {
-                            const bajada = recordActualS - tiempoS;
-                            if (bajada > maxBajadaRecordS) maxBajadaRecordS = bajada;
+                        if (tiempoS < recordActualS) {
+                            if (recordActualS !== Infinity) {
+                                const bajada = recordActualS - tiempoS;
+                                if (bajada > maxBajadaRecordS) maxBajadaRecordS = bajada;
+                            }
+                            if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
+                            currentRachaSinRecord = 0;
+
+                            recordActualS = tiempoS;
+                            recordData = row;
+                        } else {
+                            currentRachaSinRecord++;
                         }
-                        if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
-                        currentRachaSinRecord = 0;
-
-                        recordActualS = tiempoS;
-                        recordData = row;
-                    } else {
+                    } else if (!checkExhibicion) {
                         currentRachaSinRecord++;
                     }
                 } else if (!checkExhibicion) {
@@ -677,7 +686,6 @@
 
             let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
-                // Solución definitiva al Día 17: Clonamos el array antes de ordenarlo para no desestructurar la memoria
                 const tiemposClonados = [...listadoTiemposLimpiosS];
                 tiemposClonados.sort((a, b) => a - b);
                 tiemposClonados.pop(); 
