@@ -813,11 +813,11 @@
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
-                const pixelPorDia = 20; 
+                const pixelPorDia = 28; 
                 const anchoCalculado = data.length * pixelPorDia;
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
                     ? `${anchoCalculado}px` 
-                    : '100%';
+                    : '70%';
             }
 
             const chartCanvas = document.getElementById('telemetryChart');
