@@ -53,7 +53,17 @@
             border: 1px solid #1f222e;
         }
 
-        .video-container-9-16 iframe {
+        .video-container-16-9 {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background-color: #090a0d;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #1f222e;
+        }
+
+        .video-container-9-16 iframe, .video-container-16-9 iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -107,7 +117,7 @@
             <!-- Bloque superior transparente ajustado para dar aire al logo del banner -->
             <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
 
-            <!-- Panel Central Translúcido con los botones integrados abajo -->
+            <!-- Panel Central Translúcido con los botones e interfaz de navegación integrados abajo -->
             <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
                 
                 <!-- Textos Principales -->
@@ -120,8 +130,17 @@
                     </p>
                 </div>
 
-                <!-- Botones de canal y estado de conexión -->
+                <!-- Menú Desplegable de Navegación Integrado con los Botones de canal y estado de conexión -->
                 <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
+                    
+                    <div class="relative inline-block text-left">
+                        <select id="navigation-menu" onchange="navigateSection(this.value)" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer transition-colors">
+                            <option value="telemetria">📊 PANEL TELEMETRÍA</option>
+                            <option value="descripcion">📋 DESCRIPCIÓN DEL RETO</option>
+                            <option value="extras">🎲 EXTRAS Y CONTENIDO</option>
+                        </select>
+                    </div>
+
                     <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded text-xs font-bold transition-all uppercase tracking-wider flex items-center gap-1.5">
                         <span class="text-xs">▶</span> Visitar Canal
                     </a>
@@ -133,7 +152,7 @@
             </div>
         </header>
 
-        <section id="config-text-section" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 hidden">
+        <section id="config-text-section" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 hidden views-container">
             <div class="bg-black/20 p-4 rounded-lg border border-gray-800/60">
                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">📋 Bloque 1</span>
                 <p id="text-block-1" class="text-xs text-gray-300 italic whitespace-pre-line"></p>
@@ -156,262 +175,320 @@
             </div>
         </section>
 
-        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ALINEADA MILIMÉTRICAMENTE ─── -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
+        <!-- ─── PANTALLA PRINCIPAL 1: PANEL DE TELEMETRÍA ─── -->
+        <div id="view-telemetria" class="views-container space-y-8">
             
-            <!-- TARJETA 1: MEJOR VUELTA -->
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[#39ff14] pb-[72px] relative">
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
-                        <span id="record-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
+            <!-- SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ALINEADA MILIMÉTRICAMENTE -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                
+                <!-- TARJETA 1: MEJOR VUELTA -->
+                <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[#39ff14] pb-[72px] relative">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
+                            <span id="record-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
+                        </div>
+                        <h2 class="text-lg font-bold text-white mb-2 truncate">Récord en el Infierno Verde</h2>
+                        <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
+                            <iframe id="record-iframe" src="" allowfullscreen></iframe>
+                        </div>
                     </div>
-                    <h2 class="text-lg font-bold text-white mb-2 truncate">Récord en el Infierno Verde</h2>
-                    <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
-                        <iframe id="record-iframe" src="" allowfullscreen></iframe>
+                    
+                    <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                    <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
+                            <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Publicado el dia:</span>
+                            <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
+                        </div>
+                        <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Cargando anotaciones del récord...</p>
+                    </div>
+                </div>
+
+                <!-- TARJETA 2: ÚLTIMO REGISTRO -->
+                <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-[72px] relative">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
+                            <span id="latest-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
+                        </div>
+                        <h2 class="text-lg font-bold text-white mb-2 truncate">Último Short Disponible</h2>
+                        <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
+                            <iframe id="latest-iframe" src="" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                    <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Tiempo Registrado:</span>
+                            <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
+                            <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
+                        </div>
+                        <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Sincronizando última tanda...</p>
+                    </div>
+                </div>
+
+                <!-- TARJETA 3: VUELTA ALEATORIA / SELECCIONADA -->
+                <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-[72px] relative">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
+                            <span id="random-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
+                        </div>
+                        <h2 id="random-title" class="text-lg font-bold text-white mb-2 truncate">Elige una vuelta abajo o lanza el dado</h2>
+                        <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
+                            <iframe id="random-iframe" src="" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                    <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
+                            <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">Estado de Verificación:</span>
+                            <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
+                        </div>
+                        <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controles para cargar telemetría.</p>
+                    </div>
+
+                    <!-- Botón absoluto flotante colocado abajo del todo en la base externa -->
+                    <div class="absolute bottom-4 left-5 right-5">
+                        <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider shadow-md">
+                            🎲 Lanzar Día Aleatorio
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-gray-400 uppercase">📅 Progreso del Desafío</span>
+                        <span id="progreso-percent" class="text-sm font-black text-white">0%</span>
+                    </div>
+                    <div class="text-xl font-black text-white mb-2">
+                        Día <span id="progreso-dia">0</span> de 100
+                    </div>
+                    <div class="bg-gray-900 h-3 rounded-full overflow-hidden border border-gray-800">
+                        <div id="progreso-bar-fill" class="bg-[var(--neon-green)] h-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div id="progreso-ascii" class="text-[9px] font-mono mt-1.5 text-gray-500 progress-bar-ascii">
+                        [░░░░░░░░░░░░░░░░░░░░]
+                    </div>
+                </div>
+
+                <div id="streak-card" class="panel-carbon rounded-xl p-4 flex flex-col justify-between border border-yellow-500/20 bg-yellow-950/5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-yellow-500 uppercase flex items-center gap-1">⚡ Racha Actual Sin Mejorar</span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                    </div>
+                    <div class="text-2xl font-black text-yellow-500 mb-1">
+                        <span id="streak-days">0</span> Días Seguidos
+                    </div>
+                    <p id="streak-descriptor" class="text-xs text-gray-400">Días consecutivos en pista sin rebajar la mejor marca histórica actual.</p>
+                </div>
+
+                <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-gray-400 uppercase">🏁 Distancia Global Recorrida</span>
+                        <span class="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-1.5 rounded">TOTAL RETO</span>
+                    </div>
+                    <div class="text-2xl font-black text-white mb-1">
+                        <span id="km-totals-top">0.0</span> <span class="text-lg font-normal text-gray-400">km</span>
+                    </div>
+                    <p class="text-xs text-gray-400">Suma total acumulada en pista.</p>
+                </div>
+            </section>
+
+            <section class="panel-carbon rounded-xl p-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h3 class="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+                            📉 Evolución
+                        </h3>
+                        <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Pulsa en cualquier punto para cargar el short del día arriba.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#39ff14]" id="legend-valida-dot"></span> Válida</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> No Válida</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
                     </div>
                 </div>
                 
-                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
-                        <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
+                <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
+                    <div id="chartWrapper" class="h-[320px] min-w-full">
+                        <canvas id="telemetryChart"></canvas>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400">Publicado el dia:</span>
-                        <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
-                    </div>
-                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Cargando anotaciones del récord...</p>
                 </div>
-            </div>
+            </section>
 
-            <!-- TARJETA 2: ÚLTIMO REGISTRO -->
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-[72px] relative">
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
-                        <span id="latest-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
+            <!-- ─── SECCIÓN ESTADÍSTICAS CORREGIDA Y UNIFICADA ─── -->
+            <section class="panel-carbon rounded-xl p-5">
+                <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Estadísticas</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Kilómetros Totales</span>
+                        <div id="stat-km-totales" class="text-2xl font-black text-white">0.0 km</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Suma total acumulada (Outlap + Crono)</span>
                     </div>
-                    <h2 class="text-lg font-bold text-white mb-2 truncate">Último Short Disponible</h2>
-                    <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
-                        <iframe id="latest-iframe" src="" allowfullscreen></iframe>
-                    </div>
-                </div>
-                
-                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400">Tiempo Registrado:</span>
-                        <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
-                        <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
-                    </div>
-                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Sincronizando última tanda...</p>
-                </div>
-            </div>
 
-            <!-- TARJETA 3: VUELTA ALEATORIA / SELECCIONADA -->
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-[72px] relative">
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
-                        <span id="random-day-tag" class="text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded">DÍA --</span>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
+                        <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Excluye estrictamente vueltas de salida</span>
                     </div>
-                    <h2 id="random-title" class="text-lg font-bold text-white mb-2 truncate">Elige una vuelta abajo o lanza el dado</h2>
-                    <div class="video-container-9-16 mb-4 shadow-lg shadow-black/60">
-                        <iframe id="random-iframe" src="" allowfullscreen></iframe>
+
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Ritmo Promedio Limpio</span>
+                        <div id="stat-ritmo-limpio" class="text-2xl font-black text-white">--:--.---</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                     </div>
-                </div>
-                
-                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
-                        <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
+
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
+                        <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400">Estado de Verificación:</span>
-                        <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
+
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
+                        <div id="stat-racha-sin-record" class="text-2xl font-black text-red-400">0 días</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Días consecutivos estancado sin rebajar marca</span>
                     </div>
-                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controles para cargar telemetría.</p>
-                </div>
 
-                <!-- Botón absoluto flotante colocado abajo del todo en la base externa -->
-                <div class="absolute bottom-4 left-5 right-5">
-                    <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider shadow-md">
-                        🎲 Lanzar Día Aleatorio
-                    </button>
-                </div>
-            </div>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">💥 Mayor Bajada de Récord</span>
+                        <div id="stat-max-bajada" class="text-2xl font-black text-green-400">0.000s</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Mayor hachazo al récord en una sola sesión</span>
+                    </div>
 
-        </section>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📊 Porcentaje Vueltas Válidas</span>
+                        <div id="stat-porcentaje-validas" class="text-2xl font-black text-white">0%</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Ratio de vueltas limpias registradas</span>
+                    </div>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase">📅 Progreso del Desafío</span>
-                    <span id="progreso-percent" class="text-sm font-black text-white">0%</span>
-                </div>
-                <div class="text-xl font-black text-white mb-2">
-                    Día <span id="progreso-dia">0</span> de 100
-                </div>
-                <div class="bg-gray-900 h-3 rounded-full overflow-hidden border border-gray-800">
-                    <div id="progreso-bar-fill" class="bg-[var(--neon-green)] h-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-                <div id="progreso-ascii" class="text-[9px] font-mono mt-1.5 text-gray-500 progress-bar-ascii">
-                    [░░░░░░░░░░░░░░░░░░░░]
-                </div>
-            </div>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
+                        <div id="stat-mejora-global" class="text-2xl font-black text-green-400">--:--.---</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Diferencia entre 1ª vuelta válida y el Récord</span>
+                    </div>
 
-            <div id="streak-card" class="panel-carbon rounded-xl p-4 flex flex-col justify-between border border-yellow-500/20 bg-yellow-950/5">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-yellow-500 uppercase flex items-center gap-1">⚡ Racha Actual Sin Mejorar</span>
-                    <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-                </div>
-                <div class="text-2xl font-black text-yellow-500 mb-1">
-                    <span id="streak-days">0</span> Días Seguidos
-                </div>
-                <p id="streak-descriptor" class="text-xs text-gray-400">Días consecutivos en pista sin rebajar la mejor marca histórica actual.</p>
-            </div>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📆 Sesiones en Servidor</span>
+                        <div id="stat-total-sesiones" class="text-2xl font-black text-white">0 días</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
+                    </div>
 
-            <div class="panel-carbon rounded-xl p-4 flex flex-col justify-between">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase">🏁 Distancia Global Recorrida</span>
-                    <span class="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-1.5 rounded">TOTAL RETO</span>
-                </div>
-                <div class="text-2xl font-black text-white mb-1">
-                    <span id="km-totals-top">0.0</span> <span class="text-lg font-normal text-gray-400">km</span>
-                </div>
-                <p class="text-xs text-gray-400">Suma total acumulada en pista.</p>
-            </div>
-        </section>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">❌ Sesiones con Offtrack</span>
+                        <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
+                    </div>
 
-        <section class="panel-carbon rounded-xl p-5 mb-8">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                <div>
-                    <h3 class="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
-                        📉 Evolución
-                    </h3>
-                    <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Pulsa en cualquier punto para cargar el short del día arriba.</p>
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-orange-400 uppercase block mb-1">⚠️ Accidentes / DNF</span>
+                        <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Sesiones no terminadas por colisión o fallo</span>
+                    </div>
+
+                    <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🚗 Kilómetros Medios / Día</span>
+                        <div id="stat-media-km" class="text-2xl font-black text-white">0.0 km</div>
+                        <span class="text-[11px] text-gray-500 block mt-0.5">Promedio de desgaste de neumáticos diario</span>
+                    </div>
+
                 </div>
-                <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#39ff14]" id="legend-valida-dot"></span> Válida</span>
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> No Válida</span>
-                    <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
-                </div>
-            </div>
+            </section>
             
-            <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
-                <div id="chartWrapper" class="h-[320px] min-w-full">
-                    <canvas id="telemetryChart"></canvas>
+            <section class="panel-carbon rounded-xl p-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-lg font-black text-white uppercase tracking-tight">🔍 Registro de Vueltas</h3>
+                        <p class="text-xs text-gray-400">Todas las vueltas hasta el momento</p>
+                    </div>
+                    <div class="relative w-full md:w-80">
+                        <input type="text" id="lap-search" oninput="filterLaps()" placeholder="Buscar en notas del diario (ej: tráfico, subviraje...)" class="w-full bg-black/40 border border-gray-800 text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:border-green-500 transition">
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- ─── SECCIÓN ESTADÍSTICAS CORREGIDA Y UNIFICADA ─── -->
-        <section class="panel-carbon rounded-xl p-5 mb-8">
-            <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Estadísticas</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div id="history-container" class="space-y-3"></div>
+            </section>
+        </div>
+
+        <!-- ─── PANTALLA PRINCIPAL 2: DESCRIPCIÓN DEL RETO (NUEVA) ─── -->
+        <div id="view-descripcion" class="views-container hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                 
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Kilómetros Totales</span>
-                    <div id="stat-km-totales" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Suma total acumulada (Outlap + Crono)</span>
+                <div class="panel-carbon rounded-xl p-6 md:col-span-2 space-y-4">
+                    <h2 class="text-xl font-black text-white uppercase border-b border-gray-800 pb-2">
+                        📋 REGLAMENTO Y NORMATIVA DEL RETO
+                    </h2>
+                    
+                    <!-- Párrafo introductorio destacado sin guion -->
+                    <div id="rules-intro-container" class="text-sm font-bold text-[var(--neon-green)] bg-gray-900/40 p-4 rounded border border-gray-800/80 leading-relaxed">
+                        Cargando introducción reglamentaria...
+                    </div>
+                    
+                    <!-- Puntos de la lista con viñeta neón adaptados a tu captura -->
+                    <div id="rules-list-container" class="space-y-3 pt-2 text-sm text-gray-300 font-sans">
+                        <!-- Se rellena de forma dinámica -->
+                    </div>
                 </div>
 
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
-                    <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye estrictamente vueltas de salida</span>
-                </div>
-
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🏁 Ritmo Promedio Limpio</span>
-                    <div id="stat-ritmo-limpio" class="text-2xl font-black text-white">--:--.---</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
-                </div>
-
-                <!-- Verde unificado a text-green-400 -->
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
-                    <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
-                </div>
-
-                <!-- Rojo unificado a text-red-400 -->
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
-                    <div id="stat-racha-sin-record" class="text-2xl font-black text-red-400">0 días</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Días consecutivos estancado sin rebajar marca</span>
-                </div>
-
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">💥 Mayor Bajada de Récord</span>
-                    <div id="stat-max-bajada" class="text-2xl font-black text-green-400">0.000s</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Mayor hachazo al récord en una sola sesión</span>
-                </div>
-
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📊 Porcentaje Vueltas Válidas</span>
-                    <div id="stat-porcentaje-validas" class="text-2xl font-black text-white">0%</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Ratio de vueltas limpias registradas</span>
-                </div>
-
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
-                    <div id="stat-mejora-global" class="text-2xl font-black text-green-400">--:--.---</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Diferencia entre 1ª vuelta válida y el Récord</span>
-                </div>
-
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📆 Sesiones en Servidor</span>
-                    <div id="stat-total-sesiones" class="text-2xl font-black text-white">0 días</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
-                </div>
-
-                <!-- Rojo unificado a text-red-400 -->
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">❌ Sesiones con Offtrack</span>
-                    <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
-                </div>
-
-                <!-- Naranja unificado a text-orange-400 -->
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-orange-400 uppercase block mb-1">⚠️ Accidentes / DNF</span>
-                    <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Sesiones no terminadas por colisión o fallo</span>
-                </div>
-
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🚗 Kilómetros Medios / Día</span>
-                    <div id="stat-media-km" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Promedio de desgaste de neumáticos diario</span>
-                </div>
-
-            </div>
-        </section>
-        
-        <section class="panel-carbon rounded-xl p-5">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h3 class="text-lg font-black text-white uppercase tracking-tight">🔍 Registro de Vueltas</h3>
-                    <p class="text-xs text-gray-400">Todas las vueltas hasta el momento</p>
-                </div>
-                <div class="relative w-full md:w-80">
-                    <input type="text" id="lap-search" oninput="filterLaps()" placeholder="Buscar en notas del diario (ej: tráfico, subviraje...)" class="w-full bg-black/40 border border-gray-800 text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:border-green-500 transition">
+                <!-- Contenedor vertical e ilimitado de vídeos de presentación oficiales -->
+                <div class="space-y-6" id="presentation-videos-container">
+                    <!-- Se inyectan dinámicamente -->
                 </div>
             </div>
+        </div>
 
-            <div id="history-container" class="space-y-3"></div>
-        </section>
+        <!-- ─── PANTALLA PRINCIPAL 3: EXTRAS Y CONTENIDO (NUEVA) ─── -->
+        <div id="view-extras" class="views-container hidden space-y-6">
+            <div class="panel-carbon rounded-xl p-6">
+                <h2 class="text-xl font-black text-white uppercase border-b border-gray-800 pb-2 mb-6">
+                    🎲 CONTENIDO ADICIONAL Y EXTRAS DEL SIMRACING
+                </h2>
+                
+                <!-- Galería fluida donde conviven vídeos 16:9 e ilimitados shorts extras -->
+                <div id="extras-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Se inyectan dinámicamente -->
+                </div>
+            </div>
+        </div>
 
     </div>
 
     <script>
+        // --- FUNCIÓN DE NAVEGACIÓN ENTRE SECCIONES ---
+        function navigateSection(targetViewId) {
+            document.querySelectorAll('.views-container').forEach(el => el.classList.add('hidden'));
+            
+            if (targetViewId === 'telemetria') {
+                // Comprobamos si hay bloques de texto válidos configurados para mostrar la barra superior
+                const block1 = document.getElementById('text-block-1').innerText;
+                if (block1 && block1 !== 'Sin datos.') {
+                    document.getElementById('config-text-section').classList.remove('hidden');
+                }
+                document.getElementById('view-telemetria').classList.remove('hidden');
+                if (telemetryChartInstance) telemetryChartInstance.resize();
+            } else {
+                document.getElementById(`view-${targetViewId}`).classList.remove('hidden');
+            }
+        }
+
         // --- BASE DE DATOS LOCAL DE RESPALDO ---
         const MOCK_DATA = [
             { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia." },
@@ -425,16 +502,99 @@
         let telemetryChartInstance = null;
 
         function getVal(row, posiblesNombres) {
-            for (let key in row) {
-                const keyLimpia = key.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
+            const values = Object.values(row);
+            const keys = Object.keys(row);
+            
+            for (let i = 0; i < keys.length; i++) {
+                const keyLimpia = keys[i].toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
                 for (let nombre of posiblesNombres) {
                     const nombreLimpio = nombre.toLowerCase().replace(/[^a-z0-9áéíóúñ]/g, '').trim();
                     if (keyLimpia === nombreLimpio) {
-                        return row[key] ? row[key].toString().trim() : '';
+                        return values[i] ? values[i].toString().trim() : '';
                     }
                 }
             }
+            // Mapeo posicional ciego por si los nombres de columna varían en el CSV
+            if (posiblesNombres.includes('tipo') && values[0]) return values[0].toString().trim();
+            if (posiblesNombres.includes('urlid') && values[1]) return values[1].toString().trim();
+            
             return '';
+        }
+
+        // --- PROCESADOR ADAPTADO A TU NUEVA PESTAÑA SECCIONES Y MAQUETACIÓN EXTRAPOLADA ---
+        function parseAndRenderSectionsTab(parsedCsvData) {
+            const introContainer = document.getElementById('rules-intro-container');
+            const listContainer = document.getElementById('rules-list-container');
+            const presentationContainer = document.getElementById('presentation-videos-container');
+            const extrasGrid = document.getElementById('extras-gallery-grid');
+
+            introContainer.innerHTML = '';
+            listContainer.innerHTML = '';
+            presentationContainer.innerHTML = '';
+            extrasGrid.innerHTML = '';
+
+            let introConfigurada = false;
+
+            parsedCsvData.forEach(row => {
+                const values = Object.values(row);
+                if (values.length < 2) return;
+
+                const tipo = values[0] ? values[0].toString().toUpperCase().trim() : '';
+                const contenido = values[1] ? values[1].toString().trim() : '';
+
+                if (!tipo || !contenido) return;
+
+                if (tipo === 'TEXTO_NORMA') {
+                    // Si empieza con guion, creamos una viñeta limpia de la lista
+                    if (contenido.startsWith('-')) {
+                        const textoLimpio = contenido.substring(1).trim();
+                        const item = document.createElement('div');
+                        item.className = 'flex items-start gap-2.5 pl-1 justify-justify';
+                        item.innerHTML = `
+                            <span class="text-[var(--neon-green)] font-black text-sm select-none mt-0.5">🏁</span>
+                            <p class="leading-relaxed flex-1">${textoLimpio}</p>
+                        `;
+                        listContainer.appendChild(item);
+                    } else {
+                        // Si no lleva guion, es el bloque descriptivo superior (Fila 2)
+                        introContainer.innerText = contenido;
+                        introConfigurada = true;
+                    }
+                } 
+                else if (tipo === 'PRESENTACION') {
+                    const card = document.createElement('div');
+                    card.className = 'panel-carbon rounded-xl p-5';
+                    card.innerHTML = `
+                        <span class="text-[10px] font-bold text-green-400 bg-green-950/40 px-2 py-0.5 border border-green-900/40 rounded uppercase tracking-widest block mb-2 w-max">🎬 VIDEO OFICIAL</span>
+                        <h2 class="text-sm font-bold text-white mb-3">Vídeo de Presentación</h2>
+                        <div class="video-container-16-9 shadow-lg shadow-black/60">
+                            <iframe src="https://www.youtube.com/embed/${contenido}" allowfullscreen></iframe>
+                        </div>
+                    `;
+                    presentationContainer.appendChild(card);
+                }
+                else if (tipo === 'VIDEO_EXTRA' || tipo === 'SHORT_EXTRA') {
+                    const isShort = tipo === 'SHORT_EXTRA';
+                    const card = document.createElement('div');
+                    card.className = 'bg-black/30 p-4 rounded-lg border border-gray-800 space-y-3 flex flex-col justify-between';
+                    
+                    card.innerHTML = `
+                        <div class="space-y-3">
+                            <span class="text-[10px] ${isShort ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'} px-2 py-0.5 rounded font-bold uppercase tracking-wider block w-max">
+                                ${isShort ? '⚡ Short Extra' : '🎥 Vídeo Largo'}
+                            </span>
+                            <div class="${isShort ? 'video-container-9-16 max-w-[240px] mx-auto' : 'video-container-16-9'} shadow-md">
+                                <iframe src="https://www.youtube.com/embed/${contenido}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    `;
+                    extrasGrid.appendChild(card);
+                }
+            });
+
+            if (!introConfigurada) {
+                introContainer.className = "hidden";
+            }
         }
 
         function timeStringToSeconds(timeStr) {
@@ -552,14 +712,17 @@
                 
                 const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('datos reto')}`;
                 const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('configuracion_web')}`;
+                const URL_SECCIONES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('secciones_web')}`;
 
-                const [resDatos, resConfig] = await Promise.all([
+                const [resDatos, resConfig, resSecciones] = await Promise.all([
                     fetch(URL_DATOS).catch(() => { throw new Error("Fallo de red en pestaña 'datos reto'"); }),
-                    fetch(URL_CONFIG).catch(() => { throw new Error("Fallo de red en pestaña 'configuracion_web'"); })
+                    fetch(URL_CONFIG).catch(() => { throw new Error("Fallo de red en pestaña 'configuracion_web'"); }),
+                    fetch(URL_SECCIONES).catch(() => { throw new Error("Fallo de red en pestaña 'secciones_web'"); })
                 ]);
 
                 if (!resDatos.ok) throw new Error("No se encuentra la pestaña 'datos reto'.");
                 if (!resConfig.ok) throw new Error("No se encuentra la pestaña 'configuracion_web'.");
+                if (!resSecciones.ok) throw new Error("No se encuentra la pestaña 'secciones_web'.");
 
                 const configText = await resConfig.text();
                 if (configText.trim().startsWith('<!DOCTYPE') || configText.includes('<html')) {
@@ -569,6 +732,11 @@
                 const rawConfigParsed = Papa.parse(configText, { header: false }).data;
                 const finalConfig = parseConfigSheet(rawConfigParsed);
                 applyWebConfiguration(finalConfig);
+
+                // Lectura y renderizado de la pestaña de secciones (Reglas, Vídeos y Shorts extras)
+                const seccionesText = await resSecciones.text();
+                const rawSeccionesParsed = Papa.parse(seccionesText, { header: false }).data;
+                parseAndRenderSectionsTab(rawSeccionesParsed);
 
                 const csvText = await resDatos.text();
                 const parsed = Papa.parse(csvText, { header: true }).data;
@@ -609,53 +777,38 @@
         function processAndRender(data, config) {
             data.sort((a, b) => parseInt(a["Día"]) - parseInt(b["Día"]));
 
-            let kmTotales = 0;
-            let kmCrono = 0;
-            let countValidas = 0;
-            let countInvalidas = 0;
-            let countDnf = 0;
-
-            let listadoTiemposLimpiosS = [];
-            let primerTiempoValidoS = null;
-            let recordActualS = Infinity;
-            let recordData = null;
-
-            let maxRachaValida = 0;
-            let currentRachaValida = 0;
-
-            let maxRachaSinRecord = 0;
-            let currentRachaSinRecord = 0;
-
-            let maxBajadaRecordS = 0;
+            let kmTotales = 0; let kmCrono = 0; let countValidas = 0; let countInvalidas = 0; let countDnf = 0;
+            let listadoTiemposLimpiosS = []; let primerTiempoValidoS = null; let recordActualS = Infinity; let recordData = null;
+            let maxRachaValida = 0; let currentRachaValida = 0; let maxRachaSinRecord = 0; let currentRachaSinRecord = 0; let maxBajadaRecordS = 0;
 
             data.forEach(row => {
                 const outlap = parseFloat(row["KMS OUTLAP"].toString().replace(',', '.')) || 0;
                 const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
-                const estado = row["ESTADO"].toUpperCase().trim();
+                const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 const tiempoS = timeStringToSeconds(row["TIEMPO"]);
                 const notasTexto = row["Notas"] ? row["Notas"].toString() : '';
 
                 kmTotales += (outlap + crono);
                 kmCrono += crono;
 
-                if (estado === 'VÁLIDA') countValidas++;
-                if (estado === 'NO VÁLIDA') countInvalidas++;
+                if (estado === 'VALIDA') countValidas++;
+                if (estado === 'NO VALIDA') countInvalidas++;
                 if (estado === 'DNF') countDnf++;
 
-                if (estado !== 'DNF' && estado !== 'EXHIBICIÓN' && tiempoS !== null) {
+                if (estado !== 'DNF' && estado !== 'EXHIBICION' && tiempoS !== null) {
                     listadoTiemposLimpiosS.push(tiempoS);
                 }
 
-                const checkExhibicion = estado === 'EXHIBICIÓN' || notasTexto.toLowerCase().includes('exhibición') || notasTexto.toLowerCase().includes('exhibicion');
+                const checkExhibicion = estado === 'EXHIBICION' || notasTexto.toLowerCase().includes('exhibición') || notasTexto.toLowerCase().includes('exhibicion');
 
-                if (estado === 'VÁLIDA') {
+                if (estado === 'VALIDA') {
                     currentRachaValida++;
                 } else if (!checkExhibicion) {
                     if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                     currentRachaValida = 0;
                 }
 
-                if (estado === 'VÁLIDA' && tiempoS !== null) {
+                if (estado === 'VALIDA' && tiempoS !== null) {
                     if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
 
                     if (tiempoS < recordActualS) {
@@ -799,11 +952,11 @@
             document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
-            const estado = row["ESTADO"].toUpperCase().trim();
-            statusTag.innerText = estado;
-            if(estado === 'VÁLIDA') {
+            const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            statusTag.innerText = row["ESTADO"];
+            if(estado === 'VALIDA') {
                 statusTag.className = "px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-green-900/30 text-green-400 border border-green-500/30";
-            } else if(estado === 'NO VÁLIDA') {
+            } else if(estado === 'NO VALIDA') {
                 statusTag.className = "px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-red-900/30 text-red-400 border border-red-500/30";
             } else {
                 statusTag.className = "px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-yellow-900/30 text-yellow-400 border border-yellow-500/30";
@@ -819,11 +972,8 @@
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
-                // Si es móvil, reducimos el espacio entre días a 16px para compactar la gráfica 
-                // y permitir que quepan más jornadas (unos 20-25 días) en la pantalla vertical.
                 const esMovil = window.innerWidth < 768;
                 const pixelPorDia = esMovil ? 16 : 28; 
-    
                 const anchoCalculado = data.length * pixelPorDia;
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
                     ? `${anchoCalculado}px` 
@@ -847,7 +997,7 @@
             let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) {
                     minTimeS = tS;
                     recordDay = r["Día"];
                 }
@@ -861,25 +1011,25 @@
             const neonGreenColor = '#39ff14';
 
             data.forEach(r => {
-                const estado = r["ESTADO"].toUpperCase().trim();
+                const estado = r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 if (r["Día"] === recordDay) {
                     customPointColors.push('#ffd700'); 
                     customPointRadius.push(12);         
                     customPointHoverRadius.push(12);
                     customPointStyles.push('triangle'); 
-                } else if (estado === 'VÁLIDA') {
+                } else if (estado === 'VALIDA') {
                     customPointColors.push(neonGreenColor);
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
                     customPointStyles.push('circle');
-                } else if (estado === 'NO VÁLIDA') {
+                } else if (estado === 'NO VALIDA') {
                     customPointColors.push('#ff3b30');
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
                     customPointStyles.push('circle');
-                } else if (estado === 'EXHIBICIÓN') {
-                    customPointColors.push('#a855f7'); // Púrpura para los días de exhibición
-                    customPointRadius.push(5);          // Tamaño para que sea visible
+                } else if (estado === 'EXHIBICION') {
+                    customPointColors.push('#a855f7'); 
+                    customPointRadius.push(5);          
                     customPointHoverRadius.push(9);
                     customPointStyles.push('circle');
                 } else {
@@ -925,11 +1075,10 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    // BugFix Gradiente: Anclaje del degradado de forma absoluta dentro de las dimensiones del canvas
                     const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
                     fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.65)');   
                     fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.25)');  
-                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                
 
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
@@ -1038,7 +1187,7 @@
             let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) {
                     minTimeS = tS;
                     recordDay = r["Día"];
                 }
@@ -1046,7 +1195,7 @@
 
             reversedData.forEach(row => {
                 const dia = row["Día"];
-                const estado = row["ESTADO"].toUpperCase().trim();
+                const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 const CastleNotes = row["Notas"] || '';
                 
                 let borderClass = 'border-l-green-500';
@@ -1059,13 +1208,13 @@
                     textBadgeClass = 'text-amber-400 font-black';
                     specialBgClass = 'bg-amber-500/5 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
                     crownIcon = '👑 ';
-                } else if (estado === 'NO VÁLIDA') {
+                } else if (estado === 'NO VALIDA') {
                     borderClass = 'border-l-red-500';
                     textBadgeClass = 'text-red-400';
                 } else if (estado === 'DNF') {
                     borderClass = 'border-l-yellow-500';
                     textBadgeClass = 'text-yellow-500';
-                } else if (estado === 'EXHIBICIÓN') {
+                } else if (estado === 'EXHIBICION') {
                     borderClass = 'border-l-purple-500';
                     textBadgeClass = 'text-purple-400';
                 }
@@ -1079,7 +1228,7 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
                         <div class="flex items-center gap-3">
                             <span class="text-lg font-black ${dia === recordDay ? 'text-amber-400' : 'text-white'}">${crownIcon}Día ${dia}</span>
-                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${dia === recordDay ? '👑 ACTUAL RÉCORD' : estado}</span>
+                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${dia === recordDay ? '👑 ACTUAL RÉCORD' : row["ESTADO"]}</span>
                             <span class="text-xs text-gray-500 font-mono">Pub: ${row["DÍA DE PUBLICACIÓN"] || '--'}</span>
                         </div>
                         <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
@@ -1087,8 +1236,8 @@
                             <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Cargar Ficha ➔</span>
                         </div>
                     </div>
-                    <div class="mt-2 text-xs ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'} pt-2">
-                        <strong></strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas.</span>'}
+                    <div class="mt-2 text-xs pt-2 ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'}">
+                        <strong>Notas de boxes:</strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
