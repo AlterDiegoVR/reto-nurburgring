@@ -645,8 +645,8 @@
 
                 if (estado === 'VÁLIDA') {
                     currentRachaValida++;
-                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                 } else if (!checkExhibicion) {
+                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                     currentRachaValida = 0;
                 }
 
@@ -666,12 +666,14 @@
                     } else {
                         currentRachaSinRecord++;
                     }
-                } else if (estado !== 'EXHIBICIÓN') {
+                } else if (!checkExhibicion) {
                     currentRachaSinRecord++;
                 }
             });
 
+            // BugFix: Validar remanentes al final del dataset
             if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
+            if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
 
             let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
@@ -910,12 +912,11 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    const validYs = points.filter(pt => !pt.skip && !isNaN(pt.y) && pt.y !== null).map(pt => pt.y);
-                    const puntoMasAltoY = validYs.length > 0 ? Math.min(...validYs) : chartArea.top;
-
+                    // BugFix: Corregido cálculo del punto visual más alto usando los píxeles reales del eje Y
+                    const puntoMasAltoY = scales.y.getPixelForValue(scales.y.min);
                     const fillGrad = chartCtx.createLinearGradient(0, puntoMasAltoY, 0, chartArea.bottom);
-                    fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.50)');   
-                    fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.40)');  
+                    fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.25)');   
+                    fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.05)');  
                     fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                
 
                     chartCtx.fillStyle = fillGrad;
@@ -1062,6 +1063,7 @@
                 card.dataset.day = dia;
                 card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${CastleNotes}`.toLowerCase();
                 
+                // BugFix: Eliminado onclick duplicado interno para prevenir doble renderizado del iframe
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
                         <div class="flex items-center gap-3">
