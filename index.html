@@ -334,14 +334,12 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
-                <!-- Verde unificado a text-green-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
                     <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                 </div>
 
-                <!-- Rojo unificado a text-red-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
                     <div id="stat-racha-sin-record" class="text-2xl font-black text-red-400">0 días</div>
@@ -372,14 +370,12 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
                 </div>
 
-                <!-- Rojo unificado a text-red-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">❌ Sesiones con Offtrack</span>
                     <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
                 </div>
 
-                <!-- Naranja unificado a text-orange-400 -->
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-orange-400 uppercase block mb-1">⚠️ Accidentes / DNF</span>
                     <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
@@ -438,12 +434,27 @@
         }
 
         function timeStringToSeconds(timeStr) {
-            if (!timeStr || timeStr.trim().toUpperCase() === 'DNF' || timeStr.trim().toUpperCase() === '--:--.---') return null;
-            const parts = timeStr.split(':');
-            if (parts.length < 2) return null;
-            const min = parseFloat(parts[0]);
-            const sec = parseFloat(parts[1]);
-            return (min * 60) + sec;
+            if (!timeStr) return null;
+            let str = timeStr.toString().trim().toUpperCase();
+            if (str === 'DNF' || str === '--:--.---' || str === '') return null;
+            
+            str = str.replace(',', '.');
+            const parts = str.split(':');
+            
+            // Corrección: Si Google Sheets rompe el formato e inyecta horas (ej: 23:06:47.636)
+            if (parts.length === 3) {
+                const min = parseFloat(parts[1]) || 0;
+                const sec = parseFloat(parts[2]) || 0;
+                return (min * 60) + sec;
+            }
+            
+            if (parts.length === 2) {
+                const min = parseFloat(parts[0]) || 0;
+                const sec = parseFloat(parts[1]) || 0;
+                return (min * 60) + sec;
+            }
+            
+            return null;
         }
 
         function secondsToTimeString(seconds) {
@@ -681,11 +692,12 @@
 
             let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
-                listadoTiemposLimpiosS.sort((a, b) => a - b);
-                listadoTiemposLimpiosS.pop(); 
-                listadoTiemposLimpiosS.shift(); 
-                const sumaRestante = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0);
-                ritmoPromedioLimpioS = sumaRestante / listadoTiemposLimpiosS.length;
+                const tiemposClonados = [...listadoTiemposLimpiosS];
+                tiemposClonados.sort((a, b) => a - b);
+                tiemposClonados.pop(); 
+                tiemposClonados.shift(); 
+                const sumaRestante = tiemposClonados.reduce((a, b) => a + b, 0);
+                ritmoPromedioLimpioS = sumaRestante / tiemposClonados.length;
             } else if (listadoTiemposLimpiosS.length > 0) {
                 ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
             }
@@ -713,7 +725,7 @@
             document.getElementById('stat-km-crono').innerText = `${kmCrono.toFixed(1)} km`;
             document.getElementById('stat-ritmo-limpio').innerText = secondsToTimeString(ritmoPromedioLimpioS);
             document.getElementById('stat-racha-valida').innerText = `${maxRachaValida} días`;
-            document.getElementById('stat-racha-sin-record').innerText = `${maxRachaSinRecord} días`;
+            document.getElementById('stat-racha-sin-record').innerText = `${maxRachaSinRecord} days`;
             document.getElementById('stat-max-bajada').innerText = maxBajadaRecordS > 0 ? `-${maxBajadaRecordS.toFixed(3)}s` : '0.000s';
 
             const porcentajeValidas = data.length > 0 ? Math.round((countValidas / data.length) * 100) : 0;
@@ -747,7 +759,7 @@
                 document.getElementById('record-time').className = "text-xl font-mono font-black text-green-400 drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
+                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
             }
 
             const latestData = data[data.length - 1];
@@ -819,11 +831,9 @@
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
-                // Si es móvil, reducimos el espacio entre días a 16px para compactar la gráfica 
-                // y permitir que quepan más jornadas (unos 20-25 días) en la pantalla vertical.
                 const esMovil = window.innerWidth < 768;
                 const pixelPorDia = esMovil ? 16 : 28; 
-    
+                
                 const anchoCalculado = data.length * pixelPorDia;
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
                     ? `${anchoCalculado}px` 
@@ -847,7 +857,7 @@
             let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                if (r["ESTADO"].toUpperCase().trim().includes('VÁLIDA') && tS && tS < minTimeS) {
                     minTimeS = tS;
                     recordDay = r["Día"];
                 }
@@ -861,29 +871,29 @@
             const neonGreenColor = '#39ff14';
 
             data.forEach(r => {
-                const estado = r["ESTADO"].toUpperCase().trim();
+                const estado = r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 if (r["Día"] === recordDay) {
                     customPointColors.push('#ffd700'); 
                     customPointRadius.push(12);         
                     customPointHoverRadius.push(12);
                     customPointStyles.push('triangle'); 
-                } else if (estado === 'VÁLIDA') {
+                } else if (estado === 'VALIDA') {
                     customPointColors.push(neonGreenColor);
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
                     customPointStyles.push('circle');
-                } else if (estado === 'NO VÁLIDA') {
+                } else if (estado === 'NO VALIDA') {
                     customPointColors.push('#ff3b30');
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
                     customPointStyles.push('circle');
-                } else if (estado === 'EXHIBICIÓN') {
-                    customPointColors.push('#a855f7'); // Púrpura para los días de exhibición
-                    customPointRadius.push(5);          // Tamaño para que sea visible
+                } else if (estado === 'EXHIBICION') {
+                    customPointColors.push('#a855f7');
+                    customPointRadius.push(5);          
                     customPointHoverRadius.push(9);
                     customPointStyles.push('circle');
                 } else {
-                    customPointColors.push('transparent');
+                    customPointColors.push('#71717a');
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
                     customPointStyles.push('circle');
@@ -925,7 +935,6 @@
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
-                    // BugFix Gradiente: Anclaje del degradado de forma absoluta dentro de las dimensiones del canvas
                     const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
                     fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.65)');   
                     fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.25)');  
@@ -1038,7 +1047,7 @@
             let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                if (r["ESTADO"].toUpperCase().trim().includes('VÁLIDA') && tS && tS < minTimeS) {
                     minTimeS = tS;
                     recordDay = r["Día"];
                 }
@@ -1059,13 +1068,13 @@
                     textBadgeClass = 'text-amber-400 font-black';
                     specialBgClass = 'bg-amber-500/5 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
                     crownIcon = '👑 ';
-                } else if (estado === 'NO VÁLIDA') {
+                } else if (estado.includes('NO VÁLIDA') || estado.includes('NO VALIDA')) {
                     borderClass = 'border-l-red-500';
                     textBadgeClass = 'text-red-400';
                 } else if (estado === 'DNF') {
                     borderClass = 'border-l-yellow-500';
                     textBadgeClass = 'text-yellow-500';
-                } else if (estado === 'EXHIBICIÓN') {
+                } else if (estado.includes('EXHIBICIÓN') || estado.includes('EXHIBICON')) {
                     borderClass = 'border-l-purple-500';
                     textBadgeClass = 'text-purple-400';
                 }
