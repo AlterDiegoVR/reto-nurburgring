@@ -428,44 +428,36 @@
             </section>
         </div>
 
-        <!-- ─── PANTALLA PRINCIPAL 2: DESCRIPCIÓN DEL RETO (NUEVA) ─── -->
+        <!-- ─── PANTALLA PRINCIPAL 2: DESCRIPCIÓN DEL RETO ─── -->
         <div id="view-descripcion" class="views-container hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                 
-                <div class="panel-carbon rounded-xl p-6 md:col-span-2 space-y-4">
+                <div class="panel-carbon rounded-xl p-6 md:col-span-2 space-y-5 text-left">
                     <h2 class="text-xl font-black text-white uppercase border-b border-gray-800 pb-2">
                         📋 REGLAMENTO Y NORMATIVA DEL RETO
                     </h2>
                     
-                    <!-- Párrafo introductorio destacado sin guion -->
-                    <div id="rules-intro-container" class="text-sm font-bold text-[var(--neon-green)] bg-gray-900/40 p-4 rounded border border-gray-800/80 leading-relaxed">
+                    <div id="rules-intro-container" class="text-sm text-gray-300 bg-black/40 p-4 rounded border border-gray-800/80 leading-relaxed text-left">
                         Cargando introducción reglamentaria...
                     </div>
                     
-                    <!-- Puntos de la lista con viñeta neón adaptados a tu captura -->
-                    <div id="rules-list-container" class="space-y-3 pt-2 text-sm text-gray-300 font-sans">
+                    <div id="rules-list-container" class="space-y-3 pt-1 text-sm text-gray-300 font-sans text-left">
                         <!-- Se rellena de forma dinámica -->
                     </div>
                 </div>
 
-                <!-- Contenedor vertical e ilimitado de vídeos de presentación oficiales -->
-                <div class="space-y-6" id="presentation-videos-container">
-                    <!-- Se inyectan dinámicamente -->
-                </div>
+                <div class="space-y-6" id="presentation-videos-container"></div>
             </div>
         </div>
 
-        <!-- ─── PANTALLA PRINCIPAL 3: EXTRAS Y CONTENIDO (NUEVA) ─── -->
+        <!-- ─── PANTALLA PRINCIPAL 3: EXTRAS Y CONTENIDO ─── -->
         <div id="view-extras" class="views-container hidden space-y-6">
             <div class="panel-carbon rounded-xl p-6">
                 <h2 class="text-xl font-black text-white uppercase border-b border-gray-800 pb-2 mb-6">
                     🎲 CONTENIDO ADICIONAL Y EXTRAS
                 </h2>
                 
-                <!-- Galería fluida donde conviven vídeos 16:9 e ilimitados shorts extras -->
-                <div id="extras-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Se inyectan dinámicamente -->
-                </div>
+                <div id="extras-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
         </div>
 
@@ -477,7 +469,6 @@
             document.querySelectorAll('.views-container').forEach(el => el.classList.add('hidden'));
             
             if (targetViewId === 'telemetria') {
-                // Comprobamos si hay bloques de texto válidos configurados para mostrar la barra superior
                 const block1 = document.getElementById('text-block-1').innerText;
                 if (block1 && block1 !== 'Sin datos.') {
                     document.getElementById('config-text-section').classList.remove('hidden');
@@ -489,13 +480,9 @@
             }
         }
 
-        // --- BASE DE DATOS LOCAL DE RESPALDO ---
+        // --- BASE DE DATOS LOCAL DE RESPALDO (SOLO EN CASO DE ERROR) ---
         const MOCK_DATA = [
-            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia." },
-            { "Día": "2", "TIEMPO": "07:04.324", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "31-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "NO VÁLIDA", "URL VIDEO": "ooA_iYhJ0mg", "Notas": "Exceso de agresividad lateral en Wehrseifen." },
-            { "Día": "3", "TIEMPO": "06:57.159", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "1-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "JDLi8wprKiI", "Notas": "Vuelta limpia sin tráfico." },
-            { "Día": "4", "TIEMPO": "06:58.200", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "0.0", "ESTADO": "EXHIBICIÓN", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Día de exhibición con patrocinadores." },
-            { "Día": "5", "TIEMPO": "DNF", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "3-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "12.5", "ESTADO": "DNF", "URL VIDEO": "UlyhSox-Ul8", "Notas": "Colisión fuerte contra guardarraíl en Fuchsröhre." }
+            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Fallback local activo." }
         ];
 
         let globalRows = [];
@@ -514,14 +501,12 @@
                     }
                 }
             }
-            // Mapeo posicional ciego por si los nombres de columna varían en el CSV
             if (posiblesNombres.includes('tipo') && values[0]) return values[0].toString().trim();
             if (posiblesNombres.includes('urlid') && values[1]) return values[1].toString().trim();
             
             return '';
         }
 
-        // --- PROCESADOR ADAPTADO A TU NUEVA PESTAÑA SECCIONES Y MAQUETACIÓN EXTRAPOLADA ---
         function parseAndRenderSectionsTab(parsedCsvData) {
             const introContainer = document.getElementById('rules-intro-container');
             const listContainer = document.getElementById('rules-list-container');
@@ -545,25 +530,20 @@
                 if (!tipo || !contenido) return;
 
                 if (tipo === 'TEXTO_NORMA') {
-                    // Si empieza con guion, creamos una viñeta limpia de la lista
                     if (contenido.startsWith('-')) {
                         const textoLimpio = contenido.substring(1).trim();
-                        const item = document.createElement('div');
-                        item.className = 'flex items-start gap-2.5 pl-1 justify-justify';
-                        item.innerHTML = `
-                            <span class="text-[var(--neon-green)] font-black text-sm select-none mt-0.5">🏁</span>
-                            <p class="leading-relaxed flex-1">${textoLimpio}</p>
-                        `;
+                        const item = document.createElement('p');
+                        item.className = 'leading-relaxed text-left text-gray-300 w-full tracking-wide';
+                        item.innerText = `• ${textoLimpio}`;
                         listContainer.appendChild(item);
                     } else {
-                        // Si no lleva guion, es el bloque descriptivo superior (Fila 2)
                         introContainer.innerText = contenido;
                         introConfigurada = true;
                     }
                 } 
                 else if (tipo === 'PRESENTACION') {
                     const card = document.createElement('div');
-                    card.className = 'panel-carbon rounded-xl p-5';
+                    card.className = 'panel-carbon rounded-xl p-5 text-left';
                     card.innerHTML = `
                         <span class="text-[10px] font-bold text-green-400 bg-green-950/40 px-2 py-0.5 border border-green-900/40 rounded uppercase tracking-widest block mb-2 w-max">🎬 VIDEO OFICIAL</span>
                         <h2 class="text-sm font-bold text-white mb-3">Vídeo de Presentación</h2>
@@ -576,10 +556,10 @@
                 else if (tipo === 'VIDEO_EXTRA' || tipo === 'SHORT_EXTRA') {
                     const isShort = tipo === 'SHORT_EXTRA';
                     const card = document.createElement('div');
-                    card.className = 'bg-black/30 p-4 rounded-lg border border-gray-800 space-y-3 flex flex-col justify-between';
+                    card.className = 'bg-black/30 p-4 rounded-lg border border-gray-800 space-y-3 flex flex-col justify-between text-left';
                     
                     card.innerHTML = `
-                        <div class="space-y-3">
+                        <div class="space-y-3 text-left">
                             <span class="text-[10px] ${isShort ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'} px-2 py-0.5 rounded font-bold uppercase tracking-wider block w-max">
                                 ${isShort ? '⚡ Short Extra' : '🎥 Vídeo Largo'}
                             </span>
@@ -621,17 +601,9 @@
                 fotoCoche: "https://i.imgur.com/jjPjIvn.png/800x400",
                 canalYoutube: "https://youtube.com/@AlterDiegoVR",
                 bannerWeb: "https://i.imgur.com/ioOLAFr.png/1200x300",
-                txtBloque1: "",
-                txtBloque2: "",
-                txtBloque3: "",
-                txtBloque4: "",
-                txtBloque5: "",
-                colorInterfaz: "",
-                colorDetalles: "#39ff14",
-                colorDetalles2: "",
-                colorRachaVerde: "",
-                colorRachaNaranja: "",
-                colorRachaRojo: ""
+                txtBloque1: "", txtBloque2: "", txtBloque3: "", txtBloque4: "", txtBloque5: "",
+                colorInterfaz: "", colorDetalles: "#39ff14", colorDetalles2: "",
+                colorRachaVerde: "", colorRachaNaranja: "", colorRachaRojo: ""
             };
 
             if (!parsedCsvData || parsedCsvData.length === 0) return configObj;
@@ -701,19 +673,17 @@
             }
         }
 
+        // --- CORRECCIÓN: AUDITORÍA DE INICIALIZACIÓN ÚNICA ---
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
-                globalRows = [...MOCK_DATA];
-                const defaultConfig = parseConfigSheet([]);
-                processAndRender(globalRows, defaultConfig);
-
                 const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
                 
                 const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('datos reto')}`;
                 const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('configuracion_web')}`;
                 const URL_SECCIONES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('secciones_web')}`;
 
+                // Lanzamos peticiones de red simultáneas de forma asíncrona limpia
                 const [resDatos, resConfig, resSecciones] = await Promise.all([
                     fetch(URL_DATOS).catch(() => { throw new Error("Fallo de red en pestaña 'datos reto'"); }),
                     fetch(URL_CONFIG).catch(() => { throw new Error("Fallo de red en pestaña 'configuracion_web'"); }),
@@ -733,7 +703,6 @@
                 const finalConfig = parseConfigSheet(rawConfigParsed);
                 applyWebConfiguration(finalConfig);
 
-                // Lectura y renderizado de la pestaña de secciones (Reglas, Vídeos y Shorts extras)
                 const seccionesText = await resSecciones.text();
                 const rawSeccionesParsed = Papa.parse(seccionesText, { header: false }).data;
                 parseAndRenderSectionsTab(rawSeccionesParsed);
@@ -762,6 +731,7 @@
                     "Notas": getVal(row, ['notas', 'nota'])
                 }));
                 
+                // UN SOLO RENDERIZADO AL COMPLETAR LA CARGA DE DATOS REALES
                 processAndRender(globalRows, finalConfig);
                 
                 badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400"></span> TELEMETRÍA ACTUALIZADA`;
@@ -771,6 +741,11 @@
                 console.error(err);
                 badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR: ${err.message}`;
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30 flex items-center gap-2";
+                
+                // MOCK_DATA únicamente actúa como red de seguridad si falla la llamada remota.
+                globalRows = [...MOCK_DATA];
+                const defaultConfig = parseConfigSheet([]);
+                processAndRender(globalRows, defaultConfig);
             }
         }
 
@@ -1003,46 +978,25 @@
                 }
             });
 
-            const customPointColors = [];
-            const customPointRadius = [];
-            const customPointHoverRadius = [];
-            const customPointStyles = [];
-
+            const customPointColors = []; const customPointRadius = []; const customPointHoverRadius = []; const customPointStyles = [];
             const neonGreenColor = '#39ff14';
 
             data.forEach(r => {
                 const estado = r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 if (r["Día"] === recordDay) {
-                    customPointColors.push('#ffd700'); 
-                    customPointRadius.push(12);         
-                    customPointHoverRadius.push(12);
-                    customPointStyles.push('triangle'); 
+                    customPointColors.push('#ffd700'); customPointRadius.push(12); customPointHoverRadius.push(12); customPointStyles.push('triangle'); 
                 } else if (estado === 'VALIDA') {
-                    customPointColors.push(neonGreenColor);
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
+                    customPointColors.push(neonGreenColor); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle');
                 } else if (estado === 'NO VALIDA') {
-                    customPointColors.push('#ff3b30');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
+                    customPointColors.push('#ff3b30'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle');
                 } else if (estado === 'EXHIBICION') {
-                    customPointColors.push('#a855f7'); 
-                    customPointRadius.push(5);          
-                    customPointHoverRadius.push(9);
-                    customPointStyles.push('circle');
+                    customPointColors.push('#a855f7'); customPointRadius.push(5); customPointHoverRadius.push(9); customPointStyles.push('circle');
                 } else {
-                    customPointColors.push('transparent');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
+                    customPointColors.push('transparent'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle');
                 }
             });
 
-            const dnfLinePoints = data.map(r => {
-                return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
-            });
+            const dnfLinePoints = data.map(r => { return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null; });
 
             const dynamicFillPlugin = {
                 id: 'dynamicFillPlugin',
@@ -1057,8 +1011,7 @@
                     chartCtx.save();
                     chartCtx.beginPath();
                     
-                    let firstPoint = true;
-                    let lastX = chartArea.left;
+                    let firstPoint = true; let lastX = chartArea.left;
 
                     points.forEach((pt) => {
                         if (pt.skip || isNaN(pt.y) || pt.y === null) return;
@@ -1094,44 +1047,28 @@
                         {
                             label: 'Evolución Cronometrada',
                             data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.45)', 
-                            borderWidth: 2,
-                            pointBackgroundColor: customPointColors,
-                            pointBorderColor: '#000',
-                            pointRadius: customPointRadius,
-                            pointHoverRadius: customPointHoverRadius,
-                            pointStyle: customPointStyles,
-                            fill: false, 
-                            spanGaps: true
+                            borderColor: 'rgba(255, 255, 255, 0.45)', borderWidth: 2,
+                            pointBackgroundColor: customPointColors, pointBorderColor: '#000',
+                            pointRadius: customPointRadius, pointHoverRadius: customPointHoverRadius, pointStyle: customPointStyles,
+                            fill: false, spanGaps: true
                         },
                         {
                             label: 'Abandono (DNF)',
                             data: dnfLinePoints,
-                            borderColor: '#ff3b30',
-                            backgroundColor: '#ff9500',
-                            borderWidth: 0,
-                            pointStyle: 'triangle',
-                            pointRadius: 9,
-                            pointHoverRadius: 11,
-                            fill: false,
-                            showLine: false
+                            borderColor: '#ff3b30', backgroundColor: '#ff9500', borderWidth: 0,
+                            pointStyle: 'triangle', pointRadius: 9, pointHoverRadius: 11, fill: false, showLine: false
                         }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const index = context.dataIndex;
-                                    const row = data[index];
-                                    if (!row) return '';
-                                    if (row["Día"] === recordDay) {
-                                        return ` 👑 ¡RECORD HISTÓRICO!: ${row["TIEMPO"]}`;
-                                    }
+                                    const index = context.dataIndex; const row = data[index]; if (!row) return '';
+                                    if (row["Día"] === recordDay) return ` 👑 ¡RECORD HISTÓRICO!: ${row["TIEMPO"]}`;
                                     return ` Tiempo: ${row["TIEMPO"]} [${row["ESTADO"]}]`;
                                 }
                             }
@@ -1141,18 +1078,14 @@
                         y: {
                             grid: { color: '#1f222e' },
                             ticks: {
-                                color: '#a0a0a0',
-                                font: { family: 'monospace' },
+                                color: '#a0a0a0', font: { family: 'monospace' },
                                 callback: function(value) {
                                     if (value >= dnfCeilingY - 1 && value <= dnfCeilingY + 1) return '⚠️ DNF';
                                     return secondsToTimeString(value);
                                 }
                             }
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#a0a0a0' }
-                        }
+                        x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
                     onClick: (e, activeEls) => {
                         if (activeEls.length > 0) {
@@ -1160,9 +1093,7 @@
                             if (data[index]) {
                                 updateDynamicScreen(data[index], true);
                                 const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
-                                if (ficha3) {
-                                    ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }
+                                if (ficha3) ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             }
                         }
                     }
@@ -1183,46 +1114,31 @@
             container.innerHTML = '';
             const reversedData = [...data].reverse();
 
-            let minTimeS = Infinity;
-            let recordDay = null;
+            let minTimeS = Infinity; let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
                 if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) {
-                    minTimeS = tS;
-                    recordDay = r["Día"];
+                    minTimeS = tS; recordDay = r["Día"];
                 }
             });
 
             reversedData.forEach(row => {
-                const dia = row["Día"];
-                const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                const CastleNotes = row["Notas"] || '';
-                
-                let borderClass = 'border-l-green-500';
-                let textBadgeClass = 'text-green-400';
-                let specialBgClass = '';
-                let crownIcon = '';
+                const dia = row["Día"]; const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); const CastleNotes = row["Notas"] || '';
+                let borderClass = 'border-l-green-500'; let textBadgeClass = 'text-green-400'; let specialBgClass = ''; let crownIcon = '';
 
                 if (dia === recordDay) {
-                    borderClass = 'border-l-amber-400';
-                    textBadgeClass = 'text-amber-400 font-black';
-                    specialBgClass = 'bg-amber-500/5 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
-                    crownIcon = '👑 ';
+                    borderClass = 'border-l-amber-400'; textBadgeClass = 'text-amber-400 font-black'; specialBgClass = 'bg-amber-500/5 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]'; crownIcon = '👑 ';
                 } else if (estado === 'NO VALIDA') {
-                    borderClass = 'border-l-red-500';
-                    textBadgeClass = 'text-red-400';
+                    borderClass = 'border-l-red-500'; textBadgeClass = 'text-red-400';
                 } else if (estado === 'DNF') {
-                    borderClass = 'border-l-yellow-500';
-                    textBadgeClass = 'text-yellow-500';
+                    borderClass = 'border-l-yellow-500'; textBadgeClass = 'text-yellow-500';
                 } else if (estado === 'EXHIBICION') {
-                    borderClass = 'border-l-purple-500';
-                    textBadgeClass = 'text-purple-400';
+                    borderClass = 'border-l-purple-500'; textBadgeClass = 'text-purple-400';
                 }
 
                 const card = document.createElement('div');
                 card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} ${specialBgClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
-                card.dataset.day = dia;
-                card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${CastleNotes}`.toLowerCase();
+                card.dataset.day = dia; card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${CastleNotes}`.toLowerCase();
                 
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
@@ -1249,18 +1165,14 @@
             if (row) {
                 updateDynamicScreen(row, true);
                 const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
-                if (ficha3) {
-                    ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (ficha3) ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
         function filterLaps() {
             const query = document.getElementById('lap-search').value.toLowerCase().trim();
             const cards = document.querySelectorAll('#history-container > div');
-            cards.forEach(card => {
-                card.style.display = card.dataset.searchable.includes(query) ? 'block' : 'none';
-            });
+            cards.forEach(card => { card.style.display = card.dataset.searchable.includes(query) ? 'block' : 'none'; });
         }
 
         init();
