@@ -864,7 +864,7 @@
                 const estado = r["ESTADO"].toUpperCase().trim();
                 if (r["Día"] === recordDay) {
                     customPointColors.push('#ffd700'); 
-                    customPointRadius.push(9);         
+                    customPointRadius.push(12);         
                     customPointHoverRadius.push(12);
                     customPointStyles.push('triangle'); 
                 } else if (estado === 'VÁLIDA') {
@@ -876,6 +876,11 @@
                     customPointColors.push('#ff3b30');
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
+                    customPointStyles.push('circle');
+                } else if (estado === 'EXHIBICIÓN') {
+                    customPointColors.push('#a855f7'); // Púrpura para los días de exhibición
+                    customPointRadius.push(5);          // Tamaño para que sea visible
+                    customPointHoverRadius.push(9);
                     customPointStyles.push('circle');
                 } else {
                     customPointColors.push('transparent');
