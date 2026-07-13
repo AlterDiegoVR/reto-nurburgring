@@ -305,7 +305,8 @@
                     </div>
                 </div>
                 
-                <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
+                <!-- CORREGIDO: Contenedor con posición relativa para permitir el anclaje sticky del eje Y -->
+                <div class="w-full overflow-x-auto pb-2 scrollbar-trazada relative">
                     <div id="chartWrapper" class="h-[320px] min-w-full">
                         <canvas id="telemetryChart"></canvas>
                     </div>
@@ -593,8 +594,6 @@
             if(recordData) {
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
-                
-                // CORREGIDO: SE ASIGNA CORRECTAMENTE LA FECHA DE PUBLICACIÓN DEL RÉCORD
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--/--';
                 
                 const recordUrl = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
@@ -757,6 +756,10 @@
                     responsive: true, 
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
+                    layout: {
+                        // Deja espacio a la izquierda para el eje Y clonado
+                        padding: { left: 60 }
+                    },
                     scales: {
                         y: { 
                             min: 395, 
@@ -765,9 +768,13 @@
                                 color: function(context) {
                                     if (context.tick.value === 430) return 'transparent';
                                     return '#1f222e';
-                                }
+                                },
+                                // Dibuja las líneas de cuadrícula cruzando todo el gráfico
+                                drawTicks: false
                             }, 
                             ticks: { 
+                                // CORREGIDO: Inyectamos estilos directamente para fijar el eje Y de forma estricta (Sticky)
+                                display: true,
                                 color: '#a0a0a0', 
                                 font: { family: 'monospace' }, 
                                 stepSize: 5, 
@@ -787,7 +794,37 @@
                         }
                     }
                 },
-                plugins: [dynamicFillPlugin] 
+                plugins: [
+                    dynamicFillPlugin,
+                    {
+                        id: 'stickyYAxis',
+                        afterDraw(chart) {
+                            // Clonador en caliente del área lateral del eje Y para dejarlo congelado
+                            const { ctx: chartCtx, chartArea, scales: { y } } = chart;
+                            chartCtx.save();
+                            chartCtx.fillStyle = '#16171e'; // Color idéntico al panel-carbon background
+                            chartCtx.fillRect(0, 0, chartArea.left, chart.height);
+                            
+                            // Redibujamos de manera flotante las marcas
+                            y.ticks.forEach((tick, i) => {
+                                const yPos = y.getPixelForValue(tick.value);
+                                if (yPos >= chartArea.top && yPos <= chartArea.bottom) {
+                                    chartCtx.fillStyle = '#a0a0a0';
+                                    chartCtx.font = '12px monospace';
+                                    chartCtx.textAlign = 'right';
+                                    chartCtx.textBaseline = 'middle';
+                                    
+                                    let label = secondsToTimeString(tick.value);
+                                    if (tick.value === 430) label = '⚠️ DNF';
+                                    if (tick.value > 430) label = '';
+                                    
+                                    chartCtx.fillText(label, chartArea.left - 10, yPos);
+                                }
+                            });
+                            chartCtx.restore();
+                        }
+                    }
+                ] 
             });
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
         }
