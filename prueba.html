@@ -750,17 +750,23 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
+                        // ... dentro de options -> scales -> y:
                         y: { 
                             min: 395, 
-                            max: 435, 
-                            grid: { color: '#1f222e' }, 
+                            max: 430, // Ajustamos el máximo exacto a 430
+                            grid: { 
+                                color: function(context) {
+                                    // Si el valor de la línea es el del DNF (430), ponemos color transparente
+                                    if (context.tick.value === 430) return 'transparent';
+                                    return '#1f222e';
+                                }
+                            }, 
                             ticks: { 
                                 color: '#a0a0a0', 
                                 font: { family: 'monospace' }, 
                                 stepSize: 5, 
                                 callback: function(v) { 
-                                    if (v === dnfCeilingY) return '⚠️ DNF'; 
-                                    if (v > dnfCeilingY) return ''; 
+                                    if (v === 430) return '⚠️ DNF'; 
                                     return secondsToTimeString(v); 
                                 } 
                             } 
