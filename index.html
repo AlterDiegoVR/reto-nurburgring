@@ -593,9 +593,12 @@
             if(recordData) {
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
+                
+                // CORREGIDO: SE ASIGNA CORRECTAMENTE LA FECHA DE PUBLICACIÓN DEL RÉCORD
+                document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--/--';
+                
                 const recordUrl = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 if (document.getElementById('record-iframe').src !== recordUrl) document.getElementById('record-iframe').src = recordUrl;
-                // CORREGIDO: "Notes" -> "Notas"
                 document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
             }
 
@@ -605,7 +608,6 @@
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 const latestUrl = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
                 if (document.getElementById('latest-iframe').src !== latestUrl) document.getElementById('latest-iframe').src = latestUrl;
-                // CORREGIDO: "Notes" -> "Notas"
                 document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 document.getElementById('latest-delta').innerText = (latestSecs && recordActualS !== Infinity) ? (latestSecs - recordActualS > 0 ? `+${(latestSecs - recordActualS).toFixed(3)}s vs récord` : '¡RÉCORD!') : latestData["ESTADO"];
@@ -637,7 +639,6 @@
             document.getElementById('random-time').innerText = row["TIEMPO"];
             const randomUrl = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
             if (document.getElementById('random-iframe').src !== randomUrl) document.getElementById('random-iframe').src = randomUrl;
-            // CORREGIDO: "Notes" -> "Notas"
             document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
@@ -716,7 +717,7 @@
                     const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
                     fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.45)');   
                     fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.15)');  
-                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                 
 
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
