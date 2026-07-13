@@ -13,16 +13,19 @@
             --neon-green: #39ff14;
             --racing-red: #ff3b30;
             --warning-orange: #ff9500;
-            --carbon-black: #0b0c10;
+            --carbon-black: #0f1015;
             --panel-bg: #16171e;
         }
 
         body {
-            background-color: var(--carbon-black);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-position: center top;
-            background-repeat: no-repeat;
-            background-size: 100% auto;
+            /* PATRÓN CSS DE FIBRA DE CARBONO EN LAS TRES LÍNEAS SIGUIENTES */
+            background-color: var(--carbon-black);
+            background-image: 
+                linear-gradient(45deg, #111318 25%, transparent 25%, transparent 75%, #111318 75%, #111318), 
+                linear-gradient(45deg, #111318 25%, transparent 25%, transparent 75%, #111318 75%, #111318);
+            background-size: 6px 6px;
+            background-position: 0 0, 3px 3px;
         }
 
         .panel-carbon {
@@ -99,7 +102,7 @@
         }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen pb-12">
+<body class="text-gray-200 min-h-screen pb-12 pt-6">
 
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="mb-6 flex flex-col gap-4">
@@ -296,7 +299,7 @@
                         <h3 class="text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
                             📉 Evolución
                         </h3>
-                        <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Pulsa en cualquier punto para cargar el short del día arriba.</p>
+                        <p class="text-xs text-gray-400">Los DNF se sitúan en la zona superior. Pulsa en cualquier point para cargar el short del día arriba.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
                         <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#39ff14]" id="legend-valida-dot"></span> Válida</span>
@@ -757,19 +760,14 @@
                     maintainAspectRatio: false,
                     plugins: { 
                         legend: { display: false },
-                        // CORRECCIÓN DEL BUG: Formatear la caja flotante (tooltip) para mostrar mm:ss.sss en vez de segundos brutos
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
                                     const value = context.raw;
                                     if (value === null) return '';
-                                    
-                                    // Si es el triángulo naranja de DNF (que vale 430s)
                                     if (context.datasetIndex === 1 && value === dnfCeilingY) {
                                         return ' Abandono (DNF)';
                                     }
-                                    
-                                    // Para las vueltas normales, convertimos los segundos a tiempo real mm:ss.sss
                                     return ` Tiempo: ${secondsToTimeString(value)}`;
                                 }
                             }
