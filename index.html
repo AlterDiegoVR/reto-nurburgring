@@ -290,7 +290,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN EVOLUCIÓN (SOLUCIÓN CSS STICKY DEFINITIVA: ESCALA ÚNICA REAL SÍNCRONA) -->
+            <!-- SECCIÓN EVOLUCIÓN (CONTENEDORES HÍBRIDOS CON STICKY CSS PURO) -->
             <section class="panel-carbon rounded-xl p-5">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
@@ -306,10 +306,20 @@
                     </div>
                 </div>
                 
-                <!-- CORREGIDO: Un único contenedor deslizable. Chart.js maneja la escala real síncrona -->
-                <div class="w-full overflow-x-auto pb-2 scrollbar-trazada relative rounded-lg bg-[#16171e]">
-                    <div id="chartWrapper" class="h-[320px] min-w-full">
-                        <canvas id="telemetryChart"></canvas>
+                <!-- SOLUCIÓN DEFINITIVA: Contenedor con layout flex de capas bloqueadas en CSS -->
+                <div class="relative flex w-full overflow-hidden bg-[#16171e] rounded-lg border border-gray-800/40">
+                    
+                    <!-- Caja Izquierda: Totalmente pegajosa en CSS nativo (Sticky) con fondo sólido para tapar la gráfica -->
+                    <div class="sticky left-0 top-0 bottom-0 min-w-[65px] w-[65px] h-[320px] bg-[#16171e] z-20 border-r border-gray-800/30 flex-shrink-0">
+                        <canvas id="telemetryAxisLeft" class="w-full h-[320px]"></canvas>
+                    </div>
+                    
+                    <!-- Caja Derecha: El contenedor con scroll real que fluye libremente por debajo del bloque sticky -->
+                    <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
+                        <!-- Eliminamos el margen izquierdo dinámico; el canvas derecho arranca limpio -->
+                        <div id="chartWrapper" class="h-[320px] min-w-full">
+                            <canvas id="telemetryChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -417,6 +427,7 @@
 
         let globalRows = [];
         let telemetryChartInstance = null;
+        let leftAxisChartInstance = null;
 
         function getVal(row, posiblesNombres) {
             const values = Object.values(row);
@@ -660,10 +671,14 @@
             }
             
             const chartCanvas = document.getElementById('telemetryChart');
-            if (!chartCanvas) return;
+            const axisCanvas = document.getElementById('telemetryAxisLeft');
+            if (!chartCanvas || !axisCanvas) return;
             
             const ctx = chartCanvas.getContext('2d');
+            const ctxAxis = axisCanvas.getContext('2d');
+            
             if (telemetryChartInstance) telemetryChartInstance.destroy();
+            if (leftAxisChartInstance) leftAxisChartInstance.destroy();
 
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
@@ -721,7 +736,7 @@
                 }
             };
 
-            // TRUCO MAESTRO: Eje Y Nativo Sticky inyectado por configuración interna de Chart.js
+            // ESQUEMA GRÁFICO 1: LA TELEMETRÍA REAL DESLIZANTE (Con su eje Y oculto para no duplicar etiquetas)
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -764,12 +779,12 @@
                             }
                         }
                     },
+                    // Ajuste a cero en la izquierda para que empiece pegado al corte del bloque sticky
                     layout: { padding: { top: 15, bottom: 5, left: 0, right: 20 } },
                     scales: {
                         y: { 
                             min: 395, 
                             max: 435, 
-                            position: 'left',
                             grid: { 
                                 color: function(context) {
                                     if (context.tick.value === 430) return 'transparent';
@@ -777,17 +792,7 @@
                                 },
                                 drawTicks: false
                             }, 
-                            ticks: { 
-                                display: true, 
-                                stepSize: 5,
-                                color: '#a0a0a0',
-                                font: { family: 'monospace', size: 11, weight: 'bold' },
-                                callback: function(v) { 
-                                    if (v === 430) return '⚠️ DNF'; 
-                                    if (v > 430) return ''; 
-                                    return secondsToTimeString(v); 
-                                }
-                            }
+                            ticks: { display: false, stepSize: 5 } // Oculto por completo
                         },
                         x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
@@ -798,47 +803,43 @@
                         }
                     }
                 },
-                plugins: [
-                    dynamicFillPlugin,
-                    {
-                        id: 'stickyYAxisNative',
-                        afterAxesDraw(chart) {
-                            const { ctx: chartCtx, chartArea, scales: { y } } = chart;
-                            const scrollLeft = chartWrapper.parentElement.scrollLeft;
-                            if (scrollLeft <= 0) return;
+                plugins: [dynamicFillPlugin] 
+            });
 
-                            chartCtx.save();
-                            // Tapamos la zona de la izquierda con el fondo exacto para que la gráfica pase por debajo
-                            chartCtx.fillStyle = '#16171e';
-                            chartCtx.fillRect(scrollLeft, 0, y.width + 10, chart.height);
-
-                            // Pintamos la línea sutil de división vertical del eje
-                            chartCtx.strokeStyle = '#222530';
-                            chartCtx.lineWidth = 1;
-                            chartCtx.beginPath();
-                            chartCtx.moveTo(scrollLeft + y.width + 10, chartArea.top);
-                            chartCtx.lineTo(scrollLeft + y.width + 10, chartArea.bottom);
-                            chartCtx.stroke();
-
-                            // Redibujamos las etiquetas en tiempo real exactamente clonadas de la escala síncrona
-                            chartCtx.fillStyle = '#a0a0a0';
-                            chartCtx.font = 'bold 11px monospace';
-                            chartCtx.textAlign = 'right';
-                            chartCtx.textBaseline = 'middle';
-
-                            y.ticks.forEach(tick => {
-                                const yPos = y.getPixelForValue(tick.value);
-                                if (yPos >= chartArea.top && yPos <= chartArea.bottom) {
-                                    let text = secondsToTimeString(tick.value);
-                                    if (tick.value === 430) text = '⚠️ DNF';
-                                    if (tick.value > 430) text = '';
-                                    chartCtx.fillText(text, scrollLeft + y.width, yPos);
+            // ESQUEMA GRÁFICO 2: EL EJE Y NATIVO STICKY CLONADO SÍNCRONO (Mismos min/max y stepSize)
+            leftAxisChartInstance = new Chart(ctxAxis, {
+                type: 'line',
+                data: {
+                    labels: labelsDias,
+                    datasets: [{ data: lineTimesData, fill: false, showLine: false, pointRadius: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    // Compensación simétrica inferior exacta para cuadrar con el eje X del gráfico principal
+                    layout: { padding: { top: 15, bottom: 31, left: 2, right: 0 } }, 
+                    scales: {
+                        x: { display: false },
+                        y: {
+                            min: 395,
+                            max: 435,
+                            position: 'left',
+                            grid: { display: false },
+                            ticks: {
+                                display: true,
+                                stepSize: 5,
+                                color: '#a0a0a0',
+                                font: { family: 'monospace', size: 10, weight: 'bold' },
+                                callback: function(v) { 
+                                    if (v === 430) return '⚠️ DNF'; 
+                                    if (v > 430) return ''; 
+                                    return secondsToTimeString(v); 
                                 }
-                            });
-                            chartCtx.restore();
+                            }
                         }
                     }
-                ] 
+                }
             });
 
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
