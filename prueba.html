@@ -641,7 +641,6 @@
             updateDynamicScreen(globalRows[Math.floor(Math.random() * globalRows.length)], false);
         }
 
-        // RESTAURADO COMPLETO: Lógica técnica avanzada de la gráfica sin pérdidas de datos
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
@@ -656,7 +655,6 @@
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
             
-            // Techo de Y calculado dinámicamente para los DNF
             const maxValidValue = Math.max(...lineTimesData.filter(s => s !== null), 420);
             const dnfCeilingY = maxValidValue + 6;
 
@@ -688,7 +686,6 @@
                 }
             });
 
-            // Única línea/puntos para reflejar abandonos de forma limpia
             const dnfPointsData = data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null);
 
             const dynamicFillPlugin = {
@@ -743,7 +740,7 @@
                         {
                             label: 'Abandono (DNF)',
                             data: dnfPointsData,
-                            borderColor: '#ff3b30', backgroundColor: '#ff9500', borderWidth: 0,
+                            borderColor: '#ff3b30', backgroundColor: '#ff3b30', borderWidth: 0,
                             pointStyle: 'triangle', pointRadius: 9, pointHoverRadius: 11, fill: false, showLine: false
                         }
                     ]
@@ -770,6 +767,7 @@
                                 font: { family: 'monospace' }, 
                                 callback: function(v) { 
                                     if (v >= dnfCeilingY - 1 && v <= dnfCeilingY + 1) return '⚠️ DNF';
+                                    if (v > maxValidValue && v < dnfCeilingY - 1) return '';
                                     return secondsToTimeString(v); 
                                 } 
                             } 
