@@ -19,13 +19,15 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            /* PATRÓN CSS DE FIBRA DE CARBONO EN LAS TRES LÍNEAS SIGUIENTES */
-            background-color: var(--carbon-black);
+            background-color: #0e1014;
+            /* Nuevo patrón de fibra de carbono con más tamaño y contraste */
             background-image: 
-                linear-gradient(45deg, #111318 25%, transparent 25%, transparent 75%, #111318 75%, #111318), 
-                linear-gradient(45deg, #111318 25%, transparent 25%, transparent 75%, #111318 75%, #111318);
-            background-size: 6px 6px;
-            background-position: 0 0, 3px 3px;
+                linear-gradient(315deg, #15181f 25%, transparent 25%), 
+                linear-gradient(45deg, #15181f 25%, transparent 25%), 
+                linear-gradient(225deg, #15181f 25%, transparent 25%), 
+                linear-gradient(135deg, #15181f 25%, transparent 25%);
+            background-size: 16px 16px;
+            background-position: 8px 0, 8px 0, 0 0, 0 0;
         }
 
         .panel-carbon {
