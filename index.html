@@ -290,7 +290,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN EVOLUCIÓN (GRÁFICA CON EJE FIJO REAL HTML) -->
+            <!-- SECCIÓN EVOLUCIÓN (SOLUCIÓN CSS STICKY DEFINITIVA: ESCALA ÚNICA REAL SÍNCRONA) -->
             <section class="panel-carbon rounded-xl p-5">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
@@ -306,26 +306,10 @@
                     </div>
                 </div>
                 
-                <!-- CORREGIDO: SEGUIDOR EJE VERTICAL HTML LIMPIO Y CONGELADO SIN SEGUNDOS RAROS -->
-                <div class="relative w-full overflow-hidden bg-[#16171e] rounded-lg border border-gray-800/40">
-                    
-                    <!-- Capa Fija Izquierda: Pintado estricto con etiquetas HTML para evitar bugs de escalado -->
-                    <div class="absolute left-0 top-0 bottom-0 w-[68px] bg-[#16171e] z-10 border-r border-gray-800/40 flex flex-col justify-between pt-[15px] pb-[38px] pr-2 text-right text-[10px] font-mono font-bold text-gray-400 pointer-events-none select-none">
-                        <div>⚠️ DNF</div>
-                        <div>7:15.000</div>
-                        <div>7:10.000</div>
-                        <div>7:05.000</div>
-                        <div>7:00.000</div>
-                        <div>6:55.000</div>
-                        <div>6:45.000</div>
-                        <div>6:40.000</div>
-                    </div>
-                    
-                    <!-- Contenedor Derecho Deslizable: Aloja la gráfica real que pasa por detrás de forma fluida -->
-                    <div class="w-full overflow-x-auto pb-2 scrollbar-trazada pl-[68px]">
-                        <div id="chartWrapper" class="h-[320px] min-w-full">
-                            <canvas id="telemetryChart"></canvas>
-                        </div>
+                <!-- CORREGIDO: Un único contenedor deslizable. Chart.js maneja la escala real síncrona -->
+                <div class="w-full overflow-x-auto pb-2 scrollbar-trazada relative rounded-lg bg-[#16171e]">
+                    <div id="chartWrapper" class="h-[320px] min-w-full">
+                        <canvas id="telemetryChart"></canvas>
                     </div>
                 </div>
             </section>
@@ -671,7 +655,7 @@
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
-                const anchoCalculado = data.length * (window.innerWidth < 768 ? 16 : 28);
+                const anchoCalculado = data.length * (window.innerWidth < 768 ? 20 : 34);
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth ? `${anchoCalculado}px` : '100%';
             }
             
@@ -737,7 +721,7 @@
                 }
             };
 
-            // GRÁFICA PRINCIPAL: El eje Y nativo está oculto por completo para usar el HTML estricto fijo
+            // TRUCO MAESTRO: Eje Y Nativo Sticky inyectado por configuración interna de Chart.js
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -769,13 +753,23 @@
                 options: {
                     responsive: true, 
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    // Ajuste milimétrico de relleno para encajar con el contenedor lateral de textos HTML
-                    layout: { padding: { top: 18, bottom: 2, left: 10, right: 15 } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 1) return 'Abandono (DNF)';
+                                    return `Tiempo: ${secondsToTimeString(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    layout: { padding: { top: 15, bottom: 5, left: 0, right: 20 } },
                     scales: {
                         y: { 
                             min: 395, 
                             max: 435, 
+                            position: 'left',
                             grid: { 
                                 color: function(context) {
                                     if (context.tick.value === 430) return 'transparent';
@@ -783,7 +777,17 @@
                                 },
                                 drawTicks: false
                             }, 
-                            ticks: { display: false, stepSize: 5 } // Desactivado por completo
+                            ticks: { 
+                                display: true, 
+                                stepSize: 5,
+                                color: '#a0a0a0',
+                                font: { family: 'monospace', size: 11, weight: 'bold' },
+                                callback: function(v) { 
+                                    if (v === 430) return '⚠️ DNF'; 
+                                    if (v > 430) return ''; 
+                                    return secondsToTimeString(v); 
+                                }
+                            }
                         },
                         x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
@@ -794,7 +798,47 @@
                         }
                     }
                 },
-                plugins: [dynamicFillPlugin] 
+                plugins: [
+                    dynamicFillPlugin,
+                    {
+                        id: 'stickyYAxisNative',
+                        afterAxesDraw(chart) {
+                            const { ctx: chartCtx, chartArea, scales: { y } } = chart;
+                            const scrollLeft = chartWrapper.parentElement.scrollLeft;
+                            if (scrollLeft <= 0) return;
+
+                            chartCtx.save();
+                            // Tapamos la zona de la izquierda con el fondo exacto para que la gráfica pase por debajo
+                            chartCtx.fillStyle = '#16171e';
+                            chartCtx.fillRect(scrollLeft, 0, y.width + 10, chart.height);
+
+                            // Pintamos la línea sutil de división vertical del eje
+                            chartCtx.strokeStyle = '#222530';
+                            chartCtx.lineWidth = 1;
+                            chartCtx.beginPath();
+                            chartCtx.moveTo(scrollLeft + y.width + 10, chartArea.top);
+                            chartCtx.lineTo(scrollLeft + y.width + 10, chartArea.bottom);
+                            chartCtx.stroke();
+
+                            // Redibujamos las etiquetas en tiempo real exactamente clonadas de la escala síncrona
+                            chartCtx.fillStyle = '#a0a0a0';
+                            chartCtx.font = 'bold 11px monospace';
+                            chartCtx.textAlign = 'right';
+                            chartCtx.textBaseline = 'middle';
+
+                            y.ticks.forEach(tick => {
+                                const yPos = y.getPixelForValue(tick.value);
+                                if (yPos >= chartArea.top && yPos <= chartArea.bottom) {
+                                    let text = secondsToTimeString(tick.value);
+                                    if (tick.value === 430) text = '⚠️ DNF';
+                                    if (tick.value > 430) text = '';
+                                    chartCtx.fillText(text, scrollLeft + y.width, yPos);
+                                }
+                            });
+                            chartCtx.restore();
+                        }
+                    }
+                ] 
             });
 
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
