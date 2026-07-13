@@ -107,7 +107,7 @@
             <!-- EL LINK AHORA ESTÁ EN EL CONTENEDOR DEL BANNER/IMAGEN SUPERIOR -->
             <a href="index.html" id="banner-image-link" class="block h-[70px] md:h-[120px] lg:h-[140px] w-full hover:opacity-90 transition-opacity bg-center bg-cover rounded-xl"></a>
 
-            <!-- TEXTOS DE LA CABECERA (Fuera del link, con su fondo difuminado original) -->
+            <!-- TEXTOS DE LA CABECERA -->
             <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
                 <div>
                     <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            <!-- NAVEGACIÓN Y BOTONES EXTRAÍDOS FUERA DEL VÍNCULO DEL BANNER -->
+            <!-- NAVEGACIÓN Y BOTONES -->
             <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
                 <div class="relative inline-block text-left">
                     <select id="navigation-menu" onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer transition-colors">
@@ -290,7 +290,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN EVOLUCIÓN (GRÁFICA CON EJE STICKY CORREGIDO) -->
+            <!-- SECCIÓN EVOLUCIÓN (GRÁFICA CON EJE FIJO REAL HTML) -->
             <section class="panel-carbon rounded-xl p-5">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
@@ -306,14 +306,22 @@
                     </div>
                 </div>
                 
-                <!-- CONTENEDOR REESTRUCTURADO DE EJE FIJO REAL -->
-                <div class="relative w-full overflow-hidden bg-[#16171e] rounded-lg">
-                    <!-- CORREGIDO: Ampliado a 68px de ancho para que entren el DNF y los tiempos sin cortarse jamás -->
-                    <div class="absolute left-0 top-0 bottom-0 w-[68px] bg-[#16171e] z-10 border-r border-gray-800/20 pointer-events-none">
-                        <canvas id="telemetryAxisLeft" class="h-[320px] w-full"></canvas>
+                <!-- CORREGIDO: SEGUIDOR EJE VERTICAL HTML LIMPIO Y CONGELADO SIN SEGUNDOS RAROS -->
+                <div class="relative w-full overflow-hidden bg-[#16171e] rounded-lg border border-gray-800/40">
+                    
+                    <!-- Capa Fija Izquierda: Pintado estricto con etiquetas HTML para evitar bugs de escalado -->
+                    <div class="absolute left-0 top-0 bottom-0 w-[68px] bg-[#16171e] z-10 border-r border-gray-800/40 flex flex-col justify-between pt-[15px] pb-[38px] pr-2 text-right text-[10px] font-mono font-bold text-gray-400 pointer-events-none select-none">
+                        <div>⚠️ DNF</div>
+                        <div>7:15.000</div>
+                        <div>7:10.000</div>
+                        <div>7:05.000</div>
+                        <div>7:00.000</div>
+                        <div>6:55.000</div>
+                        <div>6:45.000</div>
+                        <div>6:40.000</div>
                     </div>
                     
-                    <!-- Caja Derecha: Se desplaza por debajo de la capa fija de 68px -->
+                    <!-- Contenedor Derecho Deslizable: Aloja la gráfica real que pasa por detrás de forma fluida -->
                     <div class="w-full overflow-x-auto pb-2 scrollbar-trazada pl-[68px]">
                         <div id="chartWrapper" class="h-[320px] min-w-full">
                             <canvas id="telemetryChart"></canvas>
@@ -425,7 +433,6 @@
 
         let globalRows = [];
         let telemetryChartInstance = null;
-        let leftAxisChartInstance = null;
 
         function getVal(row, posiblesNombres) {
             const values = Object.values(row);
@@ -669,14 +676,10 @@
             }
             
             const chartCanvas = document.getElementById('telemetryChart');
-            const axisCanvas = document.getElementById('telemetryAxisLeft');
-            if (!chartCanvas || !axisCanvas) return;
+            if (!chartCanvas) return;
             
             const ctx = chartCanvas.getContext('2d');
-            const ctxAxis = axisCanvas.getContext('2d');
-            
             if (telemetryChartInstance) telemetryChartInstance.destroy();
-            if (leftAxisChartInstance) leftAxisChartInstance.destroy();
 
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
@@ -734,7 +737,7 @@
                 }
             };
 
-            // ESQUEMA GENERADOR 1: GRÁFICA REAL DESLIZANTE (Eje Y interno completamente oculto)
+            // GRÁFICA PRINCIPAL: El eje Y nativo está oculto por completo para usar el HTML estricto fijo
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -767,7 +770,8 @@
                     responsive: true, 
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    layout: { padding: { top: 10, bottom: 0, left: 5, right: 10 } },
+                    // Ajuste milimétrico de relleno para encajar con el contenedor lateral de textos HTML
+                    layout: { padding: { top: 18, bottom: 2, left: 10, right: 15 } },
                     scales: {
                         y: { 
                             min: 395, 
@@ -779,7 +783,7 @@
                                 },
                                 drawTicks: false
                             }, 
-                            ticks: { display: false, stepSize: 5 }
+                            ticks: { display: false, stepSize: 5 } // Desactivado por completo
                         },
                         x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
@@ -791,38 +795,6 @@
                     }
                 },
                 plugins: [dynamicFillPlugin] 
-            });
-
-            // ESQUEMA GENERADOR 2: EJE Y FIJO IZQUIERDO CLONADO ABSOLUTO (CORREGIDO CON CONVERSIÓN DE TIEMPO)
-            leftAxisChartInstance = new Chart(ctxAxis, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    // Relleno simétrico inferior aumentado (32px) para cuadrar perfectamente con el eje X de la gráfica derecha
-                    layout: { padding: { top: 10, bottom: 32, left: 4, right: 0 } }, 
-                    scales: {
-                        x: { display: false },
-                        y: {
-                            min: 395,
-                            max: 435,
-                            grid: { display: false },
-                            ticks: {
-                                color: '#a0a0a0',
-                                font: { family: 'monospace', size: 10, weight: 'bold' },
-                                stepSize: 5,
-                                // CORREGIDO: Se vuelve a usar la función secondsToTimeString para pintar los minutos y evitar los segundos en bruto
-                                callback: function(v) { 
-                                    if (v === 430) return '⚠️ DNF'; 
-                                    if (v > 430) return ''; 
-                                    return secondsToTimeString(v); 
-                                }
-                            }
-                        }
-                    }
-                }
             });
 
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
