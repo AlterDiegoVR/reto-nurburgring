@@ -115,6 +115,7 @@
                     </p>
                 </div>
 
+                <!-- MENÚ RECUPERADO DE ENLACES INDEPENDIENTES -->
                 <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
                     <div class="relative inline-block text-left">
                         <select id="navigation-menu" onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer transition-colors">
@@ -643,7 +644,6 @@
             updateDynamicScreen(globalRows[Math.floor(Math.random() * globalRows.length)], false);
         }
 
-        // CORREGIDO: Escala Y limpia, triángulos estrictamente naranjas y conservación fija del paso 7:05.000
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
@@ -658,7 +658,7 @@
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
             
-            // Forzamos el límite superior exacto para la zona DNF en 430 segundos (7:10.000) para pintar el paso intermedio
+            // Constante fija para la franja DNF (7:10.000)
             const dnfCeilingY = 430; 
 
             let minTimeS = Infinity; let recordDay = null;
@@ -673,6 +673,7 @@
                 if (r["Día"] === recordDay) { customPointColors.push('#ffd700'); customPointRadius.push(12); customPointHoverRadius.push(12); customPointStyles.push('triangle'); } 
                 else if (estado === 'VALIDA') { customPointColors.push('#39ff14'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); } 
                 else if (estado === 'NO VALIDA') { customPointColors.push('#ff3b30'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); } 
+                else if (estado === 'EXHIBICION') { customPointColors.push('#a855f7'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); }
                 else { customPointColors.push('transparent'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); }
             });
 
@@ -682,32 +683,44 @@
                     labels: labelsDias,
                     datasets: [
                         {
-                            data: lineTimesData, borderColor: 'rgba(255, 255, 255, 0.45)', borderWidth: 2,
-                            pointBackgroundColor: customPointColors, pointBorderColor: '#000',
-                            pointRadius: customPointRadius, pointHoverRadius: customPointHoverRadius, pointStyle: customPointStyles,
-                            fill: false, spanGaps: true
+                            data: lineTimesData, 
+                            borderColor: 'rgba(255, 255, 255, 0.45)', 
+                            borderWidth: 2,
+                            pointBackgroundColor: customPointColors, 
+                            pointBorderColor: '#000',
+                            pointRadius: customPointRadius, 
+                            pointHoverRadius: customPointHoverRadius, 
+                            pointStyle: customPointStyles,
+                            fill: false, 
+                            spanGaps: true // REPARADO: Une los puntos saltándose los días con valores nulos (como DNF)
                         },
                         {
                             data: data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null),
-                            borderColor: '#ff9500', backgroundColor: '#ff9500', pointStyle: 'triangle', pointRadius: 9, fill: false, showLine: false
+                            borderColor: '#ff9500', 
+                            backgroundColor: '#ff9500', 
+                            pointStyle: 'triangle', 
+                            pointRadius: 9, 
+                            fill: false, 
+                            showLine: false
                         }
                     ]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
+                    responsive: true, 
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
                         y: { 
-                            min: 395, // 6:35.000 base
-                            max: 435, // Forzamos fin limpio arriba
+                            min: 395, 
+                            max: 435, 
                             grid: { color: '#1f222e' }, 
                             ticks: { 
                                 color: '#a0a0a0', 
                                 font: { family: 'monospace' }, 
-                                stepSize: 5, // Asegura los pasos fijos de 5 en 5 segundos (7:00, 7:05...)
+                                stepSize: 5, 
                                 callback: function(v) { 
                                     if (v === dnfCeilingY) return '⚠️ DNF'; 
-                                    if (v > dnfCeilingY) return ''; // Quitamos cualquier texto fantasma superior
+                                    if (v > dnfCeilingY) return ''; 
                                     return secondsToTimeString(v); 
                                 } 
                             } 
