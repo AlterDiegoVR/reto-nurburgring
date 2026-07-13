@@ -290,7 +290,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN EVOLUCIÓN (GRÁFICA COLO_FIXED_Y) -->
+            <!-- SECCIÓN EVOLUCIÓN (GRÁFICA CON EJE STICKY CORREGIDO) -->
             <section class="panel-carbon rounded-xl p-5">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
@@ -306,15 +306,15 @@
                     </div>
                 </div>
                 
-                <!-- CORREGIDO REESTRUCTURACIÓN DE CONTENEDORES PARA CONGELAR EJE Y REAL EN MÓVIL -->
+                <!-- CONTENEDOR REESTRUCTURADO DE EJE FIJO REAL -->
                 <div class="relative w-full overflow-hidden bg-[#16171e] rounded-lg">
-                    <!-- Caja Izquierda: Solo pinta el eje Y fijo y tapa el fondo -->
-                    <div class="absolute left-0 top-0 bottom-0 w-[55px] bg-[#16171e] z-10 border-r border-gray-800/20 pointer-events-none">
+                    <!-- CORREGIDO: Ampliado a 68px de ancho para que entren el DNF y los tiempos sin cortarse jamás -->
+                    <div class="absolute left-0 top-0 bottom-0 w-[68px] bg-[#16171e] z-10 border-r border-gray-800/20 pointer-events-none">
                         <canvas id="telemetryAxisLeft" class="h-[320px] w-full"></canvas>
                     </div>
                     
-                    <!-- Caja Derecha: Contenedor deslizable que aloja el gráfico de telemetría real -->
-                    <div class="w-full overflow-x-auto pb-2 scrollbar-trazada pl-[55px]">
+                    <!-- Caja Derecha: Se desplaza por debajo de la capa fija de 68px -->
+                    <div class="w-full overflow-x-auto pb-2 scrollbar-trazada pl-[68px]">
                         <div id="chartWrapper" class="h-[320px] min-w-full">
                             <canvas id="telemetryChart"></canvas>
                         </div>
@@ -608,7 +608,7 @@
                 
                 const recordUrl = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 if (document.getElementById('record-iframe').src !== recordUrl) document.getElementById('record-iframe').src = recordUrl;
-                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
+                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
             }
 
             const latestData = data[data.length - 1];
@@ -617,7 +617,7 @@
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 const latestUrl = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
                 if (document.getElementById('latest-iframe').src !== latestUrl) document.getElementById('latest-iframe').src = latestUrl;
-                document.getElementById('latest-notes').innerText = latestData["Notes"] || 'Sin notas.';
+                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 document.getElementById('latest-delta').innerText = (latestSecs && recordActualS !== Infinity) ? (latestSecs - recordActualS > 0 ? `+${(latestSecs - recordActualS).toFixed(3)}s vs récord` : '¡RÉCORD!') : latestData["ESTADO"];
             }
@@ -648,7 +648,7 @@
             document.getElementById('random-time').innerText = row["TIEMPO"];
             const randomUrl = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
             if (document.getElementById('random-iframe').src !== randomUrl) document.getElementById('random-iframe').src = randomUrl;
-            document.getElementById('random-notes').innerText = row["Notes"] || 'Sin anotaciones técnicas.';
+            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
             const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -734,7 +734,7 @@
                 }
             };
 
-            // ESQUEMA GENERADOR 1: GRÁFICA REAL DESLIZANTE (Sin textos del eje Y duplicados)
+            // ESQUEMA GENERADOR 1: GRÁFICA REAL DESLIZANTE (Eje Y interno completamente oculto)
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -779,7 +779,7 @@
                                 },
                                 drawTicks: false
                             }, 
-                            ticks: { display: false, stepSize: 5 } // Oculto para evitar duplicación
+                            ticks: { display: false, stepSize: 5 }
                         },
                         x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
@@ -793,7 +793,7 @@
                 plugins: [dynamicFillPlugin] 
             });
 
-            // ESQUEMA GENERADOR 2: EJE Y FIJO IZQUIERDO CLONADO ABSOLUTO (No se desplaza jamás)
+            // ESQUEMA GENERADOR 2: EJE Y FIJO IZQUIERDO CLONADO ABSOLUTO (CORREGIDO CON CONVERSIÓN DE TIEMPO)
             leftAxisChartInstance = new Chart(ctxAxis, {
                 type: 'line',
                 data: { labels: [], datasets: [] },
@@ -801,7 +801,8 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    layout: { padding: { top: 10, bottom: 24, left: 0, right: 0 } }, // Ajuste simétrico exacto
+                    // Relleno simétrico inferior aumentado (32px) para cuadrar perfectamente con el eje X de la gráfica derecha
+                    layout: { padding: { top: 10, bottom: 32, left: 4, right: 0 } }, 
                     scales: {
                         x: { display: false },
                         y: {
@@ -810,8 +811,9 @@
                             grid: { display: false },
                             ticks: {
                                 color: '#a0a0a0',
-                                font: { family: 'monospace', size: 11 },
+                                font: { family: 'monospace', size: 10, weight: 'bold' },
                                 stepSize: 5,
+                                // CORREGIDO: Se vuelve a usar la función secondsToTimeString para pintar los minutos y evitar los segundos en bruto
                                 callback: function(v) { 
                                     if (v === 430) return '⚠️ DNF'; 
                                     if (v > 430) return ''; 
