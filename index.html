@@ -103,21 +103,21 @@
 
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="mb-6 flex flex-col gap-4">
-            <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
+            
+            <!-- EL LINK AHORA ESTÁ EN EL CONTENEDOR DEL BANNER/IMAGEN SUPERIOR -->
+            <a href="index.html" id="banner-image-link" class="block h-[70px] md:h-[120px] lg:h-[140px] w-full hover:opacity-90 transition-opacity bg-center bg-cover rounded-xl"></a>
 
-            <!-- ENLACE DEL BANNER PRINCIPAL (Vuelve a index.html) -->
-            <a href="index.html" class="block w-full hover:opacity-90 transition-opacity">
-                <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
-                    <div>
-                        <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                            Nürburgring Nordschleife
-                        </h1>
-                        <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1 max-w-2xl drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                            Cargando descripción remota del reto...
-                        </p>
-                    </div>
+            <!-- TEXTOS DE LA CABECERA (Fuera del link, con su fondo difuminado original) -->
+            <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
+                <div>
+                    <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                        Nürburgring Nordschleife
+                    </h1>
+                    <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1 max-w-2xl drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                        Cargando descripción remota del reto...
+                    </p>
                 </div>
-            </a>
+            </div>
 
             <!-- NAVEGACIÓN Y BOTONES EXTRAÍDOS FUERA DEL VÍNCULO DEL BANNER -->
             <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
@@ -239,7 +239,7 @@
                             <span class="text-xs text-gray-400">Estado de Verificación:</span>
                             <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
                         </div>
-                        <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controls para cargar telemetría.</p>
+                        <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controles para cargar telemetría.</p>
                     </div>
 
                     <div class="absolute bottom-4 left-5 right-5">
@@ -429,6 +429,24 @@
             return '';
         }
 
+        // Modificado para que cargue la imagen en el contenedor en vez de en el body directamente
+        function applyWebConfiguration(config) {
+            if (config.tituloWeb) document.getElementById('web-title').innerText = config.tituloWeb;
+            if (config.descripcionReto) document.getElementById('web-description').innerText = config.descripcionReto;
+            if (config.colorDetalles) {
+                document.documentElement.style.setProperty('--neon-green', config.colorDetalles);
+                const valDot = document.getElementById('legend-valida-dot');
+                if (valDot) valDot.style.backgroundColor = config.colorDetalles;
+            }
+            if (config.bannerWeb) {
+                const bannerContainer = document.getElementById('banner-image-link');
+                if (bannerContainer) {
+                    bannerContainer.style.backgroundImage = `url('${config.bannerWeb}')`;
+                }
+            }
+            if (config.canalYoutube) document.getElementById('youtube-channel-btn').href = config.canalYoutube;
+        }
+
         function timeStringToSeconds(timeStr) {
             if (!timeStr || timeStr.trim().toUpperCase() === 'DNF' || timeStr.trim().toUpperCase() === '--:--.---') return null;
             const parts = timeStr.split(':');
@@ -465,22 +483,6 @@
                 }
             });
             return configObj;
-        }
-
-        function applyWebConfiguration(config) {
-            if (config.tituloWeb) document.getElementById('web-title').innerText = config.tituloWeb;
-            if (config.descripcionReto) document.getElementById('web-description').innerText = config.descripcionReto;
-            if (config.colorDetalles) {
-                document.documentElement.style.setProperty('--neon-green', config.colorDetalles);
-                const valDot = document.getElementById('legend-valida-dot');
-                if (valDot) valDot.style.backgroundColor = config.colorDetalles;
-            }
-            if (config.bannerWeb && document.body.style.backgroundImage !== `url("${config.bannerWeb}")`) {
-                const testImg = new Image();
-                testImg.onload = function() { document.body.style.backgroundImage = `url('${config.bannerWeb}')`; };
-                testImg.src = config.bannerWeb;
-            }
-            if (config.canalYoutube) document.getElementById('youtube-channel-btn').href = config.canalYoutube;
         }
 
         async function init() {
@@ -565,7 +567,7 @@
             if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
             if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
 
-            let ritmoPromedio LimpioS = null;
+            let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
                 listadoTiemposLimpiosS.sort((a, b) => a - b); listadoTiemposLimpiosS.pop(); listadoTiemposLimpiosS.shift();
                 ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
