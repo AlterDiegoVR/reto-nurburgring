@@ -19,17 +19,14 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0b0c0f; /* Un negro profundo */
+            background-color: #0b0c10; /* Tu negro original del root */
             
-            /* Colores de línea suavizados a #0f1115 (casi idéntico al fondo) */
+            /* Patrón de sutiles líneas diagonales cruzadas a 45 grados */
             background-image: 
-                linear-gradient(315deg, #0f1115 25%, transparent 25%), 
-                linear-gradient(45deg, #0f1115 25%, transparent 25%), 
-                linear-gradient(225deg, #0f1115 25%, transparent 25%), 
-                linear-gradient(135deg, #0f1115 25%, transparent 25%);
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 4px),
+                repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.2) 0px, rgba(0, 0, 0, 0.2) 2px, transparent 2px, transparent 4px);
             
-            background-size: 12px 12px; /* Tamaño intermedio y más estilizado */
-            background-position: 6px 0, 6px 0, 0 0, 0 0; /* Siempre la mitad del tamaño anterior */
+            background-size: 8px 8px;
         }
 
         .panel-carbon {
