@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extras y Contenido Especial - Reto Nürburgring 100 Días</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root { --neon-green: #39ff14; --carbon-black: #0b0c10; --panel-bg: #16171e; }
+        body { background-color: var(--carbon-black); font-family: sans-serif; background-position: center top; background-repeat: no-repeat; background-size: 100% auto; }
+        .panel-carbon { background-color: var(--panel-bg); border: 1px solid #222530; }
+        .video-container-9-16 { position: relative; width: 100%; padding-top: 177.77%; background-color: #090a0d; border-radius: 8px; overflow: hidden; border: 1px solid #1f222e; }
+        .video-container-16-9 { position: relative; width: 100%; padding-top: 56.25%; background-color: #090a0d; border-radius: 8px; overflow: hidden; border: 1px solid #1f222e; }
+        .video-container-9-16 iframe, .video-container-16-9 iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body class="text-gray-200 min-h-screen pb-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <header class="mb-6 flex flex-col gap-4">
+            <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
+            <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5">
+                <div>
+                    <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase">Nürburgring Nordschleife</h1>
+                    <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1">Extras y Contenido Adicional</p>
+                </div>
+                <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+                    <select onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer">
+                        <option value="index.html">📊 PANEL TELEMETRÍA</option>
+                        <option value="reglamento.html">📋 DESCRIPCIÓN DEL RETO</option>
+                        <option value="extras.html" selected>🎲 EXTRAS Y CONTENIDO</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="panel-carbon rounded-xl p-6">
+            <h2 class="text-xl font-black text-white uppercase border-b border-gray-800 pb-2 mb-6">🎲 CONTENIDO ADICIONAL Y EXTRAS</h2>
+            <div id="extras-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </div>
+
+    <script>
+        async function init() {
+            try {
+                const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
+                const URL_CONFIG = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('configuracion_web')}`;
+                const URL_SECCIONES = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('secciones_web')}`;
+
+                const [resConfig, resSecciones] = await Promise.all([fetch(URL_CONFIG), fetch(URL_SECCIONES)]);
+                
+                const configText = await resConfig.text();
+                const configRows = Papa.parse(configText, { header: false }).data;
+                configRows.forEach(row => {
+                    if(row[0] === 'BANNER_WEB') document.body.style.backgroundImage = `url('${row[1]}')`;
+                    if(row[0] === 'TITULO_WEB') document.getElementById('web-title').innerText = row[1];
+                });
+
+                const secText = await resSecciones.text();
+                const parsedSecciones = Papa.parse(secText, { header: false }).data;
+                const extrasGrid = document.getElementById('extras-gallery-grid');
+
+                parsedSecciones.forEach(row => {
+                    const tipo = row[0] ? row[0].toString().toUpperCase().trim() : '';
+                    const contenido = row[1] ? row[1].toString().trim() : '';
+                    if (tipo !== 'VIDEO_EXTRA' && tipo !== 'SHORT_EXTRA') return;
+
+                    const isShort = tipo === 'SHORT_EXTRA';
+                    const card = document.createElement('div');
+                    card.className = 'bg-black/30 p-4 rounded-lg border border-gray-800 space-y-3 flex flex-col justify-between text-left';
+                    card.innerHTML = `
+                        <div class="space-y-3 text-left">
+                            <span class="text-[10px] ${isShort ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'} px-2 py-0.5 rounded font-bold uppercase block w-max">
+                                ${isShort ? '⚡ Short Extra' : '🎥 Vídeo Largo'}
+                            </span>
+                            <div class="${isShort ? 'video-container-9-16 max-w-[240px] mx-auto' : 'video-container-16-9'} shadow-md">
+                                <iframe src="https://www.youtube.com/embed/${contenido}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    `;
+                    extrasGrid.appendChild(card);
+                });
+            } catch (e) { console.error(e); }
+        }
+        init();
+    </script>
+</body>
+</html>
