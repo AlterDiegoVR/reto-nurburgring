@@ -7,22 +7,27 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        :root { --neon-green: #39ff14; --carbon-black: #0b0c10; --panel-bg: #16171e; }
-        body { background-color: var(--carbon-black); font-family: sans-serif; background-position: center top; background-repeat: no-repeat; background-size: 100% auto; }
-        .panel-carbon { background-color: var(--panel-bg); border: 1px solid #222530; }
-        
-        /* El marco de los Shorts idéntico al de la pantalla principal (9:16 perfecto) */
-        .video-container-9-16 { 
-            position: relative; 
-            width: 100%; 
-            padding-top: 177.77%; 
-            background-color: #090a0d; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            border: 1px solid #1f222e; 
+        :root { 
+            --neon-green: #39ff14; 
+            --carbon-black: #0b0c10; 
+            --panel-bg: #16171e; 
+        }
+        body { 
+            background-color: var(--carbon-black); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-position: center top; 
+            background-repeat: no-repeat; 
+            background-size: 100% auto; 
+        }
+        .panel-carbon { 
+            background-color: var(--panel-bg); 
+            border: 1px solid #222530; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
         }
         
-        /* El marco nativo apaisado para los vídeos normales (16:9 sin barras negras) */
+        /* El marco nativo apaisado para los vídeos normales (16:9 perfecto) */
         .video-container-16-9 { 
             position: relative; 
             width: 100%; 
@@ -33,32 +38,84 @@
             border: 1px solid #1f222e; 
         }
         
-        .video-container-9-16 iframe, .video-container-16-9 iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        /* El marco vertical idéntico al de la pantalla principal (9:16 perfecto) */
+        .video-container-9-16 { 
+            position: relative; 
+            width: 100%; 
+            padding-top: 177.77%; 
+            background-color: #090a0d; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            border: 1px solid #1f222e; 
+        }
+        
+        .video-container-16-9 iframe, .video-container-9-16 iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
     </style>
 </head>
 <body class="text-gray-200 min-h-screen pb-12">
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="mb-6 flex flex-col gap-4">
-            <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
-            <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5">
+            
+            <!-- RESTAURADO: El link interactivo en el contenedor del banner superior -->
+            <a href="index.html" id="banner-image-link" class="block h-[70px] md:h-[120px] lg:h-[140px] w-full hover:opacity-90 transition-opacity bg-center bg-cover rounded-xl"></a>
+
+            <!-- TEXTOS DE LA CABECERA (Con su fondo difuminado original) -->
+            <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
                 <div>
-                    <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase">Nürburgring Nordschleife</h1>
-                    <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1">Extras y Contenido Adicional</p>
+                    <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                        Nürburgring Nordschleife
+                    </h1>
+                    <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1 max-w-2xl drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                        Extras y Contenido Adicional
+                    </p>
                 </div>
-                <div class="bg-black/40 p-2 rounded-lg border border-white/5">
-                    <select onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer">
+            </div>
+
+            <!-- NAVEGACIÓN Y BOTONES -->
+            <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
+                <div class="relative inline-block text-left">
+                    <select onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer transition-colors">
                         <option value="index.html">📊 PANEL TELEMETRÍA</option>
                         <option value="reglamento.html">📋 DESCRIPCIÓN DEL RETO</option>
                         <option value="extras.html" selected>🎲 EXTRAS Y CONTENIDO</option>
                     </select>
                 </div>
+                <span id="sync-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-green-400"></span> CONTENIDO REMOTO SINCRONIZADO
+                </span>
             </div>
         </header>
 
-        <div class="panel-carbon rounded-xl p-6">
-            <h2 class="text-xl font-black text-white uppercase border-b border-gray-800 pb-2 mb-6">🎲 CONTENIDO ADICIONAL Y EXTRAS</h2>
-            <!-- Cambiado a un grid fijo de 3 columnas en escritorio para simular las tarjetas de telemetría -->
-            <div id="extras-gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <!-- SECCIÓN DE CONTENIDOS SEPARADOS POR FILAS -->
+        <div class="space-y-8">
+            
+            <!-- BLOQUE 1: VÍDEOS LARGOS (FILA HORIZONTAL RECTANGULAR 16:9) -->
+            <div id="seccion-videos-largos" class="panel-carbon rounded-xl p-6 hidden">
+                <h2 class="text-lg font-black text-blue-400 uppercase border-b border-gray-800 pb-2 mb-6 flex items-center gap-2">
+                    🎥 VÍDEOS ESPECIALES Y RESÚMENES LARGOS
+                </h2>
+                <div id="grid-videos-largos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Se inyectan dinámicamente aquí -->
+                </div>
+            </div>
+
+            <!-- BLOQUE 2: SHORTS EXTRA (FILA VERTICAL ESTILIZADA 9:16) -->
+            <div id="seccion-shorts-extras" class="panel-carbon rounded-xl p-6 hidden">
+                <h2 class="text-lg font-black text-purple-400 uppercase border-b border-gray-800 pb-2 mb-6 flex items-center gap-2">
+                    ⚡ SHORTS EXTRA Y CONTENIDO VERTICAL
+                </h2>
+                <div id="grid-shorts-extras" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Se inyectan dinámicamente aquí -->
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -74,43 +131,63 @@
                 const configText = await resConfig.text();
                 const configRows = Papa.parse(configText, { header: false }).data;
                 configRows.forEach(row => {
-                    if(row[0] === 'BANNER_WEB') document.body.style.backgroundImage = `url('${row[1]}')`;
+                    if(row[0] === 'BANNER_WEB') {
+                        const bannerContainer = document.getElementById('banner-image-link');
+                        if (bannerContainer) bannerContainer.style.backgroundImage = `url('${row[1]}')`;
+                    }
                     if(row[0] === 'TITULO_WEB') document.getElementById('web-title').innerText = row[1];
                 });
 
                 const secText = await resSecciones.text();
                 const parsedSecciones = Papa.parse(secText, { header: false }).data;
-                const extrasGrid = document.getElementById('extras-gallery-grid');
+                
+                const gridVideosLargos = document.getElementById('grid-videos-largos');
+                const gridShortsExtras = document.getElementById('grid-shorts-extras');
+                
+                let tieneVideosLargos = false;
+                let tieneShortsExtras = false;
 
                 parsedSecciones.forEach(row => {
                     const tipo = row[0] ? row[0].toString().toUpperCase().trim() : '';
                     const contenido = row[1] ? row[1].toString().trim() : '';
                     
-                    // CORREGIDO: Si no hay tipo, o si el contenido está vacío, pasa olímpicamente de la línea
+                    // Filtrado estricto por enlace/ID válido
                     if (!tipo || !contenido || contenido === '' || contenido === '--') return;
-                    if (tipo !== 'VIDEO_EXTRA' && tipo !== 'SHORT_EXTRA') return;
 
-                    const isShort = tipo === 'SHORT_EXTRA';
-                    const card = document.createElement('div');
-                    
-                    // Mantenemos la estructura estética de caja de carbono limpia
-                    card.className = 'panel-carbon rounded-xl p-5 flex flex-col justify-between border-t-4 ' + (isShort ? 'border-t-purple-500' : 'border-t-blue-500');
-                    
-                    // CORREGIDO: Se inyecta la clase exacta según el tipo de vídeo sin forzar anchos artificiales
-                    card.innerHTML = `
-                        <div class="flex flex-col h-full justify-between">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-[10px] font-bold ${isShort ? 'text-purple-400' : 'text-blue-400'} uppercase tracking-widest">
-                                    ${isShort ? '⚡ Short Extra' : '🎥 Vídeo Especial'}
-                                </span>
+                    if (tipo === 'VIDEO_EXTRA') {
+                        tieneVideosLargos = true;
+                        const card = document.createElement('div');
+                        card.className = 'panel-carbon rounded-xl p-4 flex flex-col justify-between border-t-4 border-t-blue-500';
+                        card.innerHTML = `
+                            <div class="flex flex-col h-full justify-between gap-2">
+                                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">🎥 VÍDEO ESPECIAL</span>
+                                <div class="video-container-16-9 shadow-lg shadow-black/60">
+                                    <iframe src="https://www.youtube.com/embed/${contenido}" allowfullscreen></iframe>
+                                </div>
                             </div>
-                            <div class="${isShort ? 'video-container-9-16' : 'video-container-16-9'} shadow-lg shadow-black/60 mb-2">
-                                <iframe src="https://www.youtube.com/embed/${contenido}" allowfullscreen></iframe>
+                        `;
+                        gridVideosLargos.appendChild(card);
+                    } 
+                    else if (tipo === 'SHORT_EXTRA') {
+                        tieneShortsExtras = true;
+                        const card = document.createElement('div');
+                        card.className = 'panel-carbon rounded-xl p-4 flex flex-col justify-between border-t-4 border-t-purple-500';
+                        card.innerHTML = `
+                            <div class="flex flex-col h-full justify-between gap-2">
+                                <span class="text-[10px] font-bold text-purple-400 uppercase tracking-widest">⚡ SHORT EXTRA</span>
+                                <div class="video-container-9-16 shadow-lg shadow-black/60">
+                                    <iframe src="https://www.youtube.com/embed/${contenido}" allowfullscreen></iframe>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                    extrasGrid.appendChild(card);
+                        `;
+                        gridShortsExtras.appendChild(card);
+                    }
                 });
+
+                // Mostrar los contenedores de las secciones solo si tienen contenido real
+                if (tieneVideosLargos) document.getElementById('seccion-videos-largos').classList.remove('hidden');
+                if (tieneShortsExtras) document.getElementById('seccion-shorts-extras').classList.remove('hidden');
+
             } catch (e) { console.error(e); }
         }
         init();
