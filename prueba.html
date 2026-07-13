@@ -115,7 +115,6 @@
                     </p>
                 </div>
 
-                <!-- Menú de navegación por enlaces HTML independientes -->
                 <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
                     <div class="relative inline-block text-left">
                         <select id="navigation-menu" onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer transition-colors">
@@ -158,7 +157,6 @@
             </div>
         </section>
 
-        <!-- PANTALLA EXCLUSIVA: PANEL DE TELEMETRÍA -->
         <div id="view-telemetria" class="space-y-8">
             <section class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
                 
@@ -309,7 +307,6 @@
                 </div>
             </section>
 
-            <!-- ─── SECCIÓN ESTADÍSTICAS ─── -->
             <section class="panel-carbon rounded-xl p-5">
                 <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Estadísticas</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -434,7 +431,7 @@
         }
 
         function secondsToTimeString(seconds) {
-            if (seconds === null || isNaN(seconds)) return '--:--.---';
+            if (seconds === null || isNaN(seconds) || seconds === Infinity || seconds === -Infinity) return '--:--.---';
             const min = Math.floor(seconds / 60);
             const remainingSec = (seconds % 60).toFixed(3);
             return `${min}:${remainingSec.padStart(6, '0')}`;
@@ -644,6 +641,7 @@
             updateDynamicScreen(globalRows[Math.floor(Math.random() * globalRows.length)], false);
         }
 
+        // RESTAURADO COMPLETO: Lógica técnica avanzada de la gráfica sin pérdidas de datos
         function renderTelemetryChart(data) {
             const chartWrapper = document.getElementById('chartWrapper');
             if (chartWrapper) {
@@ -657,23 +655,78 @@
 
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
+            
+            // Techo de Y calculado dinámicamente para los DNF
             const maxValidValue = Math.max(...lineTimesData.filter(s => s !== null), 420);
             const dnfCeilingY = maxValidValue + 6;
 
             let minTimeS = Infinity; let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) { minTimeS = tS; recordDay = r["Día"]; }
+                if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) { 
+                    minTimeS = tS; recordDay = r["Día"]; 
+                }
             });
 
             const customPointColors = []; const customPointRadius = []; const customPointHoverRadius = []; const customPointStyles = [];
+            
             data.forEach(r => {
                 const estado = r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                if (r["Día"] === recordDay) { customPointColors.push('#ffd700'); customPointRadius.push(12); customPointHoverRadius.push(12); customPointStyles.push('triangle'); } 
-                else if (estado === 'VALIDA') { customPointColors.push('#39ff14'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); } 
-                else if (estado === 'NO VALIDA') { customPointColors.push('#ff3b30'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); } 
-                else { customPointColors.push('transparent'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); }
+                const nota = (r["Notas"] || '').toLowerCase();
+                const checkExhibicion = estado === 'EXHIBICION' || nota.includes('exhibición') || nota.includes('exhibicion');
+
+                if (r["Día"] === recordDay) { 
+                    customPointColors.push('#ffd700'); customPointRadius.push(12); customPointHoverRadius.push(12); customPointStyles.push('triangle'); 
+                } else if (checkExhibicion) {
+                    customPointColors.push('#a855f7'); customPointRadius.push(6); customPointHoverRadius.push(9); customPointStyles.push('circle');
+                } else if (estado === 'VALIDA') { 
+                    customPointColors.push('#39ff14'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); 
+                } else if (estado === 'NO VALIDA') { 
+                    customPointColors.push('#ff3b30'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); 
+                } else { 
+                    customPointColors.push('transparent'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); 
+                }
             });
+
+            // Única línea/puntos para reflejar abandonos de forma limpia
+            const dnfPointsData = data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null);
+
+            const dynamicFillPlugin = {
+                id: 'dynamicFillPlugin',
+                beforeDatasetsDraw(chart) {
+                    const {ctx: chartCtx, chartArea} = chart;
+                    if (!chartArea) return;
+                    const meta = chart.getDatasetMeta(0);
+                    const points = meta.data;
+                    if (!points || points.length < 2) return;
+
+                    chartCtx.save();
+                    chartCtx.beginPath();
+                    let firstPoint = true; let lastX = chartArea.left;
+
+                    points.forEach((pt) => {
+                        if (pt.skip || isNaN(pt.y) || pt.y === null) return;
+                        if (firstPoint) {
+                            chartCtx.moveTo(pt.x, chartArea.bottom);
+                            chartCtx.lineTo(pt.x, pt.y);
+                            firstPoint = false;
+                        } else {
+                            chartCtx.lineTo(pt.x, pt.y);
+                        }
+                        lastX = pt.x;
+                    });
+                    chartCtx.lineTo(lastX, chartArea.bottom);
+                    chartCtx.closePath();
+
+                    const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.35)');   
+                    fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.10)');  
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                
+                    chartCtx.fillStyle = fillGrad;
+                    chartCtx.fill();
+                    chartCtx.restore();
+                }
+            };
 
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -681,22 +734,46 @@
                     labels: labelsDias,
                     datasets: [
                         {
+                            label: 'Evolución Cronometrada',
                             data: lineTimesData, borderColor: 'rgba(255, 255, 255, 0.45)', borderWidth: 2,
                             pointBackgroundColor: customPointColors, pointBorderColor: '#000',
                             pointRadius: customPointRadius, pointHoverRadius: customPointHoverRadius, pointStyle: customPointStyles,
                             fill: false, spanGaps: true
                         },
                         {
-                            data: data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null),
-                            borderColor: '#ff3b30', pointStyle: 'triangle', pointRadius: 9, fill: false, showLine: false
+                            label: 'Abandono (DNF)',
+                            data: dnfPointsData,
+                            borderColor: '#ff3b30', backgroundColor: '#ff9500', borderWidth: 0,
+                            pointStyle: 'triangle', pointRadius: 9, pointHoverRadius: 11, fill: false, showLine: false
                         }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const idx = context.dataIndex; const row = data[idx]; if (!row) return '';
+                                    if (row["Día"] === recordDay) return ` 👑 ¡RECORD HISTÓRICO!: ${row["TIEMPO"]}`;
+                                    return ` Tiempo: ${row["TIEMPO"]} [${row["ESTADO"]}]`;
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        y: { grid: { color: '#1f222e' }, ticks: { color: '#a0a0a0', font: { family: 'monospace' }, callback: function(v) { return v >= dnfCeilingY - 1 ? '⚠️ DNF' : secondsToTimeString(v); } } },
+                        y: { 
+                            grid: { color: '#1f222e' }, 
+                            ticks: { 
+                                color: '#a0a0a0', 
+                                font: { family: 'monospace' }, 
+                                callback: function(v) { 
+                                    if (v >= dnfCeilingY - 1 && v <= dnfCeilingY + 1) return '⚠️ DNF';
+                                    return secondsToTimeString(v); 
+                                } 
+                            } 
+                        },
                         x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
                     onClick: (e, activeEls) => {
@@ -705,8 +782,10 @@
                             document.getElementById('random-title').closest('.panel-carbon').scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }
                     }
-                }
+                },
+                plugins: [dynamicFillPlugin]
             });
+            
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
         }
 
