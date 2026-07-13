@@ -753,10 +753,11 @@
                         // ... dentro de options -> scales -> y:
                         y: { 
                             min: 395, 
-                            max: 430, // Ajustamos el máximo exacto a 430
+                            max: 435, // Damos aire hasta 435 para que el triángulo no se corte
                             grid: { 
                                 color: function(context) {
-                                    // Si el valor de la línea es el del DNF (430), ponemos color transparente
+                                    // Transparentamos solo la línea que está en 430, pero dejamos que la de 435 exista 
+                                    // (aunque al ser 435 el límite del eje, Chart.js ya no la dibujará encima).
                                     if (context.tick.value === 430) return 'transparent';
                                     return '#1f222e';
                                 }
@@ -766,7 +767,10 @@
                                 font: { family: 'monospace' }, 
                                 stepSize: 5, 
                                 callback: function(v) { 
+                                    // Mostramos el DNF en 430
                                     if (v === 430) return '⚠️ DNF'; 
+                                    // Ocultamos cualquier etiqueta superior a 430 para que no aparezca el 7:15
+                                    if (v > 430) return ''; 
                                     return secondsToTimeString(v); 
                                 } 
                             } 
