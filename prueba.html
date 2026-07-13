@@ -115,7 +115,6 @@
                     </p>
                 </div>
 
-                <!-- MENÚ RECUPERADO DE ENLACES INDEPENDIENTES -->
                 <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
                     <div class="relative inline-block text-left">
                         <select id="navigation-menu" onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer transition-colors">
@@ -658,7 +657,6 @@
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
             
-            // Constante fija para la franja DNF (7:10.000)
             const dnfCeilingY = 430; 
 
             let minTimeS = Infinity; let recordDay = null;
@@ -677,6 +675,48 @@
                 else { customPointColors.push('transparent'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); }
             });
 
+            // PLUGIN RESTAURADO: Relleno dinámico translúcido verde debajo de la línea cronometrada
+            const dynamicFillPlugin = {
+                id: 'dynamicFillPlugin',
+                beforeDatasetsDraw(chart) {
+                    const {ctx: chartCtx, chartArea} = chart;
+                    if (!chartArea) return;
+
+                    const meta = chart.getDatasetMeta(0);
+                    const points = meta.data;
+                    if (!points || points.length < 2) return;
+
+                    chartCtx.save();
+                    chartCtx.beginPath();
+                    
+                    let firstPoint = true; let lastX = chartArea.left;
+
+                    points.forEach((pt) => {
+                        if (pt.skip || isNaN(pt.y) || pt.y === null) return;
+                        if (firstPoint) {
+                            chartCtx.moveTo(pt.x, chartArea.bottom);
+                            chartCtx.lineTo(pt.x, pt.y);
+                            firstPoint = false;
+                        } else {
+                            chartCtx.lineTo(pt.x, pt.y);
+                        }
+                        lastX = pt.x;
+                    });
+
+                    chartCtx.lineTo(lastX, chartArea.bottom);
+                    chartCtx.closePath();
+
+                    const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.45)');   
+                    fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.15)');  
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                
+
+                    chartCtx.fillStyle = fillGrad;
+                    chartCtx.fill();
+                    chartCtx.restore();
+                }
+            };
+
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -692,7 +732,7 @@
                             pointHoverRadius: customPointHoverRadius, 
                             pointStyle: customPointStyles,
                             fill: false, 
-                            spanGaps: true // REPARADO: Une los puntos saltándose los días con valores nulos (como DNF)
+                            spanGaps: true 
                         },
                         {
                             data: data.map(r => r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null),
@@ -733,7 +773,8 @@
                             document.getElementById('random-title').closest('.panel-carbon').scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }
                     }
-                }
+                },
+                plugins: [dynamicFillPlugin] // Inyectado de nuevo de forma segura
             });
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
         }
