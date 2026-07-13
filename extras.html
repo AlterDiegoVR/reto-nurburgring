@@ -63,6 +63,9 @@
                 parsedSecciones.forEach(row => {
                     const tipo = row[0] ? row[0].toString().toUpperCase().trim() : '';
                     const contenido = row[1] ? row[1].toString().trim() : '';
+                    
+                    // VALIDACIÓN ESTRICTA: Si la celda está vacía o el tipo no corresponde, saltamos fila
+                    if (!tipo || !contenido || contenido === "") return;
                     if (tipo !== 'VIDEO_EXTRA' && tipo !== 'SHORT_EXTRA') return;
 
                     const isShort = tipo === 'SHORT_EXTRA';
