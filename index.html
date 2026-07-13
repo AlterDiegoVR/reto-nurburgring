@@ -366,7 +366,7 @@
                     </div>
 
                     <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📆 Sesiones en Servidor</span>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">📊 Sesiones en Servidor</span>
                         <div id="stat-total-sesiones" class="text-2xl font-black text-white">0 días</div>
                         <span class="text-[11px] text-gray-500 block mt-0.5">Total de jornadas con datos publicados</span>
                     </div>
@@ -594,7 +594,6 @@
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
                 
-                // CORREGIDO: SE ASIGNA CORRECTAMENTE LA FECHA DE PUBLICACIÓN DEL RÉCORD
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--/--';
                 
                 const recordUrl = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
@@ -717,7 +716,7 @@
                     const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
                     fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.45)');   
                     fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.15)');  
-                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                 
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                                 
 
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
@@ -756,7 +755,26 @@
                 options: {
                     responsive: true, 
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        // CORRECCIÓN DEL BUG: Formatear la caja flotante (tooltip) para mostrar mm:ss.sss en vez de segundos brutos
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    if (value === null) return '';
+                                    
+                                    // Si es el triángulo naranja de DNF (que vale 430s)
+                                    if (context.datasetIndex === 1 && value === dnfCeilingY) {
+                                        return ' Abandono (DNF)';
+                                    }
+                                    
+                                    // Para las vueltas normales, convertimos los segundos a tiempo real mm:ss.sss
+                                    return ` Tiempo: ${secondsToTimeString(value)}`;
+                                }
+                            }
+                        }
+                    },
                     scales: {
                         y: { 
                             min: 395, 
