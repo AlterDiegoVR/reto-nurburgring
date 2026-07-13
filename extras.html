@@ -18,20 +18,20 @@
 <body class="text-gray-200 min-h-screen pb-12">
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="mb-6 flex flex-col gap-4">
-            <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
             
-            <!-- ENLACE DEL BANNER PRINCIPAL (Vuelve a index.html) -->
-            <a href="index.html" class="block w-full hover:opacity-90 transition-opacity">
-                <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5">
-                    <div>
-                        <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase">Nürburgring Nordschleife</h1>
-                        <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1">Extras y Contenido Adicional</p>
-                    </div>
+            <!-- EL LINK AHORA ESTÁ EN EL CONTENEDOR DEL BANNER/IMAGEN SUPERIOR -->
+            <a href="index.html" id="banner-image-link" class="block h-[70px] md:h-[120px] lg:h-[140px] w-full hover:opacity-90 transition-opacity bg-center bg-cover rounded-xl"></a>
+
+            <!-- TEXTOS DE LA CABECERA (Fuera del link, con su fondo difuminado original) -->
+            <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5">
+                <div>
+                    <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase">Nürburgring Nordschleife</h1>
+                    <p id="web-description" class="text-xs md:text-sm text-gray-300 font-bold uppercase tracking-widest mt-1">Extras y Contenido Adicional</p>
                 </div>
-            </a>
+            </div>
 
             <!-- NAVEGACIÓN EXTRAÍDA FUERA DEL VÍNCULO DEL BANNER -->
-            <div class="flex flex-wrap items-center justify-center bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm -mt-2">
+            <div class="flex flex-wrap items-center justify-center bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
                 <select onchange="window.location.href=this.value;" class="bg-gray-900 border border-gray-700 text-white text-xs font-bold rounded px-3 py-1.5 focus:outline-none focus:border-[var(--neon-green)] uppercase tracking-wider cursor-pointer">
                     <option value="index.html">📊 PANEL TELEMETRÍA</option>
                     <option value="reglamento.html">📋 DESCRIPCIÓN DEL RETO</option>
@@ -58,7 +58,12 @@
                 const configText = await resConfig.text();
                 const configRows = Papa.parse(configText, { header: false }).data;
                 configRows.forEach(row => {
-                    if(row[0] === 'BANNER_WEB') document.body.style.backgroundImage = `url('${row[1]}')`;
+                    if(row[0] === 'BANNER_WEB') {
+                        const bannerContainer = document.getElementById('banner-image-link');
+                        if (bannerContainer) {
+                            bannerContainer.style.backgroundImage = `url('${row[1]}')`;
+                        }
+                    }
                     if(row[0] === 'TITULO_WEB') document.getElementById('web-title').innerText = row[1];
                 });
 
