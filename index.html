@@ -290,6 +290,7 @@
                 </div>
             </section>
 
+            <!-- SECCIÓN EVOLUCIÓN (GRÁFICA COLO_FIXED_Y) -->
             <section class="panel-carbon rounded-xl p-5">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                     <div>
@@ -305,10 +306,18 @@
                     </div>
                 </div>
                 
-                <!-- CORREGIDO: Contenedor con posición relativa para permitir el anclaje sticky del eje Y -->
-                <div class="w-full overflow-x-auto pb-2 scrollbar-trazada relative">
-                    <div id="chartWrapper" class="h-[320px] min-w-full">
-                        <canvas id="telemetryChart"></canvas>
+                <!-- CORREGIDO REESTRUCTURACIÓN DE CONTENEDORES PARA CONGELAR EJE Y REAL EN MÓVIL -->
+                <div class="relative w-full overflow-hidden bg-[#16171e] rounded-lg">
+                    <!-- Caja Izquierda: Solo pinta el eje Y fijo y tapa el fondo -->
+                    <div class="absolute left-0 top-0 bottom-0 w-[55px] bg-[#16171e] z-10 border-r border-gray-800/20 pointer-events-none">
+                        <canvas id="telemetryAxisLeft" class="h-[320px] w-full"></canvas>
+                    </div>
+                    
+                    <!-- Caja Derecha: Contenedor deslizable que aloja el gráfico de telemetría real -->
+                    <div class="w-full overflow-x-auto pb-2 scrollbar-trazada pl-[55px]">
+                        <div id="chartWrapper" class="h-[320px] min-w-full">
+                            <canvas id="telemetryChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -416,6 +425,7 @@
 
         let globalRows = [];
         let telemetryChartInstance = null;
+        let leftAxisChartInstance = null;
 
         function getVal(row, posiblesNombres) {
             const values = Object.values(row);
@@ -598,7 +608,7 @@
                 
                 const recordUrl = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
                 if (document.getElementById('record-iframe').src !== recordUrl) document.getElementById('record-iframe').src = recordUrl;
-                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
+                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
             }
 
             const latestData = data[data.length - 1];
@@ -607,7 +617,7 @@
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 const latestUrl = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
                 if (document.getElementById('latest-iframe').src !== latestUrl) document.getElementById('latest-iframe').src = latestUrl;
-                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
+                document.getElementById('latest-notes').innerText = latestData["Notes"] || 'Sin notas.';
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 document.getElementById('latest-delta').innerText = (latestSecs && recordActualS !== Infinity) ? (latestSecs - recordActualS > 0 ? `+${(latestSecs - recordActualS).toFixed(3)}s vs récord` : '¡RÉCORD!') : latestData["ESTADO"];
             }
@@ -638,7 +648,7 @@
             document.getElementById('random-time').innerText = row["TIEMPO"];
             const randomUrl = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
             if (document.getElementById('random-iframe').src !== randomUrl) document.getElementById('random-iframe').src = randomUrl;
-            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
+            document.getElementById('random-notes').innerText = row["Notes"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
             const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -657,14 +667,19 @@
                 const anchoCalculado = data.length * (window.innerWidth < 768 ? 16 : 28);
                 chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth ? `${anchoCalculado}px` : '100%';
             }
+            
             const chartCanvas = document.getElementById('telemetryChart');
-            if (!chartCanvas) return;
+            const axisCanvas = document.getElementById('telemetryAxisLeft');
+            if (!chartCanvas || !axisCanvas) return;
+            
             const ctx = chartCanvas.getContext('2d');
+            const ctxAxis = axisCanvas.getContext('2d');
+            
             if (telemetryChartInstance) telemetryChartInstance.destroy();
+            if (leftAxisChartInstance) leftAxisChartInstance.destroy();
 
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
             const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
-            
             const dnfCeilingY = 430; 
 
             let minTimeS = Infinity; let recordDay = null;
@@ -688,16 +703,13 @@
                 beforeDatasetsDraw(chart) {
                     const {ctx: chartCtx, chartArea} = chart;
                     if (!chartArea) return;
-
                     const meta = chart.getDatasetMeta(0);
                     const points = meta.data;
                     if (!points || points.length < 2) return;
 
                     chartCtx.save();
                     chartCtx.beginPath();
-                    
                     let firstPoint = true; let lastX = chartArea.left;
-
                     points.forEach((pt) => {
                         if (pt.skip || isNaN(pt.y) || pt.y === null) return;
                         if (firstPoint) {
@@ -709,7 +721,6 @@
                         }
                         lastX = pt.x;
                     });
-
                     chartCtx.lineTo(lastX, chartArea.bottom);
                     chartCtx.closePath();
 
@@ -717,13 +728,13 @@
                     fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.45)');   
                     fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.15)');  
                     fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                 
-
                     chartCtx.fillStyle = fillGrad;
                     chartCtx.fill();
                     chartCtx.restore();
                 }
             };
 
+            // ESQUEMA GENERADOR 1: GRÁFICA REAL DESLIZANTE (Sin textos del eje Y duplicados)
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -756,10 +767,7 @@
                     responsive: true, 
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    layout: {
-                        // Deja espacio a la izquierda para el eje Y clonado
-                        padding: { left: 60 }
-                    },
+                    layout: { padding: { top: 10, bottom: 0, left: 5, right: 10 } },
                     scales: {
                         y: { 
                             min: 395, 
@@ -769,21 +777,9 @@
                                     if (context.tick.value === 430) return 'transparent';
                                     return '#1f222e';
                                 },
-                                // Dibuja las líneas de cuadrícula cruzando todo el gráfico
                                 drawTicks: false
                             }, 
-                            ticks: { 
-                                // CORREGIDO: Inyectamos estilos directamente para fijar el eje Y de forma estricta (Sticky)
-                                display: true,
-                                color: '#a0a0a0', 
-                                font: { family: 'monospace' }, 
-                                stepSize: 5, 
-                                callback: function(v) { 
-                                    if (v === 430) return '⚠️ DNF'; 
-                                    if (v > 430) return ''; 
-                                    return secondsToTimeString(v); 
-                                } 
-                            } 
+                            ticks: { display: false, stepSize: 5 } // Oculto para evitar duplicación
                         },
                         x: { grid: { display: false }, ticks: { color: '#a0a0a0' } }
                     },
@@ -794,38 +790,39 @@
                         }
                     }
                 },
-                plugins: [
-                    dynamicFillPlugin,
-                    {
-                        id: 'stickyYAxis',
-                        afterDraw(chart) {
-                            // Clonador en caliente del área lateral del eje Y para dejarlo congelado
-                            const { ctx: chartCtx, chartArea, scales: { y } } = chart;
-                            chartCtx.save();
-                            chartCtx.fillStyle = '#16171e'; // Color idéntico al panel-carbon background
-                            chartCtx.fillRect(0, 0, chartArea.left, chart.height);
-                            
-                            // Redibujamos de manera flotante las marcas
-                            y.ticks.forEach((tick, i) => {
-                                const yPos = y.getPixelForValue(tick.value);
-                                if (yPos >= chartArea.top && yPos <= chartArea.bottom) {
-                                    chartCtx.fillStyle = '#a0a0a0';
-                                    chartCtx.font = '12px monospace';
-                                    chartCtx.textAlign = 'right';
-                                    chartCtx.textBaseline = 'middle';
-                                    
-                                    let label = secondsToTimeString(tick.value);
-                                    if (tick.value === 430) label = '⚠️ DNF';
-                                    if (tick.value > 430) label = '';
-                                    
-                                    chartCtx.fillText(label, chartArea.left - 10, yPos);
+                plugins: [dynamicFillPlugin] 
+            });
+
+            // ESQUEMA GENERADOR 2: EJE Y FIJO IZQUIERDO CLONADO ABSOLUTO (No se desplaza jamás)
+            leftAxisChartInstance = new Chart(ctxAxis, {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    layout: { padding: { top: 10, bottom: 24, left: 0, right: 0 } }, // Ajuste simétrico exacto
+                    scales: {
+                        x: { display: false },
+                        y: {
+                            min: 395,
+                            max: 435,
+                            grid: { display: false },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: { family: 'monospace', size: 11 },
+                                stepSize: 5,
+                                callback: function(v) { 
+                                    if (v === 430) return '⚠️ DNF'; 
+                                    if (v > 430) return ''; 
+                                    return secondsToTimeString(v); 
                                 }
-                            });
-                            chartCtx.restore();
+                            }
                         }
                     }
-                ] 
+                }
             });
+
             setTimeout(() => { if (chartWrapper) chartWrapper.parentElement.scrollLeft = chartWrapper.parentElement.scrollWidth; }, 50);
         }
 
