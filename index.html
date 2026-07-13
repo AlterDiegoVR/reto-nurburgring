@@ -67,6 +67,7 @@
             letter-spacing: 2px;
         }
 
+        /* Scrollbars globales */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -81,27 +82,35 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--neon-green);
         }
+
+        /* Estilo específico para la barra de desplazamiento de la gráfica */
+        .scrollbar-trazada::-webkit-scrollbar {
+            height: 6px;
+        }
+        .scrollbar-trazada::-webkit-scrollbar-track {
+            background: #0d0e12;
+            border-radius: 3px;
+        }
+        .scrollbar-trazada::-webkit-scrollbar-thumb {
+            background: #2c2f3f;
+            border-radius: 3px;
+        }
+        .scrollbar-trazada::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-green);
+        }
     </style>
 </head>
 <body class="text-gray-200 min-h-screen pb-12">
 
     <div class="container mx-auto px-4 max-w-7xl">
         <header class="mb-6 flex flex-col gap-4">
-            <div class="py-6 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-800/40 min-h-[100px] md:min-h-[140px] items-end pb-4">
-                <div class="hidden md:block"></div>
-                
-                <div class="text-right flex items-center gap-3 bg-black/60 p-2 rounded-lg backdrop-blur-sm border border-white/5 self-center md:self-end">
-                    <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold transition-all uppercase tracking-wider">
-                        ▶ Visitar Canal
-                    </a>
-                    <span id="sync-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> CONECTANDO TELEMETRÍA...
-                    </span>
-                </div>
-            </div>
+            <!-- Bloque superior transparente ajustado para dar aire al logo del banner -->
+            <div class="h-[70px] md:h-[120px] lg:h-[140px] w-full"></div>
 
-            <div class="w-full bg-gradient-to-r from-transparent via-black/70 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-4">
-                <img id="header-car-img" src="" alt="Coche del Reto" class="w-90 h-auto max-h-52 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]">
+            <!-- Panel Central Translúcido con los botones integrados abajo -->
+            <div class="w-full bg-gradient-to-r from-transparent via-black/75 to-transparent p-6 rounded-xl border border-gray-800/40 backdrop-blur-md flex flex-col items-center justify-center text-center gap-5 relative">
+                
+                <!-- Textos Principales -->
                 <div>
                     <h1 id="web-title" class="text-2xl md:text-4xl font-black tracking-wider text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         Nürburgring Nordschleife
@@ -110,6 +119,17 @@
                         Cargando descripción remota del reto...
                     </p>
                 </div>
+
+                <!-- Botones de canal y estado de conexión -->
+                <div class="flex flex-wrap items-center justify-center gap-3 bg-black/40 p-2 rounded-lg border border-white/5 backdrop-blur-sm mt-1">
+                    <a id="youtube-channel-btn" href="#" target="_blank" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded text-xs font-bold transition-all uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="text-xs">▶</span> Visitar Canal
+                    </a>
+                    <span id="sync-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> CONECTANDO TELEMETRÍA...
+                    </span>
+                </div>
+
             </div>
         </header>
 
@@ -136,9 +156,11 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- ─── SECCIÓN DE LAS TRES PANTALLAS CON DISTRIBUCIÓN ALINEADA MILIMÉTRICAMENTE ─── -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 items-stretch">
             
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[var(--neon-green)]">
+            <!-- TARJETA 1: MEJOR VUELTA -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-[#39ff14] pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-green-400 uppercase tracking-widest">🏆 MEJOR VUELTA ABSOLUTA</span>
@@ -149,20 +171,23 @@
                         <iframe id="record-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
+                
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
                         <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Publicado el dia:</span>
                         <span id="record-pub-date" class="text-xs font-mono text-gray-300">--/--</span>
                     </div>
-                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-2">Cargando anotaciones del récord...</p>
+                    <p id="record-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Cargando anotaciones del récord...</p>
                 </div>
             </div>
 
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600">
+            <!-- TARJETA 2: ÚLTIMO REGISTRO -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-red-600 pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold text-red-500 uppercase tracking-widest">⏱️ ÚLTIMO REGISTRO</span>
@@ -173,20 +198,23 @@
                         <iframe id="latest-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
+                
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Tiempo Registrado:</span>
                         <span id="latest-time" class="text-xl font-mono font-black text-red-500">--:--.---</span>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Delta vs Récord Actual:</span>
                         <span id="latest-delta" class="text-xs font-bold text-yellow-500">--</span>
                     </div>
-                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-2">Sincronizando última tanda...</p>
+                    <p id="latest-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Sincronizando última tanda...</p>
                 </div>
             </div>
 
-            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500">
+            <!-- TARJETA 3: VUELTA ALEATORIA / SELECCIONADA -->
+            <div class="panel-carbon rounded-xl p-5 flex flex-col justify-between border-l-4 border-l-blue-500 pb-[72px] relative">
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span id="dynamic-card-type" class="text-xs font-bold text-blue-400 uppercase tracking-widest">🎲 VUELTA ALEATORIA</span>
@@ -197,17 +225,23 @@
                         <iframe id="random-iframe" src="" allowfullscreen></iframe>
                     </div>
                 </div>
-                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80">
-                    <div class="flex justify-between items-center mb-1">
+                
+                <!-- Contenedor inferior con rejilla fija idéntica de 3 filas -->
+                <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Tiempo de Vuelta:</span>
                         <span id="random-time" class="text-xl font-mono font-black text-blue-400">--:--.---</span>
                     </div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-400">Estado de Verificación:</span>
                         <span id="random-status" class="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-gray-800 text-gray-300">--</span>
                     </div>
-                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-2 mb-3">Usa los controles para cargar telemetría.</p>
-                    <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider">
+                    <p id="random-notes" class="text-xs text-gray-400 italic line-clamp-1 truncate self-center">Usa los controles para cargar telemetría.</p>
+                </div>
+
+                <!-- Botón absoluto flotante colocado abajo del todo en la base externa -->
+                <div class="absolute bottom-4 left-5 right-5">
+                    <button onclick="shuffleRandomDay()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white text-xs font-bold rounded-md flex items-center justify-center gap-1 uppercase tracking-wider shadow-md">
                         🎲 Lanzar Día Aleatorio
                     </button>
                 </div>
@@ -269,11 +303,15 @@
                     <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
                 </div>
             </div>
-            <div class="relative w-full h-[320px]">
-                <canvas id="telemetryChart"></canvas>
+            
+            <div class="w-full overflow-x-auto pb-2 scrollbar-trazada">
+                <div id="chartWrapper" class="h-[320px] min-w-full">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
             </div>
         </section>
 
+        <!-- ─── SECCIÓN ESTADÍSTICAS CORREGIDA Y UNIFICADA ─── -->
         <section class="panel-carbon rounded-xl p-5 mb-8">
             <h3 class="text-lg font-black text-white uppercase tracking-tight mb-4">📊 Estadísticas</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -287,7 +325,7 @@
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">⏱️ Kilómetros Cronometrados</span>
                     <div id="stat-km-crono" class="text-2xl font-black text-white">0.0 km</div>
-                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye estrictamente vueltas de salida</span>
+                    <span class="text-[11px] text-gray-500 block mt-0.5">Excluye strictly vueltas de salida</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
@@ -296,15 +334,15 @@
                     <span class="text-[11px] text-gray-500 block mt-0.5">Excluye DNF, mejor y peor tiempo absoluto</span>
                 </div>
 
-                <div class="bg-black/20 p-4 rounded-lg border border-gray-800"
-                    <span class="text-[10px] font-bold text-yellow-500 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
-                    <div id="stat-racha-valida" class="text-2xl font-black text-yellow-400">0 días</div>
+                <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">⚡ Mejor Racha Con Vuelta Válida</span>
+                    <div id="stat-racha-valida" class="text-2xl font-black text-green-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Exhibiciones no rompen; DNF e Inválidas sí</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
-                    <div id="stat-racha-sin-record" class="text-2xl font-black text-white">0 días</div>
+                    <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">🔄 Mayor Racha Sin Romper Récord</span>
+                    <div id="stat-racha-sin-record" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Días consecutivos estancado sin rebajar marca</span>
                 </div>
 
@@ -321,8 +359,8 @@
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-blue-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
-                    <div id="stat-mejora-global" class="text-2xl font-black text-blue-400">--:--.---</div>
+                    <span class="text-[10px] font-bold text-green-400 uppercase block mb-1">📉 Mejora Histórica Global</span>
+                    <div id="stat-mejora-global" class="text-2xl font-black text-green-400">--:--.---</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Diferencia entre 1ª vuelta válida y el Récord</span>
                 </div>
 
@@ -333,13 +371,13 @@
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-red-500 uppercase block mb-1">❌ Sesiones con Offtrack</span>
+                    <span class="text-[10px] font-bold text-red-400 uppercase block mb-1">❌ Sesiones con Offtrack</span>
                     <div id="stat-total-invalidas" class="text-2xl font-black text-red-400">0 días</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Vueltas completadas excediendo límites</span>
                 </div>
 
                 <div class="bg-black/20 p-4 rounded-lg border border-gray-800">
-                    <span class="text-[10px] font-bold text-orange-500 uppercase block mb-1">⚠️ Accidentes / DNF</span>
+                    <span class="text-[10px] font-bold text-orange-400 uppercase block mb-1">⚠️ Accidentes / DNF</span>
                     <div id="stat-total-dnf" class="text-2xl font-black text-orange-400">0 tanda</div>
                     <span class="text-[11px] text-gray-500 block mt-0.5">Sesiones no terminadas por colisión o fallo</span>
                 </div>
@@ -352,12 +390,12 @@
 
             </div>
         </section>
-
+        
         <section class="panel-carbon rounded-xl p-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 class="text-lg font-black text-white uppercase tracking-tight">🔍 Registro de Vueltas</h3>
-                    <p class="text-xs text-gray-400">Buscador indexado directamente sobre tus notas guardadas de carrera</p>
+                    <p class="text-xs text-gray-400">Todas las vueltas hasta el momento</p>
                 </div>
                 <div class="relative w-full md:w-80">
                     <input type="text" id="lap-search" oninput="filterLaps()" placeholder="Buscar en notas del diario (ej: tráfico, subviraje...)" class="w-full bg-black/40 border border-gray-800 text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:border-green-500 transition">
@@ -370,12 +408,12 @@
     </div>
 
     <script>
-        // --- 1. BASE DE DATOS LOCAL DE RESPALDO (MOCK DATA COMPATIBLE) ---
+        // --- BASE DE DATOS LOCAL DE RESPALDO ---
         const MOCK_DATA = [
-            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia en el Carrousel." },
+            { "Día": "1", "TIEMPO": "06:59.700", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "30-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "kypbqbghn5g", "Notas": "Primer día del reto. Offtrack en la bajada rápida y pérdida de inercia." },
             { "Día": "2", "TIEMPO": "07:04.324", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "31-may", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "NO VÁLIDA", "URL VIDEO": "ooA_iYhJ0mg", "Notas": "Exceso de agresividad lateral en Wehrseifen." },
             { "Día": "3", "TIEMPO": "06:57.159", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "1-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "22.8", "ESTADO": "VÁLIDA", "URL VIDEO": "JDLi8wprKiI", "Notas": "Vuelta limpia sin tráfico." },
-            { "Día": "4", "TIEMPO": "06:58.200", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "0.0", "ESTADO": "EXHIBICIÓN", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Día de exhibición con patrocinadores, no cuenta para tiempos." },
+            { "Día": "4", "TIEMPO": "06:58.200", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "2-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "0.0", "ESTADO": "EXHIBICIÓN", "URL VIDEO": "VJZ8Lu99YNA", "Notas": "Día de exhibición con patrocinadores." },
             { "Día": "5", "TIEMPO": "DNF", "ONLINE": "sí", "DÍA DE PUBLICACIÓN": "3-jun", "KMS OUTLAP": "22.8", "KMS CRONO": "12.5", "ESTADO": "DNF", "URL VIDEO": "UlyhSox-Ul8", "Notas": "Colisión fuerte contra guardarraíl en Fuchsröhre." }
         ];
 
@@ -411,11 +449,7 @@
             return `${min}:${remainingSec.padStart(6, '0')}`;
         }
 
-        // --- 2. MOTOR DE PARSEO DE CONFIGURACIÓN ROBUSTO POR CLAVE EXACTA ---
         function parseConfigSheet(parsedCsvData) {
-            console.log("=== CONFIG RAW ===", parsedCsvData);
-
-            // Valores por defecto estrictos exigidos
             const configObj = {
                 tituloWeb: "Reto Nürburgring 100 Días",
                 descripcionReto: "Proyecto de Telemetría Oficial • 100 Días",
@@ -436,12 +470,8 @@
                 colorRachaRojo: ""
             };
 
-            if (!parsedCsvData || parsedCsvData.length === 0) {
-                console.log("=== CONFIG PARSED (DEFAULT) ===", configObj);
-                return configObj;
-            }
+            if (!parsedCsvData || parsedCsvData.length === 0) return configObj;
 
-            // Mapeo uno a uno estricto según la primera y segunda columna de cada fila
             parsedCsvData.forEach(row => {
                 const columns = Object.values(row).map(v => v ? v.toString().trim() : '');
                 const key = columns[0]; 
@@ -469,40 +499,22 @@
                     case "COLOR_RACHA_ROJO": configObj.colorRachaRojo = value; break;
                 }
             });
-
-            console.log("=== CONFIG PARSED ===", configObj);
             return configObj;
         }
 
-        // --- 3. APLICACIÓN DE CONFIGURACIÓN REMOTA DINÁMICA ---
         function applyWebConfiguration(config) {
-            // Título y subtítulo principal
             if (config.tituloWeb) document.getElementById('web-title').innerText = config.tituloWeb;
             if (config.descripcionReto) document.getElementById('web-description').innerText = config.descripcionReto;
 
-            // Inyección de Variable CSS Principal
             if (config.colorDetalles) {
                 document.documentElement.style.setProperty('--neon-green', config.colorDetalles);
                 const valDot = document.getElementById('legend-valida-dot');
                 if (valDot) valDot.style.backgroundColor = config.colorDetalles;
             }
 
-            // Forzar carga de Imagen de Coche desde la hoja
-            const imgCar = document.getElementById('header-car-img');
-            if (config.fotoCoche) {
-                imgCar.onerror = function() {
-                    console.error(`[ERROR CARGA]: La URL de FOTO_COCHE ha fallado: "${config.fotoCoche}". Usando fallback.`);
-                    this.src = "https://via.placeholder.com/800x400"; // Aquí es donde lee si falla
-                    this.onerror = null;
-                };
-                imgCar.src = config.fotoCoche;
-            }
-
-            // Forzar carga de Banner de Fondo desde la hoja
             if (config.bannerWeb) {
                 const testImg = new Image();
                 testImg.onerror = function() {
-                    console.error(`[ERROR CARGA]: La URL de BANNER_WEB ha fallado: "${config.bannerWeb}". Usando fallback.`);
                     document.body.style.backgroundImage = "url('https://via.placeholder.com/1200x300')";
                 };
                 testImg.onload = function() {
@@ -511,11 +523,9 @@
                 testImg.src = config.bannerWeb;
             }
 
-            // El botón de canal
             const ytBtn = document.getElementById('youtube-channel-btn');
             if (config.canalYoutube) ytBtn.href = config.canalYoutube;
 
-            // Inyección de Bloques de texto (1 al 5)
             const hasAnyBlock = config.txtBloque1 || config.txtBloque2 || config.txtBloque3 || config.txtBloque4 || config.txtBloque5;
             if (hasAnyBlock) {
                 document.getElementById('config-text-section').classList.remove('hidden');
@@ -525,19 +535,11 @@
                 document.getElementById('text-block-4').innerText = config.txtBloque4 || 'Sin datos.';
                 document.getElementById('text-block-5').innerText = config.txtBloque5 || 'Sin datos.';
             }
-
-            console.log("=== CONFIG APPLIED ===");
         }
 
-        // --- 4. CONEXIÓN GENERAL Y ACCESO A GOOGLE SHEETS ---
         async function init() {
             const badge = document.getElementById('sync-badge');
             try {
-                // Iniciar estado por defecto con mocks mientras sincroniza
-                globalRows = [...MOCK_DATA];
-                const defaultConfig = parseConfigSheet([]);
-                processAndRender(globalRows, defaultConfig);
-
                 const SHEET_ID = '1muYcQDtxqwcDO3pyxzgilha8TmqH2JL7y-cCO-DWiL8';
                 
                 const URL_DATOS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent('datos reto')}`;
@@ -553,10 +555,9 @@
 
                 const configText = await resConfig.text();
                 if (configText.trim().startsWith('<!DOCTYPE') || configText.includes('<html')) {
-                    throw new Error("Acceso privado en Sheets. Cambia los permisos a 'Cualquiera con el enlace puede ver'.");
+                    throw new Error("Acceso privado en Sheets. Permisos incorrectos.");
                 }
 
-                // Parseo estricto de la pestaña de configuración web
                 const rawConfigParsed = Papa.parse(configText, { header: false }).data;
                 const finalConfig = parseConfigSheet(rawConfigParsed);
                 applyWebConfiguration(finalConfig);
@@ -585,19 +586,24 @@
                     "Notas": getVal(row, ['notas', 'nota'])
                 }));
                 
+                // CORRECCIÓN: Única ejecución síncrona real tras recibir los datos dinámicos
                 processAndRender(globalRows, finalConfig);
                 
                 badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-400"></span> TELEMETRÍA EN VIVO SINK`;
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-2";
 
             } catch (err) {
-                console.error(err);
-                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> ERROR: ${err.message}`;
+                console.error("Ejecutando modo respaldo local por error:", err);
+                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> CONEXIÓN LOCAL (MOCK DATA)`;
                 badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30 flex items-center gap-2";
+                
+                globalRows = [...MOCK_DATA];
+                const defaultConfig = parseConfigSheet([]);
+                applyWebConfiguration(defaultConfig);
+                processAndRender(globalRows, defaultConfig);
             }
         }
 
-        // --- 5. MOTOR MATEMÁTICO INTEGRAL ---
         function processAndRender(data, config) {
             data.sort((a, b) => parseInt(a["Día"]) - parseInt(b["Día"]));
 
@@ -623,31 +629,31 @@
             data.forEach(row => {
                 const outlap = parseFloat(row["KMS OUTLAP"].toString().replace(',', '.')) || 0;
                 const crono = parseFloat(row["KMS CRONO"].toString().replace(',', '.')) || 0;
-                const estado = row["ESTADO"].toUpperCase().trim();
+                const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 const tiempoS = timeStringToSeconds(row["TIEMPO"]);
                 const notasTexto = row["Notas"] ? row["Notas"].toString() : '';
 
                 kmTotales += (outlap + crono);
                 kmCrono += crono;
 
-                if (estado === 'VÁLIDA') countValidas++;
-                if (estado === 'NO VÁLIDA') countInvalidas++;
+                if (estado === 'VALIDA') countValidas++;
+                if (estado === 'NO VALIDA') countInvalidas++;
                 if (estado === 'DNF') countDnf++;
 
-                if (estado !== 'DNF' && estado !== 'EXHIBICIÓN' && tiempoS !== null) {
+                if (estado !== 'DNF' && estado !== 'EXHIBICION' && tiempoS !== null) {
                     listadoTiemposLimpiosS.push(tiempoS);
                 }
 
-                const checkExhibicion = estado === 'EXHIBICIÓN' || notasTexto.toLowerCase().includes('exhibición') || notasTexto.toLowerCase().includes('exhibicion');
+                const checkExhibicion = estado === 'EXHIBICION' || notasTexto.toLowerCase().includes('exhibición') || notasTexto.toLowerCase().includes('exhibicion');
 
-                if (estado === 'VÁLIDA') {
+                if (estado === 'VALIDA') {
                     currentRachaValida++;
-                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                 } else if (!checkExhibicion) {
+                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
                     currentRachaValida = 0;
                 }
 
-                if (estado === 'VÁLIDA' && tiempoS !== null) {
+                if (estado === 'VALIDA' && tiempoS !== null) {
                     if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
 
                     if (tiempoS < recordActualS) {
@@ -663,12 +669,13 @@
                     } else {
                         currentRachaSinRecord++;
                     }
-                } else if (estado !== 'EXHIBICIÓN') {
+                } else if (!checkExhibicion) {
                     currentRachaSinRecord++;
                 }
             });
 
             if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
+            if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
 
             let ritmoPromedioLimpioS = null;
             if (listadoTiemposLimpiosS.length >= 3) {
@@ -727,10 +734,18 @@
             if(!recordData && data.length > 0) recordData = data[0];
             if(recordData) {
                 document.getElementById('record-day-tag').innerText = `DÍA ${recordData["Día"]}`;
+                document.getElementById('record-day-tag').className = "text-sm font-black text-white bg-gray-800 px-2 py-0.5 rounded";
+                
+                const tituloRecord = document.getElementById('record-day-tag').closest('.panel-carbon').querySelector('h2');
+                if (tituloRecord && !tituloRecord.innerText.startsWith('👑')) {
+                    tituloRecord.innerText = `👑 Récord en el Infierno Verde`;
+                }
+
                 document.getElementById('record-time').innerText = recordData["TIEMPO"];
+                document.getElementById('record-time').className = "text-xl font-mono font-black text-green-400 drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]";
                 document.getElementById('record-pub-date').innerText = recordData["DÍA DE PUBLICACIÓN"] || '--';
                 document.getElementById('record-iframe').src = `https://www.youtube.com/embed/${recordData["URL VIDEO"]}`;
-                document.getElementById('record-notes').innerText = recordData["Notas"] || 'Sin notas.';
+                document.getElementById('record-notes').innerText = recordData["Notes"] || 'Sin notas.';
             }
 
             const latestData = data[data.length - 1];
@@ -738,7 +753,7 @@
                 document.getElementById('latest-day-tag').innerText = `DÍA ${latestData["Día"]}`;
                 document.getElementById('latest-time').innerText = latestData["TIEMPO"];
                 document.getElementById('latest-iframe').src = `https://www.youtube.com/embed/${latestData["URL VIDEO"]}`;
-                document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
+                document.getElementById('latest-notes').innerText = latestData["Notes"] || 'Sin notas.';
                 
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 if(latestSecs && recordActualS !== Infinity) {
@@ -765,7 +780,6 @@
             renderHistoryList(data);
         }
 
-        // --- 6. FICHA DINÁMICA DE VUELTA ---
         function updateDynamicScreen(row, isManualSelection = false) {
             const cardTypeTitle = document.getElementById('dynamic-card-type');
             if(isManualSelection) {
@@ -780,14 +794,14 @@
             document.getElementById('random-title').innerText = `Sesión del día ${row["Día"]}`;
             document.getElementById('random-time').innerText = row["TIEMPO"];
             document.getElementById('random-iframe').src = `https://www.youtube.com/embed/${row["URL VIDEO"]}`;
-            document.getElementById('random-notes').innerText = row["Notas"] || 'Sin anotaciones técnicas.';
+            document.getElementById('random-notes').innerText = row["Notes"] || 'Sin anotaciones técnicas.';
             
             const statusTag = document.getElementById('random-status');
-            const estado = row["ESTADO"].toUpperCase().trim();
-            statusTag.innerText = estado;
-            if(estado === 'VÁLIDA') {
+            const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            statusTag.innerText = row["ESTADO"];
+            if(estado === 'VALIDA') {
                 statusTag.className = "px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-green-900/30 text-green-400 border border-green-500/30";
-            } else if(estado === 'NO VÁLIDA') {
+            } else if(estado === 'NO VALIDA') {
                 statusTag.className = "px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-red-900/30 text-red-400 border border-red-500/30";
             } else {
                 statusTag.className = "px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-yellow-900/30 text-yellow-400 border border-yellow-500/30";
@@ -800,10 +814,22 @@
             updateDynamicScreen(globalRows[randIndex], false);
         }
 
-        // --- 7. GRÁFICA TELEMÉTRICA CORREGIDA (ALINEACIÓN ESTRICTA DE DNF) ---
-        // --- 7. GRÁFICA TELEMÉTRICA AVANZADA (DESTACAR RÉCORD EN ORO) ---
         function renderTelemetryChart(data) {
-            const ctx = document.getElementById('telemetryChart').getContext('2d');
+            const chartWrapper = document.getElementById('chartWrapper');
+            if (chartWrapper) {
+                const esMovil = window.innerWidth < 768;
+                const pixelPorDia = esMovil ? 16 : 28; 
+    
+                const anchoCalculado = data.length * pixelPorDia;
+                chartWrapper.style.width = anchoCalculado > chartWrapper.parentElement.clientWidth 
+                    ? `${anchoCalculado}px` 
+                    : '100%';
+            }
+
+            const chartCanvas = document.getElementById('telemetryChart');
+            if (!chartCanvas) return;
+
+            const ctx = chartCanvas.getContext('2d');
             if (telemetryChartInstance) telemetryChartInstance.destroy();
 
             const labelsDias = data.map(r => `Día ${r["Día"]}`);
@@ -813,40 +839,44 @@
             const maxValidValue = validSeconds.length > 0 ? Math.max(...validSeconds) : 420;
             const dnfCeilingY = maxValidValue + 6;
 
-            // Buscamos cuál es el tiempo de récord real (el mínimo de las válidas)
             let minTimeS = Infinity;
             let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) {
                     minTimeS = tS;
                     recordDay = r["Día"];
                 }
             });
 
-            // Configuramos los colores y tamaños de los puntos uno a uno
             const customPointColors = [];
             const customPointRadius = [];
             const customPointHoverRadius = [];
             const customPointStyles = [];
 
+            const neonGreenColor = '#39ff14';
+
             data.forEach(r => {
-                const estado = r["ESTADO"].toUpperCase().trim();
+                const estado = r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 if (r["Día"] === recordDay) {
-                    // Estilo exclusivo para el punto del récord absoluto
-                    customPointColors.push('#ffd700'); // Oro
-                    customPointRadius.push(9);         // El doble de grande
+                    customPointColors.push('#ffd700'); 
+                    customPointRadius.push(12);         
                     customPointHoverRadius.push(12);
-                    customPointStyles.push('triangle'); // Forma de triángulo invertido o estrella
-                } else if (estado === 'VÁLIDA') {
-                    customPointColors.push(getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14');
+                    customPointStyles.push('triangle'); 
+                } else if (estado === 'VALIDA') {
+                    customPointColors.push(neonGreenColor);
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
                     customPointStyles.push('circle');
-                } else if (estado === 'NO VÁLIDA') {
+                } else if (estado === 'NO VALIDA') {
                     customPointColors.push('#ff3b30');
                     customPointRadius.push(5);
                     customPointHoverRadius.push(8);
+                    customPointStyles.push('circle');
+                } else if (estado === 'EXHIBICION') {
+                    customPointColors.push('#a855f7'); 
+                    customPointRadius.push(5);          
+                    customPointHoverRadius.push(9);
                     customPointStyles.push('circle');
                 } else {
                     customPointColors.push('transparent');
@@ -860,6 +890,48 @@
                 return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
             });
 
+            const dynamicFillPlugin = {
+                id: 'dynamicFillPlugin',
+                beforeDatasetsDraw(chart) {
+                    const {ctx: chartCtx, chartArea} = chart;
+                    if (!chartArea) return;
+
+                    const meta = chart.getDatasetMeta(0);
+                    const points = meta.data;
+                    if (!points || points.length < 2) return;
+
+                    chartCtx.save();
+                    chartCtx.beginPath();
+                    
+                    let firstPoint = true;
+                    let lastX = chartArea.left;
+
+                    points.forEach((pt) => {
+                        if (pt.skip || isNaN(pt.y) || pt.y === null) return;
+                        if (firstPoint) {
+                            chartCtx.moveTo(pt.x, chartArea.bottom);
+                            chartCtx.lineTo(pt.x, pt.y);
+                            firstPoint = false;
+                        } else {
+                            chartCtx.lineTo(pt.x, pt.y);
+                        }
+                        lastX = pt.x;
+                    });
+
+                    chartCtx.lineTo(lastX, chartArea.bottom);
+                    chartCtx.closePath();
+
+                    const fillGrad = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    fillGrad.addColorStop(0, 'rgba(57, 255, 20, 0.65)');   
+                    fillGrad.addColorStop(0.5, 'rgba(57, 255, 20, 0.25)');  
+                    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');                                
+
+                    chartCtx.fillStyle = fillGrad;
+                    chartCtx.fill();
+                    chartCtx.restore();
+                }
+            };
+
             telemetryChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -868,14 +940,14 @@
                         {
                             label: 'Evolución Cronometrada',
                             data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.25)',
+                            borderColor: 'rgba(255, 255, 255, 0.45)', 
                             borderWidth: 2,
                             pointBackgroundColor: customPointColors,
                             pointBorderColor: '#000',
                             pointRadius: customPointRadius,
                             pointHoverRadius: customPointHoverRadius,
                             pointStyle: customPointStyles,
-                            fill: false,
+                            fill: false, 
                             spanGaps: true
                         },
                         {
@@ -940,162 +1012,28 @@
                             }
                         }
                     }
-                }
-            });
-        }// --- 7. GRÁFICA TELEMÉTRICA AVANZADA (DESTACAR RÉCORD EN ORO) ---
-        function renderTelemetryChart(data) {
-            const ctx = document.getElementById('telemetryChart').getContext('2d');
-            if (telemetryChartInstance) telemetryChartInstance.destroy();
-
-            const labelsDias = data.map(r => `Día ${r["Día"]}`);
-            const lineTimesData = data.map(r => timeStringToSeconds(r["TIEMPO"]));
-            
-            const validSeconds = lineTimesData.filter(s => s !== null);
-            const maxValidValue = validSeconds.length > 0 ? Math.max(...validSeconds) : 420;
-            const dnfCeilingY = maxValidValue + 6;
-
-            // Buscamos cuál es el tiempo de récord real (el mínimo de las válidas)
-            let minTimeS = Infinity;
-            let recordDay = null;
-            data.forEach(r => {
-                const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
-                    minTimeS = tS;
-                    recordDay = r["Día"];
-                }
-            });
-
-            // Configuramos los colores y tamaños de los puntos uno a uno
-            const customPointColors = [];
-            const customPointRadius = [];
-            const customPointHoverRadius = [];
-            const customPointStyles = [];
-
-            data.forEach(r => {
-                const estado = r["ESTADO"].toUpperCase().trim();
-                if (r["Día"] === recordDay) {
-                    // Estilo exclusivo para el punto del récord absoluto
-                    customPointColors.push('#ffd700'); // Oro
-                    customPointRadius.push(9);         // El doble de grande
-                    customPointHoverRadius.push(12);
-                    customPointStyles.push('triangle'); // Forma de triángulo invertido o estrella
-                } else if (estado === 'VÁLIDA') {
-                    customPointColors.push(getComputedStyle(document.documentElement).getPropertyValue('--neon-green').trim() || '#39ff14');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
-                } else if (estado === 'NO VÁLIDA') {
-                    customPointColors.push('#ff3b30');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
-                } else {
-                    customPointColors.push('transparent');
-                    customPointRadius.push(5);
-                    customPointHoverRadius.push(8);
-                    customPointStyles.push('circle');
-                }
-            });
-
-            const dnfLinePoints = data.map(r => {
-                return r["ESTADO"].toUpperCase().trim() === 'DNF' ? dnfCeilingY : null;
-            });
-
-            telemetryChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labelsDias,
-                    datasets: [
-                        {
-                            label: 'Evolución Cronometrada',
-                            data: lineTimesData,
-                            borderColor: 'rgba(255, 255, 255, 0.25)',
-                            borderWidth: 2,
-                            pointBackgroundColor: customPointColors,
-                            pointBorderColor: '#000',
-                            pointRadius: customPointRadius,
-                            pointHoverRadius: customPointHoverRadius,
-                            pointStyle: customPointStyles,
-                            fill: false,
-                            spanGaps: true
-                        },
-                        {
-                            label: 'Abandono (DNF)',
-                            data: dnfLinePoints,
-                            borderColor: '#ff3b30',
-                            backgroundColor: '#ff9500',
-                            borderWidth: 0,
-                            pointStyle: 'triangle',
-                            pointRadius: 9,
-                            pointHoverRadius: 11,
-                            fill: false,
-                            showLine: false
-                        }
-                    ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const index = context.dataIndex;
-                                    const row = data[index];
-                                    if (!row) return '';
-                                    if (row["Día"] === recordDay) {
-                                        return ` 👑 ¡RECORD HISTÓRICO!: ${row["TIEMPO"]}`;
-                                    }
-                                    return ` Tiempo: ${row["TIEMPO"]} [${row["ESTADO"]}]`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            grid: { color: '#1f222e' },
-                            ticks: {
-                                color: '#a0a0a0',
-                                font: { family: 'monospace' },
-                                callback: function(value) {
-                                    if (value >= dnfCeilingY - 1 && value <= dnfCeilingY + 1) return '⚠️ DNF';
-                                    return secondsToTimeString(value);
-                                }
-                            }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#a0a0a0' }
-                        }
-                    },
-                    onClick: (e, activeEls) => {
-                        if (activeEls.length > 0) {
-                            const index = activeEls[0].index;
-                            if (data[index]) {
-                                updateDynamicScreen(data[index], true);
-                                const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
-                                if (ficha3) {
-                                    ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }
-                            }
-                        }
-                    }
-                }
+                plugins: [dynamicFillPlugin] 
             });
+
+            setTimeout(() => {
+                if (chartWrapper) {
+                    const contenedorScroll = chartWrapper.parentElement;
+                    contenedorScroll.scrollLeft = contenedorScroll.scrollWidth;
+                }
+            }, 50);
         }
-        // --- 8. HISTORIAL / DIARIO TÉCNICO CON DESTACADO DE RÉCORD ---
+
         function renderHistoryList(data) {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
             const reversedData = [...data].reverse();
 
-            // Identificamos el día del récord antes de pintar
             let minTimeS = Infinity;
             let recordDay = null;
             data.forEach(r => {
                 const tS = timeStringToSeconds(r["TIEMPO"]);
-                if (r["ESTADO"].toUpperCase().trim() === 'VÁLIDA' && tS && tS < minTimeS) {
+                if (r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === 'VALIDA' && tS && tS < minTimeS) {
                     minTimeS = tS;
                     recordDay = r["Día"];
                 }
@@ -1103,27 +1041,26 @@
 
             reversedData.forEach(row => {
                 const dia = row["Día"];
-                const estado = row["ESTADO"].toUpperCase().trim();
-                const notasTexto = row["Notas"] || '';
+                const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const CastleNotes = row["Notas"] || '';
                 
                 let borderClass = 'border-l-green-500';
                 let textBadgeClass = 'text-green-400';
                 let specialBgClass = '';
                 let crownIcon = '';
 
-                // Si es el día del récord, cambiamos por completo su look
                 if (dia === recordDay) {
                     borderClass = 'border-l-amber-400';
                     textBadgeClass = 'text-amber-400 font-black';
                     specialBgClass = 'bg-amber-500/5 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
                     crownIcon = '👑 ';
-                } else if (estado === 'NO VÁLIDA') {
+                } else if (estado === 'NO VALIDA') {
                     borderClass = 'border-l-red-500';
                     textBadgeClass = 'text-red-400';
                 } else if (estado === 'DNF') {
                     borderClass = 'border-l-yellow-500';
                     textBadgeClass = 'text-yellow-500';
-                } else if (estado === 'EXHIBICIÓN') {
+                } else if (estado === 'EXHIBICION') {
                     borderClass = 'border-l-purple-500';
                     textBadgeClass = 'text-purple-400';
                 }
@@ -1131,13 +1068,13 @@
                 const card = document.createElement('div');
                 card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} ${specialBgClass} hover:border-l-[6px] transition-all duration-150 cursor-pointer`;
                 card.dataset.day = dia;
-                card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${notasTexto}`.toLowerCase();
+                card.dataset.searchable = `qualy récord record crown estrella día dia ${dia} ${estado} ${CastleNotes}`.toLowerCase();
                 
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2" onclick="selectHistoryDay('${dia}')">
                         <div class="flex items-center gap-3">
                             <span class="text-lg font-black ${dia === recordDay ? 'text-amber-400' : 'text-white'}">${crownIcon}Día ${dia}</span>
-                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${dia === recordDay ? '👑 ACTUAL RÉCORD' : estado}</span>
+                            <span class="text-xs px-2 py-0.5 rounded font-bold bg-black/40 ${textBadgeClass}">${dia === recordDay ? '👑 ACTUAL RÉCORD' : row["ESTADO"]}</span>
                             <span class="text-xs text-gray-500 font-mono">Pub: ${row["DÍA DE PUBLICACIÓN"] || '--'}</span>
                         </div>
                         <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
@@ -1146,18 +1083,17 @@
                         </div>
                     </div>
                     <div class="mt-2 text-xs ${dia === recordDay ? 'text-amber-200/70 border-t border-amber-500/20' : 'text-gray-400 border-t border-gray-800/60'} pt-2">
-                        <strong>Notas de boxes:</strong> ${notasTexto || '<span class="text-gray-600 italic">Sin observaciones guardadas en esta jornada.</span>'}
+                        <strong>Notas de boxes:</strong> ${CastleNotes || '<span class="text-gray-600 italic">Sin observaciones guardadas.</span>'}
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
+
         function selectHistoryDay(day) {
             const row = globalRows.find(r => r["Día"] === day);
             if (row) {
                 updateDynamicScreen(row, true);
-                
-                // Buscamos la Ficha 3 (el contenedor de la tarjeta dinámica)
                 const ficha3 = document.getElementById('random-title').closest('.panel-carbon');
                 if (ficha3) {
                     ficha3.scrollIntoView({ behavior: 'smooth', block: 'start' });
