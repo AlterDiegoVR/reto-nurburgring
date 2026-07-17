@@ -185,7 +185,7 @@
                     <div class="bg-black/30 p-3 rounded-lg border border-gray-800/80 h-[125px] grid grid-rows-3 items-center">
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-400">Mejor Marca Histórica:</span>
-                            <span id="record-time" class="text-xl font-mono font-black text-green-400">--:--.---</span>
+                            <span id="record-time" class="text-xl font-mono font-black text-[var(--neon-green)]">--:--.---</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-400">Publicado el dia:</span>
@@ -642,7 +642,7 @@
                 document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 
-                // CAMBIO COLOR DINÁMICO ÚLTIMO REGISTRO CUANDO COINCIDE CON EL RÉCORD
+                // CAMBIO COLOR DINÁMICO ÚLTIMO REGISTRO CUANDO COINCIDE CON EL RÉCORD (Mismo verde)
                 const latestTimeElement = document.getElementById('latest-time');
                 if (recordData && latestData["Día"] === recordData["Día"]) {
                     latestTimeElement.className = "text-xl font-mono font-black text-[var(--neon-green)]";
