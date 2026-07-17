@@ -305,7 +305,9 @@
                     <div class="flex flex-wrap items-center gap-4 text-xs font-semibold">
                         <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#39ff14]" id="legend-valida-dot"></span> Válida</span>
                         <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> No Válida</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-purple-500"></span> Exhibición</span>
                         <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-orange-500" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> Abandono (DNF)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 bg-yellow-400" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span> 👑 Récord Absoluto</span>
                     </div>
                 </div>
                 
@@ -680,7 +682,7 @@
             const customPointColors = []; const customPointRadius = []; const customPointHoverRadius = []; const customPointStyles = [];
             data.forEach(r => {
                 const estado = r["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                if (r["Día"] === recordDay) { customPointColors.push('#ffd700'); customPointRadius.push(12); customPointHoverRadius.push(12); customPointStyles.push('triangle'); } 
+                if (r["Día"] === recordDay) { customPointColors.push('#ffd700'); customPointRadius.push(12); customPointHoverRadius.push(14); customPointStyles.push('triangle'); } 
                 else if (estado === 'VALIDA') { customPointColors.push('#39ff14'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); } 
                 else if (estado === 'NO VALIDA') { customPointColors.push('#ff3b30'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); } 
                 else if (estado === 'EXHIBICION') { customPointColors.push('#a855f7'); customPointRadius.push(5); customPointHoverRadius.push(8); customPointStyles.push('circle'); }
@@ -766,9 +768,19 @@
                                 label: function(context) {
                                     const value = context.raw;
                                     if (value === null) return '';
+                                    
+                                    // Si es un DNF (Segundo dataset)
                                     if (context.datasetIndex === 1 && value === dnfCeilingY) {
-                                        return ' Abandono (DNF)';
+                                        return ' ⚠️ Abandono (DNF)';
                                     }
+                                    
+                                    // Si es el día del récord absoluto
+                                    const actualDay = data[context.dataIndex]["Día"];
+                                    if (actualDay === recordDay) {
+                                        return ` 👑 ¡RÉCORD DE LA PISTA!: ${secondsToTimeString(value)}`;
+                                    }
+                                    
+                                    // Formato estándar para el resto de días
                                     return ` Tiempo: ${secondsToTimeString(value)}`;
                                 }
                             }
