@@ -556,17 +556,31 @@
                 if (estado === 'DNF') countDnf++;
                 if (estado !== 'DNF' && estado !== 'EXHIBICION' && tiempoS !== null) listadoTiemposLimpiosS.push(tiempoS);
 
-                if (estado === 'VALIDA') currentRachaValida++; 
-                else if (estado !== 'EXHIBICION') { if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida; currentRachaValida = 0; }
+                // LÓGICA DE CORRECCIÓN: DÍAS DE EXHIBICIÓN DEBEN ACTUAR COMO UNA PAUSA, NO SUMAN NI ROMPEN
+                if (estado === 'VALIDA') {
+                    currentRachaValida++;
+                } else if (estado !== 'EXHIBICION') {
+                    // Solo DNF e INVÁLIDAS rompen la racha a 0
+                    if (currentRachaValida > maxRachaValida) maxRachaValida = currentRachaValida;
+                    currentRachaValida = 0;
+                }
 
-                if (estado === 'VALIDA' && tiempoS !== null) {
-                    if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
-                    if (tiempoS < recordActualS) {
-                        if (recordActualS !== Infinity && (recordActualS - tiempoS) > maxBajadaRecordS) maxBajadaRecordS = recordActualS - tiempoS;
-                        if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
-                        currentRachaSinRecord = 0; recordActualS = tiempoS; recordData = row;
-                    } else { currentRachaSinRecord++; }
-                } else if (estado !== 'EXHIBICION') { currentRachaSinRecord++; }
+                if (estado !== 'EXHIBICION') {
+                    if (estado === 'VALIDA' && tiempoS !== null) {
+                        if (primerTiempoValidoS === null) primerTiempoValidoS = tiempoS;
+                        if (tiempoS < recordActualS) {
+                            if (recordActualS !== Infinity && (recordActualS - tiempoS) > maxBajadaRecordS) maxBajadaRecordS = recordActualS - tiempoS;
+                            if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
+                            currentRachaSinRecord = 0; recordActualS = tiempoS; recordData = row;
+                        } else { 
+                            currentRachaSinRecord++; 
+                        }
+                    } else { 
+                        // DNF e Inválidas incrementan los días estancado sin bajar el récord
+                        currentRachaSinRecord++; 
+                    }
+                }
+                // Si el estado es 'EXHIBICION', currentRachaSinRecord NO se incrementa (la cuenta se pausa)
             });
 
             if (currentRachaSinRecord > maxRachaSinRecord) maxRachaSinRecord = currentRachaSinRecord;
@@ -578,7 +592,8 @@
                 ritmoPromedioLimpioS = listadoTiemposLimpiosS.reduce((a, b) => a + b, 0) / listadoTiemposLimpiosS.length;
             }
 
-            let rachaActualSinMejorar = recordData ? Math.max(...data.map(r => parseInt(r["Día"]))) - parseInt(recordData["Día"]) : 0;
+            // Cálculo dinámico de la racha actual sin mejorar real en base a días procesados válidos (excluyendo exhibiciones intermedias si las hubiera)
+            let rachaActualSinMejorar = currentRachaSinRecord;
             document.getElementById('streak-days').innerText = rachaActualSinMejorar;
             document.getElementById('km-totals-top').innerText = kmTotales.toFixed(1);
 
@@ -642,7 +657,6 @@
                 document.getElementById('latest-notes').innerText = latestData["Notas"] || 'Sin notas.';
                 const latestSecs = timeStringToSeconds(latestData["TIEMPO"]);
                 
-                // CAMBIO COLOR DINÁMICO ÚLTIMO REGISTRO CUANDO COINCIDE CON EL RÉCORD (Mismo verde)
                 const latestTimeElement = document.getElementById('latest-time');
                 if (recordData && latestData["Día"] === recordData["Día"]) {
                     latestTimeElement.className = "text-xl font-mono font-black text-[var(--neon-green)]";
@@ -804,18 +818,15 @@
                                     const value = context.raw;
                                     if (value === null) return '';
                                     
-                                    // Si es un DNF (Segundo dataset)
                                     if (context.datasetIndex === 1 && value === dnfCeilingY) {
                                         return ' ⚠️ Abandono (DNF)';
                                     }
                                     
-                                    // Si es el día del récord absoluto
                                     const actualDay = data[context.dataIndex]["Día"];
                                     if (actualDay === recordDay) {
                                         return ` 👑 ¡RÉCORD DE LA PISTA!: ${secondsToTimeString(value)}`;
                                     }
                                     
-                                    // Formato estándar para el resto de días
                                     return ` Tiempo: ${secondsToTimeString(value)}`;
                                 }
                             }
