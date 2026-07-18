@@ -867,9 +867,24 @@
             [...data].reverse().forEach(row => {
                 const dia = row["Día"]; const estado = row["ESTADO"].toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 let borderClass = 'border-l-green-500'; let textBadgeClass = 'text-green-400'; let specialBgClass = '';
-                if (dia === recordDay) { borderClass = 'border-l-amber-400'; textBadgeClass = 'text-amber-400 font-black'; specialBgClass = 'bg-amber-500/5 border border-amber-500/20'; } 
-                else if (estado === 'NO VALIDA') { borderClass = 'border-l-red-500'; textBadgeClass = 'text-red-400'; } 
-                else if (estado === 'DNF') { borderClass = 'border-l-yellow-500'; textBadgeClass = 'text-yellow-500'; }
+                
+                if (dia === recordDay) { 
+                    borderClass = 'border-l-amber-400'; 
+                    textBadgeClass = 'text-amber-400 font-black'; 
+                    specialBgClass = 'bg-amber-500/5 border border-amber-500/20'; 
+                } 
+                else if (estado === 'NO VALIDA') { 
+                    borderClass = 'border-l-red-500'; 
+                    textBadgeClass = 'text-red-400'; 
+                } 
+                else if (estado === 'DNF') { 
+                    borderClass = 'border-l-yellow-500'; 
+                    textBadgeClass = 'text-yellow-500'; 
+                }
+                else if (estado === 'EXHIBICION') { 
+                    borderClass = 'border-l-purple-500'; 
+                    textBadgeClass = 'text-purple-400'; 
+                }
 
                 const card = document.createElement('div');
                 card.className = `panel-carbon rounded-lg p-4 border-l-4 ${borderClass} ${specialBgClass} hover:border-l-[6px] transition-all cursor-pointer`;
